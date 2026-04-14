@@ -1,0 +1,60 @@
+{
+    "folder-color.pathColors": [
+        {
+            "folderPath": "AUTOSAR\\BSW\\MCAL\\",
+            "color": "foldercolorizer.color_00cccc"
+        },
+        {
+            "folderPath": "AUTOSAR\\BSW\\ECUAbstraction\\",
+            "color": "foldercolorizer.color_00cccc"
+        },
+        {
+            "folderPath": "AUTOSAR\\3_BSW\\",
+            "color": "foldercolorizer.color_33ccff"
+        },
+        {
+            "folderPath": "AUTOSAR\\CONFIG\\",
+            "color": "foldercolorizer.color_666666"
+        },
+        {
+            "folderPath": "AUTOSAR\\2_RTE\\",
+            "color": "foldercolorizer.color_9900cc"
+        },
+        {
+            "folderPath": "AUTOSAR\\1_APP\\",
+            "color": "foldercolorizer.color_996633"
+        },
+        {
+            "folderPath": "c",
+            "color": "foldercolorizer.color_33cc33",
+            "isForExtension": true
+        },
+        {
+            "folderPath": "AUTOSAR\\SYSTEM\\",
+            "color": "foldercolorizer.color_cc6600"
+        },
+        {
+            "folderPath": "AUTOSAR\\.vscode\\",
+            "color": "foldercolorizer.color_ffccff"
+        },
+        {
+            "folderPath": "AUTOSAR\\BSW\\Services\\",
+            "color": "foldercolorizer.color_00cccc"
+        },
+        {
+            "folderPath": "AUTOSAR\\BSW\\ECUAbstraction\\",
+            "color": "foldercolorizer.color_00cccc",
+            "isFolderOnly": true
+        },
+        {
+            "folderPath": "AUTOSAR\\3_BSW\\",
+            "color": "foldercolorizer.color_00cccc",
+            "isFolderOnly": true
+        },
+        {
+            "folderPath": "AUTOSAR\\BSW\\MCAL\\",
+            "color": "foldercolorizer.color_00cccc",
+            "isFolderOnly": true
+        }
+    ]
+}
