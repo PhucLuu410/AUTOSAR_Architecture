@@ -55,6 +55,22 @@
             "folderPath": "AUTOSAR\\BSW\\MCAL\\",
             "color": "foldercolorizer.color_00cccc",
             "isFolderOnly": true
+        },
+        {
+            "folderPath": "AUTOSAR_Architecture\\CONFIG\\",
+            "color": "foldercolorizer.color_00cc33"
+        },
+        {
+            "folderPath": "AUTOSAR_Architecture\\3_BSW\\",
+            "color": "foldercolorizer.color_66cc00"
+        },
+        {
+            "folderPath": "AUTOSAR_Architecture\\2_RTE\\",
+            "color": "foldercolorizer.color_33ccff"
+        },
+        {
+            "folderPath": "AUTOSAR_Architecture\\1_APP\\",
+            "color": "foldercolorizer.color_6666ff"
         }
     ]
 }
