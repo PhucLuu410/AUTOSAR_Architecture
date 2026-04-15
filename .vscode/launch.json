@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug STM32",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/firmware.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "interface": "swd",
+            "device": "STM32F103C8",
+            "preLaunchTask": "build 2.0", // Đã sửa để khớp với tasks.json của bạn
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 10
+            },
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f1x.cfg"
+            ],
+            "runToEntryPoint": "main"
+            // Tạm thời bỏ "postDebugTask" nếu bạn chưa viết task Kill OpenOCD để tránh báo lỗi phụ
+        }
+    ]
+}

@@ -1,39 +1,33 @@
-#ifndef DIO_CFG_H
-#define DIO_CFG_H
-
 #include "Dio.h"
 
-#define PIN_0   (1 << 0)
-#define PIN_1   (1 << 1)
-#define PIN_2   (1 << 2)
-#define PIN_3   (1 << 3)
-#define PIN_4   (1 << 4)
-#define PIN_5   (1 << 5)
-#define PIN_6   (1 << 6)
-#define PIN_7   (1 << 7)
-#define PIN_8   (1 << 8)
-#define PIN_9   (1 << 9)
-#define PIN_10  (1 << 10)
-#define PIN_11  (1 << 11)
-#define PIN_12  (1 << 12)
-#define PIN_13  (1 << 13)
-#define PIN_14  (1 << 14)
-#define PIN_15  (1 << 15)
+#define PIN0 (1 << 0)
+#define PIN1 (1 << 1)
+#define PIN2 (1 << 2)
+#define PIN3 (1 << 3)
+#define PIN4 (1 << 4)
+#define PIN5 (1 << 5)
+#define PIN6 (1 << 6)
+#define PIN7 (1 << 7)
+#define PIN8 (1 << 8)
+#define PIN9 (1 << 9)
+#define PIN10 (1 << 10)
+#define PIN11 (1 << 11)
+#define PIN12 (1 << 12)
+#define PIN13 (1 << 13)
+#define PIN14 (1 << 14)
+#define PIN15 (1 << 15)
+#define PIN16 (1 << 16)
 
-#define PORTA_ID 0
-#define PORTB_ID 1
-#define PORTC_ID 2
-#define PORTD_ID 3
-typedef enum
-{
-    DIO_LED,
-    DIO_BUTTON
-} Dio_ChannelType;
+#define PORTA GPIOA
+#define PORTB GPIOB
+#define PORTC GPIOC
+#define PORTD GPIOD
 
 typedef struct
 {
-    Dio_PortType port;
+    GPIO_TypeDef *port;
     Dio_ChannelType pin;
-} Dio_ChannelConfigType;
+} Dio_ConfigTypeDef;
 
-#endif
+#define BUTTON 0
+#define LED 1

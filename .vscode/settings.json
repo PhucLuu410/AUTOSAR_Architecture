@@ -14,7 +14,7 @@
         },
         {
             "folderPath": "AUTOSAR\\CONFIG\\",
-            "color": "foldercolorizer.color_666666"
+            "color": "foldercolorizer.color_6666ff"
         },
         {
             "folderPath": "AUTOSAR\\2_RTE\\",
@@ -26,12 +26,12 @@
         },
         {
             "folderPath": "c",
-            "color": "foldercolorizer.color_33cc33",
+            "color": "foldercolorizer.color_d7d7d7",
             "isForExtension": true
         },
         {
             "folderPath": "AUTOSAR\\SYSTEM\\",
-            "color": "foldercolorizer.color_cc6600"
+            "color": "foldercolorizer.color_3300ff"
         },
         {
             "folderPath": "AUTOSAR\\.vscode\\",

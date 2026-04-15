@@ -1,0 +1,163 @@
+
+There are no discarded input sections
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x08000000         0x00010000         xr
+RAM              0x20000000         0x00005000         xrw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+LOAD C:\Users\luuph\AppData\Local\Temp\ccHBg8Aq.o
+LOAD C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o
+
+.isr_vector     0x08000000       0xe4
+                0x08000000                        . = ALIGN (0x4)
+ *(.isr_vector)
+ .isr_vector    0x08000000       0xe4 C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o
+                0x08000000                g_pfnVectors
+                0x080000e4                        . = ALIGN (0x4)
+
+.text           0x080000e4      0x268
+                0x080000e4                        . = ALIGN (0x4)
+ *(.text)
+ .text          0x080000e4       0x90 C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+                0x080000e4                delay
+                0x08000104                main
+ .text          0x08000174      0x164 C:\Users\luuph\AppData\Local\Temp\ccHBg8Aq.o
+                0x08000174                Dio_ReadChannel
+                0x080001ac                Dio_WriteChannel
+                0x08000218                Dio_ReadPort
+                0x0800023c                Dio_WritePort
+                0x08000268                Dio_ReadChannelGroup
+                0x0800027c                Dio_WriteChannelGroup
+                0x08000292                Dio_GetVersionInfo
+                0x080002a4                Dio_FlipChannel
+                0x080002ba                Dio_MaskedWritePort
+ .text          0x080002d8       0x74 C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o
+                0x080002d8                Reset_Handler
+                0x08000344                HardFault_Handler
+                0x08000344                SysTick_Handler
+                0x08000344                PVD_IRQHandler
+                0x08000344                PendSV_Handler
+                0x08000344                NMI_Handler
+                0x08000344                EXTI0_IRQHandler
+                0x08000344                UsageFault_Handler
+                0x08000344                DebugMon_Handler
+                0x08000344                TIM3_IRQHandler
+                0x08000344                Default_Handler
+                0x08000344                EXTI15_10_IRQHandler
+                0x08000344                MemManage_Handler
+                0x08000344                SVC_Handler
+                0x08000344                WWDG_IRQHandler
+                0x08000344                TIM2_IRQHandler
+                0x08000344                EXTI1_IRQHandler
+                0x08000344                BusFault_Handler
+                0x08000344                USART1_IRQHandler
+ *(.text*)
+ *(.rodata)
+ *(.rodata*)
+                0x0800034c                        . = ALIGN (0x4)
+                0x0800034c                        _etext = .
+
+.glue_7         0x0800034c        0x0
+ .glue_7        0x0800034c        0x0 linker stubs
+
+.glue_7t        0x0800034c        0x0
+ .glue_7t       0x0800034c        0x0 linker stubs
+
+.vfp11_veneer   0x0800034c        0x0
+ .vfp11_veneer  0x0800034c        0x0 linker stubs
+
+.v4_bx          0x0800034c        0x0
+ .v4_bx         0x0800034c        0x0 linker stubs
+
+.iplt           0x0800034c        0x0
+ .iplt          0x0800034c        0x0 C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+
+.rel.dyn        0x0800034c        0x0
+ .rel.iplt      0x0800034c        0x0 C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+
+.data           0x20000000       0x10 load address 0x0800034c
+                0x20000000                        . = ALIGN (0x4)
+                0x20000000                        _sdata = .
+ *(.data)
+ .data          0x20000000        0x0 C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+ .data          0x20000000       0x10 C:\Users\luuph\AppData\Local\Temp\ccHBg8Aq.o
+                0x20000000                Config
+ .data          0x20000010        0x0 C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o
+ *(.data*)
+                0x20000010                        . = ALIGN (0x4)
+                0x20000010                        _edata = .
+                0x0800034c                        _sidata = LOADADDR (.data)
+
+.igot.plt       0x20000010        0x0 load address 0x0800035c
+ .igot.plt      0x20000010        0x0 C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+
+.bss            0x20000010        0x0 load address 0x0800035c
+                0x20000010                        . = ALIGN (0x4)
+                0x20000010                        _sbss = .
+ *(.bss)
+ .bss           0x20000010        0x0 C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+ .bss           0x20000010        0x0 C:\Users\luuph\AppData\Local\Temp\ccHBg8Aq.o
+ .bss           0x20000010        0x0 C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o
+ *(.bss*)
+ *(COMMON)
+                0x20000010                        . = ALIGN (0x4)
+                0x20000010                        _ebss = .
+                0x20000010                        _sheap = .
+                0x20005000                        _estack = (ORIGIN (RAM) + LENGTH (RAM))
+OUTPUT(firmware.elf elf32-littlearm)
+LOAD linker stubs
+
+.debug_info     0x00000000      0x940
+ .debug_info    0x00000000      0x23f C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+ .debug_info    0x0000023f      0x40c C:\Users\luuph\AppData\Local\Temp\ccHBg8Aq.o
+ .debug_info    0x0000064b      0x2f5 C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o
+
+.debug_abbrev   0x00000000      0x36f
+ .debug_abbrev  0x00000000       0xe9 C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+ .debug_abbrev  0x000000e9      0x154 C:\Users\luuph\AppData\Local\Temp\ccHBg8Aq.o
+ .debug_abbrev  0x0000023d      0x132 C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o
+
+.debug_aranges  0x00000000       0x60
+ .debug_aranges
+                0x00000000       0x20 C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+ .debug_aranges
+                0x00000020       0x20 C:\Users\luuph\AppData\Local\Temp\ccHBg8Aq.o
+ .debug_aranges
+                0x00000040       0x20 C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o
+
+.debug_line     0x00000000      0x546
+ .debug_line    0x00000000      0x1c5 C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+ .debug_line    0x000001c5      0x203 C:\Users\luuph\AppData\Local\Temp\ccHBg8Aq.o
+ .debug_line    0x000003c8      0x17e C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o
+
+.debug_str      0x00000000      0x3f5
+ .debug_str     0x00000000      0x3f5 C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+                                0x1f3 (size before relaxing)
+ .debug_str     0x000003f5      0x335 C:\Users\luuph\AppData\Local\Temp\ccHBg8Aq.o
+ .debug_str     0x000003f5      0x1fc C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o
+
+.comment        0x00000000       0x45
+ .comment       0x00000000       0x45 C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+                                 0x46 (size before relaxing)
+ .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\ccHBg8Aq.o
+ .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o
+
+.ARM.attributes
+                0x00000000       0x2d
+ .ARM.attributes
+                0x00000000       0x2d C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+ .ARM.attributes
+                0x0000002d       0x2d C:\Users\luuph\AppData\Local\Temp\ccHBg8Aq.o
+ .ARM.attributes
+                0x0000005a       0x2d C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o
+
+.debug_frame    0x00000000      0x214
+ .debug_frame   0x00000000       0x54 C:\Users\luuph\AppData\Local\Temp\ccypKLAg.o
+ .debug_frame   0x00000054      0x178 C:\Users\luuph\AppData\Local\Temp\ccHBg8Aq.o
+ .debug_frame   0x000001cc       0x48 C:\Users\luuph\AppData\Local\Temp\ccV9c3iu.o

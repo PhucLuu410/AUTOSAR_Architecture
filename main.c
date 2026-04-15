@@ -1,29 +1,26 @@
-// #include "stm32f103xb.h"
 #include "Dio_Cfg.h"
-
-#define DIO_LED     DIO_LED
-#define DIO_BUTTON  DIO_BUTTON
+#include "Std_Types.h"
 
 void delay(volatile uint32_t t)
 {
-    while(t--);
+    while (t--)
+        ;
 }
 
 int main(void)
 {
-    //Init clock
-    //Config && Mode
+    RCC->APB2ENR |= (1 << 2); // GPIOA
+    RCC->APB2ENR |= (1 << 4); // GPIOC
+
+    RCC->APB2ENR |= (1 << 0);
+
+    GPIOA->CRL &= ~(0xF << (0 * 4));
+    GPIOA->CRL |= (0x4 << (0 * 4));
+    GPIOC->CRH &= ~(0xF << (5 * 4));
+    GPIOC->CRH |= (0x2 << (5 * 4));
+
     while (1)
     {
-        if(Dio_ReadChannel(DIO_BUTTON))
-        {
-            Dio_WriteChannel(DIO_LED, 1);
-        }
-        else
-        {
-            Dio_WriteChannel(DIO_LED, 0);
-        }
-
-        delay(100000);
+        Dio_WriteChannel(LED, 1);
     }
 }

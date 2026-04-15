@@ -1,46 +1,42 @@
 #include "Dio.h"
 #include "Dio_Cfg.h"
-#include "stm32f103xb.h"
 
+Dio_ConfigTypeDef Config[] =
+    {
+        [BUTTON] = {PORTA, PIN0},
+        [LED] = {PORTC, PIN13},
+};
 
 Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 {
-    if (Dio_ChannelConfig[ChannelId].port->IDR & Dio_ChannelConfig[ChannelId].pin)
-    {
+    if (Config[ChannelId].port->IDR & Config[ChannelId].pin)
         return STD_HIGH;
-    }
     else
-    {
         return STD_LOW;
-    }
 }
 
 void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 {
     if (Level == STD_HIGH)
-    {
-        Dio_ChannelConfig[ChannelId].port->ODR |= Dio_ChannelConfig[ChannelId].pin;
-    }
+        Config[ChannelId].port->ODR |= Config[ChannelId].pin;
     else
-    {
-        Dio_ChannelConfig[ChannelId].port->ODR &=
-            ~(Dio_ChannelConfig[ChannelId].pin);
-    }
+        Config[ChannelId].port->ODR &= ~(Config[ChannelId].pin);
 }
 
 Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId)
 {
-    return Dio_PortConfig[PortId]->IDR;
+    return Config[PortId].port->ODR;
 }
 
 void Dio_WritePort(Dio_PortType PortId, Dio_PortLevelType Level)
 {
-    Dio_PortConfig[PortId]->ODR = Level;
+    Config[PortId].port->ODR = Level;
+    
 }
 
 Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType *ChannelGroupIdPtr)
 {
-
+    return 0;
 }
 
 void Dio_WriteChannelGroup(const Dio_ChannelGroupType *ChannelGroupIdPtr,
@@ -56,7 +52,7 @@ void Dio_GetVersionInfo(Std_VersionInfoType *VersionInfo)
 
 Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId)
 {
-
+    return 0;
 }
 
 void Dio_MaskedWritePort(Dio_PortType PortId,

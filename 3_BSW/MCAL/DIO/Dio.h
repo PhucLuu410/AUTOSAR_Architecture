@@ -2,8 +2,10 @@
 #define __DIO_H
 
 #include "Std_Types.h"
+#include "stm32f103xb.h"
 
-typedef uint8 Dio_ChannelType;
+
+typedef uint16 Dio_ChannelType;
 typedef uint8 Dio_PortType;
 typedef struct
 {
