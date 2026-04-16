@@ -1,9 +1,15 @@
 #ifndef __DIO_H
 #define __DIO_H
 
+#include <stddef.h>
 #include "Std_Types.h"
 #include "stm32f103xb.h"
 
+#define DIO_VENDOR_ID 123
+#define DIO_MODULE_ID 120
+#define DIO_SW_MAJOR_VERSION 1
+#define DIO_SW_MINOR_VERSION 0
+#define DIO_SW_PATCH_VERSION 0
 
 typedef uint16 Dio_ChannelType;
 typedef uint8 Dio_PortType;

@@ -1,5 +1,6 @@
 #include "Dio_Cfg.h"
 #include "Std_Types.h"
+#include "Dio.h"
 
 void delay(volatile uint32_t t)
 {
@@ -22,5 +23,6 @@ int main(void)
     while (1)
     {
         Dio_WriteChannel(LED, 1);
+        Dio_FlipChannel(LED);
     }
 }
