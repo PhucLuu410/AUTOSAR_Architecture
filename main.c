@@ -1,12 +1,20 @@
 #include "Dio_Cfg.h"
 #include "Std_Types.h"
 #include "Dio.h"
+#include "Port.h"
 
 void delay(volatile uint32_t t)
 {
     while (t--)
         ;
 }
+
+Port_ConfigType Port_Configuration = {
+    .port = PORT_C,
+    .pin = 13,
+    .mode = PORT_MODE_OUTPUT_10MHz,
+    .cfg = PORT_CNF_GP_OUTPUT_PP
+};
 
 int main(void)
 {
@@ -15,14 +23,13 @@ int main(void)
 
     RCC->APB2ENR |= (1 << 0);
 
-    GPIOA->CRL &= ~(0xF << (0 * 4));
-    GPIOA->CRL |= (0x4 << (0 * 4));
-    GPIOC->CRH &= ~(0xF << (5 * 4));
-    GPIOC->CRH |= (0x2 << (5 * 4));
+    Port_Init(&Port_Configuration);
 
     while (1)
     {
         Dio_WriteChannel(LED, 1);
-        Dio_FlipChannel(LED);
+        delay(1000000);
+        Dio_WriteChannel(LED, 0);
+        delay(1000000);
     }
 }
