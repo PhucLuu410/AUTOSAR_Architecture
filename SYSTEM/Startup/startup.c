@@ -13,7 +13,6 @@ extern int main(void);
 
 void Reset_Handler(void)
 {
-    SCB->VTOR = 0x08001000;
     uint32_t *src = &_sidata;
     uint32_t *dst = &_sdata;
     while (dst < &_edata)
@@ -50,7 +49,7 @@ void BusFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void UsageFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void SVC_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void DebugMon_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void PendSV_Handler(void) __attribute__((weak, alias("Default_Handler"))); // THÊM DÒNG NÀY
+void PendSV_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void SysTick_Handler(void) __attribute__((weak, alias("Default_Handler")));
 
 /* External Interrupts (Cần dùng cái nào thì khai báo cái đó) */
