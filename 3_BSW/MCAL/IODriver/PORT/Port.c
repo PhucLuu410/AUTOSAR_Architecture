@@ -9,10 +9,11 @@ const Port_ConfigType Port_Configuration[NUMBER_OF_CHANNEL] = {
              .mode = PORT_MODE_OUTPUT,
              .speed = PORT_OUTPUT_SPEED_10Mhz,
              .cfg = PORT_CNF_GP_OUTPUT_PP},
-    [BUTTON] = {.port = PORT_A,
-                .pin = 0,
-                .mode = PORT_MODE_INPUT,
-                .cfg = PORT_CNF_PULL_UP_INPUT}};
+    [PWM_CHANNEL_1] = {.port = PORT_A,
+                       .pin = 0,
+                       .mode = PORT_MODE_OUTPUT,
+                       .speed = PORT_OUTPUT_SPEED_50MHz,
+                       .cfg = PORT_CNF_AF_OUTPUT_PP}};
 
 void Port_Init(const Port_ConfigType* ConfigPtr)
 {

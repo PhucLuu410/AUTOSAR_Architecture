@@ -26,7 +26,6 @@
 
 #define NUMBER_OF_CHANNEL 2
 
-#define BUTTON 0
+#define PWM_CHANNEL_1 0
 #define LED 1
-
 #endif

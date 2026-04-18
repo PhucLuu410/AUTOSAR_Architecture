@@ -9,6 +9,17 @@
 				"kind": "build",
 				"isDefault": true
 			}
+		},
+		{
+			"label": "kill openocd",
+			"type": "shell",
+			"command": "taskkill",
+			"args": [
+				"/IM",
+				"openocd.exe",
+				"/F"
+			],
+			"problemMatcher": []
 		}
 	]
 }

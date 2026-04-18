@@ -2,9 +2,7 @@
 #include "Dio_Cfg.h"
 
 static GPIO_TypeDef *Dio_Port[] = {GPIOA, GPIOB, GPIOC, GPIOD};
-static Dio_TypeConfig TypeConfig[] = {
-    [BUTTON] = {PORT_B, PIN_0},
-    [LED] = {PORT_C, PIN_13}};
+static Dio_TypeConfig TypeConfig[] = {0};
 
 Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 {

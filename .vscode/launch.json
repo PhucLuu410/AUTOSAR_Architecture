@@ -10,17 +10,20 @@
             "servertype": "openocd",
             "interface": "swd",
             "device": "STM32F103C8",
-            "preLaunchTask": "build 2.0", // Đã sửa để khớp với tasks.json của bạn
+            "svdFile": "${workspaceFolder}/SYSTEM/Debug/STM32F103.svd",
+            "preLaunchTask": "build 2.0",
+            "postDebugTask": "kill openocd",
             "liveWatch": {
                 "enabled": true,
                 "samplesPerSecond": 10
             },
+
             "configFiles": [
                 "interface/stlink.cfg",
                 "target/stm32f1x.cfg"
             ],
+
             "runToEntryPoint": "main"
-            // Tạm thời bỏ "postDebugTask" nếu bạn chưa viết task Kill OpenOCD để tránh báo lỗi phụ
         }
     ]
 }
