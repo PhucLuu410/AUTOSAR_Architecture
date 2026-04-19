@@ -11,6 +11,7 @@ typedef uint16_t Pwm_PeriodType;
 typedef uint16_t Pwm_DutyCycleType;
 typedef uint8_t Pwm_PowerStateType;
 typedef uint8_t Pwm_ModeType;
+typedef uint8_t Pwm_PolarityType;
 typedef uint8_t Pwm_AlignModeType;
 typedef uint16_t Pwm_FrequencyType;
 typedef enum
@@ -33,15 +34,26 @@ typedef enum
     PWM_FIXED_PERIOD_SHIFTED
 } Pwm_ChannelClassType;
 
-typedef struct
-{
+typedef enum{
+    PWM_IDLE_STATE_LOW,
+    PWM_IDLE_STATE_HIGH
+} Pwm_IdleStateType;
+typedef struct {
     Pwm_ChannelType ChannelNumber;
-    Pwm_ModeType ChannelMode;
-    Pwm_AlignModeType AlignMode;
     Pwm_PeriodType Period;
-    Pwm_FrequencyType Frequency;
+    Pwm_DutyCycleType DutyCycle;
+    Pwm_PolarityType Polarity;
+    Pwm_IdleStateType IdleState;
+    Pwm_ChannelClassType TypeOfChannel;
 } Pwm_ConfigType;
 
+typedef enum
+{
+    CCR1,
+    CCR2,
+    CCR3,
+    CCR4
+} CCRx_Type;
 typedef enum
 {
     PWM_SERVICE_ACCEPTED,

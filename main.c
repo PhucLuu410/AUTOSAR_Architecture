@@ -12,8 +12,12 @@ void delay(volatile uint32_t t)
         ;
 }
 
-Pwm_ConfigType Pwm_Configuration[1] = {
-    {0, PWM_VARIABLE_PERIOD, 0, 50, 50}};
+Pwm_ConfigType Pwm_Configuration[4] = {
+    {0, 50, 0, 0,PWM_IDLE_STATE_HIGH, 1},
+    {1, 50, 60, 0, PWM_IDLE_STATE_LOW, 1},
+    {2, 50, 0, 0, PWM_IDLE_STATE_LOW, 1},
+    {3, 50, 40, 0, PWM_IDLE_STATE_LOW, 1}
+};
 
 int main(void)
 {
@@ -21,14 +25,11 @@ int main(void)
     RCC->APB2ENR |= (1 << 2);
     RCC->APB2ENR |= (1 << 4);
     RCC->APB2ENR |= (1 << 0);
-    RCC->APB1ENR |= (1 << 0); // TIM2
-
-    TIM2->PSC = 7;
-    TIM2->ARR = 1000 - 1;
-    TIM2->CR1 |= (1 << 0);
+    RCC->APB1ENR |= (1 << 0); 
 
     Port_Init(Port_Configuration);
     Pwm_Init(Pwm_Configuration);
+    Pwm_SetDutyCycle(PWM_CHANNEL_1, 50);
     while (1)
     {
         Count = TIM2->CNT;

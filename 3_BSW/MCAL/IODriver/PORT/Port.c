@@ -4,16 +4,22 @@
 static GPIO_TypeDef *Dio_Port[] = {GPIOA, GPIOB, GPIOC, GPIOD};
 
 const Port_ConfigType Port_Configuration[NUMBER_OF_CHANNEL] = {
-    [LED] = {.port = PORT_C,
-             .pin = 13,
-             .mode = PORT_MODE_OUTPUT,
-             .speed = PORT_OUTPUT_SPEED_10Mhz,
-             .cfg = PORT_CNF_GP_OUTPUT_PP},
     [PWM_CHANNEL_1] = {.port = PORT_A,
                        .pin = 0,
                        .mode = PORT_MODE_OUTPUT,
                        .speed = PORT_OUTPUT_SPEED_50MHz,
-                       .cfg = PORT_CNF_AF_OUTPUT_PP}};
+                       .cfg = PORT_CNF_AF_OUTPUT_PP},
+    [PWM_CHANNEL_2] = {.port = PORT_A,
+                       .pin = 1,
+                       .mode = PORT_MODE_OUTPUT,
+                       .speed = PORT_OUTPUT_SPEED_50MHz,
+                       .cfg = PORT_CNF_AF_OUTPUT_PP},
+    [PWM_CHANNEL_3] = {.port = PORT_A,
+                       .pin = 2,
+                       .mode = PORT_MODE_OUTPUT,
+                       .speed = PORT_OUTPUT_SPEED_50MHz,
+                       .cfg = PORT_CNF_AF_OUTPUT_PP}
+                };
 
 void Port_Init(const Port_ConfigType* ConfigPtr)
 {
