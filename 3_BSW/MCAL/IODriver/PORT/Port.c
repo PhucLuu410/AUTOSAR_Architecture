@@ -3,33 +3,21 @@
 
 static GPIO_TypeDef *Dio_Port[] = {GPIOA, GPIOB, GPIOC, GPIOD};
 
-const Port_ConfigType Port_Configuration[NUMBER_OF_CHANNEL] = {
-    [PWM_CHANNEL_1] = {.port = PORT_A,
-                       .pin = 0,
-                       .mode = PORT_MODE_OUTPUT,
-                       .speed = PORT_OUTPUT_SPEED_50MHz,
-                       .cfg = PORT_CNF_AF_OUTPUT_PP},
-    [PWM_CHANNEL_2] = {.port = PORT_A,
-                       .pin = 1,
-                       .mode = PORT_MODE_OUTPUT,
-                       .speed = PORT_OUTPUT_SPEED_50MHz,
-                       .cfg = PORT_CNF_AF_OUTPUT_PP},
-    [PWM_CHANNEL_3] = {.port = PORT_A,
-                       .pin = 2,
-                       .mode = PORT_MODE_OUTPUT,
-                       .speed = PORT_OUTPUT_SPEED_50MHz,
-                       .cfg = PORT_CNF_AF_OUTPUT_PP}
-                };
-
 void Port_Init(const Port_ConfigType* ConfigPtr)
 {
     for (int i = 0; i < NUMBER_OF_CHANNEL; i++)
     {
 
         if (ConfigPtr[i].pin < 8)
-            Dio_Port[ConfigPtr[i].port]->CRL |= ((ConfigPtr[i].cfg) << 2 | ConfigPtr[i].mode * ConfigPtr[i].speed) << (ConfigPtr[i].pin * 4);
+        {
+            Dio_Port[ConfigPtr[i].port]->CRL &= ~((0xF) << (ConfigPtr[i].pin * 4));
+            Dio_Port[ConfigPtr[i].port]->CRL |= ((ConfigPtr[i].cfg) << 2 | (ConfigPtr[i].mode * ConfigPtr[i].speed)) << (ConfigPtr[i].pin * 4);
+        }
         else
-            Dio_Port[ConfigPtr[i].port]->CRH |= ((ConfigPtr[i].cfg) << 2 | ConfigPtr[i].mode * ConfigPtr[i].speed) << ((ConfigPtr[i].pin - 8) * 4);
+        {
+            Dio_Port[ConfigPtr[i].port]->CRH &= ~((0xF) << ((ConfigPtr[i].pin - 8) * 4));
+            Dio_Port[ConfigPtr[i].port]->CRH |= ((ConfigPtr[i].cfg) << 2 | (ConfigPtr[i].mode * ConfigPtr[i].speed)) << ((ConfigPtr[i].pin - 8) * 4);
+        }
     }
 }
 

@@ -72,5 +72,6 @@
             "folderPath": "AUTOSAR_Architecture\\1_APP\\",
             "color": "foldercolorizer.color_6666ff"
         }
-    ]
+    ],
+    "cortex-debug.variableUseNaturalFormat": true
 }

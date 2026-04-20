@@ -152,7 +152,9 @@ void Pwm_Init(const Pwm_ConfigType *ConfigPtr)
 }
 void Pwm_DeInit(void)
 {
-    TIM2->CR1 &= ~(1 << 0);
+    TIM2->CCMR1 = 0x0000;
+    TIM2->CCMR2 = 0x0000;
+    TIM2->CCER = 0x0000;
 }
 
 
