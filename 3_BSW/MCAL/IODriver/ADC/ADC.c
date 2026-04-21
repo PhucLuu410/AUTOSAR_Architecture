@@ -1,15 +1,12 @@
-#define NUMBER_OF_CHANNELS 3
-
 #include "Adc.h"
 
-Adc_GroupConvModeType ConversionMode = ADC_CONV_MODE_CONTINUOUS;
-Adc_ResultAlignmentType ResultAlignment = ADC_ALIGN_LEFT;
+static Adc_GroupDefType Adc_Group_Count[8];
 
 void Adc_Init(const Adc_ConfigType *ConfigPtr)
 {
     ADC1->SQR1 |= ((NUMBER_OF_CHANNELS - 1) << 20);
-    ADC1->CR2 |= ConversionMode << 1;
-    ADC1->CR2 |= ResultAlignment << 11;
+    ADC1->CR2 |= (ConfigPtr->GroupConvMode << 1);
+    ADC1->CR2 |= (ConfigPtr->ResultAlignment << 11);
     ADC1->CR1 |= 1 << 8;
     ADC1->CR2 |= 1 << 8;
 
@@ -36,7 +33,17 @@ void Adc_Init(const Adc_ConfigType *ConfigPtr)
         {
             ADC1->SMPR1 |= (ConfigPtr[i].SamplingTime << ((ConfigPtr[i].ChannelId - 10) * 3));
         }
+
+        for (int j = 0; j < 8; j++)
+        {
+            if (j == ConfigPtr[i].GroupNums)
+            {
+                Adc_Group_Count[j]++;
+                break;
+            }
+        }
     }
+
     ADC1->CR2 |= (1 << 0);
     ADC1->CR2 |= (1 << 2);
     ADC1->CR2 |= (1 << 3);
@@ -45,19 +52,23 @@ void Adc_Init(const Adc_ConfigType *ConfigPtr)
 
 Std_ReturnType Adc_SetupResultBuffer(Adc_GroupType Group, Adc_ValueGroupType *DataBufferPtr)
 {
-    DMA1_Channel1->CCR = 0;
-    DMA1_Channel1->CCR |= (1 << 5);
-    DMA1_Channel1->CCR |= (1 << 7);
-    DMA1_Channel1->CCR |= (1 << 8);
-    DMA1_Channel1->CCR |= (1 << 10);
-    DMA1_Channel1->CCR |= (1 << 12);
-    DMA1_Channel1->CNDTR = 3;
-    DMA1_Channel1->CPAR = (uint32_t)&ADC1->DR;
     DMA1_Channel1->CMAR = (uint32_t)DataBufferPtr;
-    DMA1_Channel1->CCR |= (1 << 0);
-    ADC1->CR2 |= (1 << 0);
-    ADC1->CR2 |= (1 << 22);
-    while (ADC1->SR & (1 << 1))
-        ;
+    return E_OK;
+}
+
+void Adc_DeInit(void)
+{
+    ADC1->CR1 = 0;
+    ADC1->CR2 = 0;
+    ADC1->SMPR1 = 0;
+    ADC1->SMPR2 = 0;
+    ADC1->SQR1 = 0;
+    ADC1->SQR2 = 0;
+    ADC1->SQR3 = 0;
+}
+
+void Adc_StartGroupConversion(Adc_GroupType Group)
+{
+
     return E_OK;
 }
