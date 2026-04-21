@@ -70,16 +70,13 @@ int main(void)
     DMA1_Channel1->CCR |= (1 << 8);
     DMA1_Channel1->CCR |= (1 << 10);
     DMA1_Channel1->CCR |= (1 << 12);
-    DMA1_Channel1->CNDTR = NUMBER_OF_CHANNELS;
+    DMA1_Channel1->CNDTR = 2;
     DMA1_Channel1->CPAR = (uint32_t)&ADC1->DR;
 
-    Adc_SetupResultBuffer(0, adcValueGr0);
-    Adc_SetupResultBuffer(4, adcValueGr4);
+    Adc_SetupResultBuffer(ADC_GROUP_4, adcValueGr0);
     DMA1_Channel1->CCR |= (1 << 0);
 
     Adc_StartGroupConversion(ADC_GROUP_4);
-    Adc_StartGroupConversion(ADC_GROUP_0);
-
     while (1)
     {
     }

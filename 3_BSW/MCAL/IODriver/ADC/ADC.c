@@ -1,30 +1,17 @@
 #include "Adc.h"
 
-static Adc_GroupDefType Adc_Group_Count[8];
+static Adc_GroupDefType Adc_Group[8][16] = {0};
 
 void Adc_Init(const Adc_ConfigType *ConfigPtr)
 {
-    ADC1->SQR1 |= ((NUMBER_OF_CHANNELS - 1) << 20);
     ADC1->CR2 |= (ConfigPtr->GroupConvMode << 1);
     ADC1->CR2 |= (ConfigPtr->ResultAlignment << 11);
     ADC1->CR1 |= 1 << 8;
     ADC1->CR2 |= 1 << 8;
+    ADC1->CR2 |= 7 << 17;
 
     for (int i = 0; i < NUMBER_OF_CHANNELS; i++)
     {
-        if (ConfigPtr[i].ChannelId < 7)
-        {
-            ADC1->SQR3 |= (ConfigPtr[i].ChannelId << (ConfigPtr[i].Reference * 5));
-        }
-        else if (ConfigPtr[i].ChannelId > 7 && ConfigPtr[i].ChannelId < 13)
-        {
-            ADC1->SQR2 |= (ConfigPtr[i].ChannelId << (ConfigPtr[i].Reference * 5));
-        }
-        else
-        {
-            ADC1->SQR1 |= (ConfigPtr[i].ChannelId << (ConfigPtr[i].Reference * 5));
-        }
-
         if (ConfigPtr[i].ChannelId < 10)
         {
             ADC1->SMPR2 |= (ConfigPtr[i].SamplingTime << (ConfigPtr[i].ChannelId * 3));
@@ -38,7 +25,7 @@ void Adc_Init(const Adc_ConfigType *ConfigPtr)
         {
             if (j == ConfigPtr[i].GroupNums)
             {
-                Adc_Group_Count[j]++;
+                Adc_Group[j][i] = ConfigPtr[i].ChannelId + 1;
                 break;
             }
         }
@@ -69,6 +56,31 @@ void Adc_DeInit(void)
 
 void Adc_StartGroupConversion(Adc_GroupType Group)
 {
+    ADC1->SQR1 = 0;
+    ADC1->SQR2 = 0;
+    ADC1->SQR3 = 0;
 
-    return E_OK;
+    uint8_t ChannelInGroup = 0;
+    for (int j = 0; j < 16; j++)
+    {
+        if (Adc_Group[Group][j] != 0)
+        {
+            if ((Adc_Group[Group][j] - 1) < 7)
+            {
+                ADC1->SQR3 |= ((Adc_Group[Group][j] - 1) << (ChannelInGroup * 5));
+            }
+            else if ((Adc_Group[Group][j] - 1) > 7 && (Adc_Group[Group][j] - 1) < 13)
+            {
+                ADC1->SQR2 |= ((Adc_Group[Group][j] - 1) << ((ChannelInGroup - 6) * 5));
+            }
+            else
+            {
+                ADC1->SQR1 |= ((Adc_Group[Group][j] - 1) << ((ChannelInGroup - 12) * 5));
+            }
+            ChannelInGroup++;
+        }
+    }
+    ADC1->SQR1 |= ((ChannelInGroup - 1) << 20);
+    ADC1->CR2 |= (1 << 0);
+    ADC1->CR2 |= (1 << 22);
 }
