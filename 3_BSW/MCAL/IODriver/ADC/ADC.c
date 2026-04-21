@@ -39,7 +39,9 @@ void Adc_Init(const Adc_ConfigType *ConfigPtr)
 
 Std_ReturnType Adc_SetupResultBuffer(Adc_GroupType Group, Adc_ValueGroupType *DataBufferPtr)
 {
+    DMA1_Channel1->CCR &= ~(1 << 0);
     DMA1_Channel1->CMAR = (uint32_t)DataBufferPtr;
+    DMA1_Channel1->CCR |= (1 << 0);
     return E_OK;
 }
 
@@ -56,10 +58,6 @@ void Adc_DeInit(void)
 
 void Adc_StartGroupConversion(Adc_GroupType Group)
 {
-    ADC1->SQR1 = 0;
-    ADC1->SQR2 = 0;
-    ADC1->SQR3 = 0;
-
     uint8_t ChannelInGroup = 0;
     for (int j = 0; j < 16; j++)
     {
@@ -83,4 +81,12 @@ void Adc_StartGroupConversion(Adc_GroupType Group)
     ADC1->SQR1 |= ((ChannelInGroup - 1) << 20);
     ADC1->CR2 |= (1 << 0);
     ADC1->CR2 |= (1 << 22);
+}
+
+void Adc_StopGroupConversion(Adc_GroupType Group)
+{
+    ADC1->SQR1 = 0;
+    ADC1->SQR2 = 0;
+    ADC1->SQR3 = 0;
+    ADC1->CR2 &= ~(1 << 0);
 }
