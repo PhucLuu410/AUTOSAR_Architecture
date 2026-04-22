@@ -7,8 +7,7 @@
 #include "ADC/Adc.h"
 
 uint32_t Count = 0;
-uint16_t adcValueGr0[2] = {0};
-uint16_t adcValueGr4[2] = {0};
+uint16_t adcValue[16] = {0};
 void delay(volatile uint32_t t)
 {
     while (t--)
@@ -70,15 +69,16 @@ int main(void)
     DMA1_Channel1->CCR |= (1 << 8);
     DMA1_Channel1->CCR |= (1 << 10);
     DMA1_Channel1->CCR |= (1 << 12);
-    DMA1_Channel1->CNDTR = 2;
     DMA1_Channel1->CPAR = (uint32_t)&ADC1->DR;
 
-    Adc_SetupResultBuffer(ADC_GROUP_0, adcValueGr0);
-    Adc_StartGroupConversion(ADC_GROUP_0);
-    delay(100000);
-    Adc_StopGroupConversion(ADC_GROUP_0);
-
+    Adc_SetupResultBuffer(ADC_GROUP_0, adcValue);
     while (1)
     {
+        Adc_StartGroupConversion(ADC_GROUP_0);
+        delay(1000000);
+        Adc_StopGroupConversion(ADC_GROUP_0);
+        Adc_StartGroupConversion(ADC_GROUP_4);
+        delay(1000000);
+        Adc_StopGroupConversion(ADC_GROUP_4);
     }
 }
