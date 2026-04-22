@@ -7,7 +7,8 @@
 #include "ADC/Adc.h"
 
 uint32_t Count = 0;
-uint16_t adcValue[3] = {0};
+uint16_t adcValueGr0[16] = {0};
+uint16_t adcValueGr4[2] = {0};
 void delay(volatile uint32_t t)
 {
     while (t--)
@@ -15,8 +16,8 @@ void delay(volatile uint32_t t)
 }
 
 const Port_ConfigType Port_Configuration[NUMBER_OF_CHANNEL] = {
-    [0] = {.port = PORT_A
-                       .pin = 0,
+    [0] = {.port = PORT_A,
+           .pin = 0,
            .mode = PORT_MODE_INPUT,
            .speed = PORT_OUTPUT_SPEED_50MHz,
            .cfg = PORT_CNF_ANALOG_INPUT},
@@ -37,7 +38,7 @@ Pwm_ConfigType Pwm_Configuration[4] = {
     {2, 50, 0, 0, PWM_IDLE_STATE_LOW, 1},
     {3, 50, 40, 0, PWM_IDLE_STATE_LOW, 1}};
 
-Adc_ConfigType Adc_Channel[] =
+Adc_ConfigType Adc_Configuration[] =
     {
         {0, 0, 0, 0, 0},
         {1, 0, 0, 1, 0},
@@ -52,12 +53,31 @@ int main(void)
     RCC->APB2ENR |= (1 << 9);
     RCC->APB1ENR |= (1 << 0);
     RCC->AHBENR |= (1 << 0);
+
     Port_Init(Port_Configuration);
+    Adc_Init(Adc_Configuration);
 
-    Adc_Init(Adc_Channel);
+    DMA1_Channel1->CCR = 0;
+    DMA1_Channel1->CCR |= (1 << 5);
+    DMA1_Channel1->CCR |= (1 << 7);
+    DMA1_Channel1->CCR |= (1 << 8);
+    DMA1_Channel1->CCR |= (1 << 10);
+    DMA1_Channel1->CCR |= (1 << 12);
+    DMA1_Channel1->CNDTR = 2;
+    DMA1_Channel1->CPAR = (uint32_t)&ADC1->DR;
 
-    Adc_SetupResultBuffer(0, adcValue);
+    Adc_SetupResultBuffer(ADC_GROUP_0, adcValueGr0);
+    Adc_StartGroupConversion(ADC_GROUP_0);
+    delay(100000);
+    Adc_StopGroupConversion(ADC_GROUP_0);
+
     while (1)
     {
+        Adc_StartGroupConversion(ADC_GROUP_0);
+        delay(1000000);
+        Adc_StopGroupConversion(ADC_GROUP_0);
+        Adc_StartGroupConversion(ADC_GROUP_4);
+        delay(1000000);
+        Adc_StopGroupConversion(ADC_GROUP_4);
     }
 }
