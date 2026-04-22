@@ -4,11 +4,9 @@
 		{
 			"label": "build 2.0",
 			"type": "shell",
-			"command": "make",
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			}
+			"command": "make all",
+			"group": "build",
+			"problemMatcher": []
 		},
 		{
 			"label": "kill openocd",
