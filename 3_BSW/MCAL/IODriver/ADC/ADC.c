@@ -4,6 +4,14 @@
 
 static ADC_TypeDef *ADC[] = {ADC1, ADC2};
 const static Adc_ConfigType *InternalUseConfigPtr;
+static Adc_ValueGroupType Adc_BufferGroupValue[NUMBER_CHANNELS_OF_GROUP0 +
+                                               NUMBER_CHANNELS_OF_GROUP1 +
+                                               NUMBER_CHANNELS_OF_GROUP2 +
+                                               NUMBER_CHANNELS_OF_GROUP3 +
+                                               NUMBER_CHANNELS_OF_GROUP4 +
+                                               NUMBER_CHANNELS_OF_GROUP5 +
+                                               NUMBER_CHANNELS_OF_GROUP6 +
+                                               NUMBER_CHANNELS_OF_GROUP7] = {0};
 
 void Adc_Init(const Adc_ConfigType *ConfigPtr)
 {
@@ -11,8 +19,8 @@ void Adc_Init(const Adc_ConfigType *ConfigPtr)
     ADC[ConfigPtr->CommonConfig->AdcNumber]->CR1 = 0;
     RCC->CFGR |= ConfigPtr->CommonConfig->Prescale << 14;
     ADC[ConfigPtr->CommonConfig->AdcNumber]->CR2 |= ConfigPtr->CommonConfig->Adc_ResultAlignment << 11;
-    ADC[ConfigPtr->CommonConfig->AdcNumber]->CR2 |= (1 << 8); // DMA MODE
-    ADC[ConfigPtr->CommonConfig->AdcNumber]->CR1 |= (1 << 8); // SCAN MODE
+    ADC[ConfigPtr->CommonConfig->AdcNumber]->CR2 |= (ConfigPtr->CommonConfig->DMAEnable << 8); // DMA MODE
+    ADC[ConfigPtr->CommonConfig->AdcNumber]->CR1 |= (ConfigPtr->CommonConfig->ScanDMA << 8);   // SCAN MODE
     InternalUseConfigPtr = ConfigPtr;
 }
 
@@ -29,20 +37,70 @@ void Adc_DeInit(void)
 
 Std_ReturnType Adc_SetupResultBuffer(Adc_GroupType Group, Adc_ValueGroupType *DataBufferPtr)
 {
-    DMA1_Channel1->CCR &= ~(1 << 0);
-    DMA1_Channel1->CMAR = (uint32_t)DataBufferPtr;
+    if (DataBufferPtr == NULL)
+        return E_NOT_OK;
+    switch (Group)
+    {
+    case ADC_GROUP_0:
+        DataBufferPtr = &Adc_BufferGroupValue[0];
+        break;
+    case ADC_GROUP_1:
+        DataBufferPtr = &Adc_BufferGroupValue[NUMBER_CHANNELS_OF_GROUP0];
+        break;
+    case ADC_GROUP_2:
+        DataBufferPtr = &Adc_BufferGroupValue[NUMBER_CHANNELS_OF_GROUP0 +
+                                              NUMBER_CHANNELS_OF_GROUP1];
+        break;
+    case ADC_GROUP_3:
+        DataBufferPtr = &Adc_BufferGroupValue[NUMBER_CHANNELS_OF_GROUP0 +
+                                              NUMBER_CHANNELS_OF_GROUP1 +
+                                              NUMBER_CHANNELS_OF_GROUP2];
+        break;
+    case ADC_GROUP_4:
+        DataBufferPtr = &Adc_BufferGroupValue[NUMBER_CHANNELS_OF_GROUP0 +
+                                              NUMBER_CHANNELS_OF_GROUP1 +
+                                              NUMBER_CHANNELS_OF_GROUP2 +
+                                              NUMBER_CHANNELS_OF_GROUP3];
+        break;
+    case ADC_GROUP_5:
+        DataBufferPtr = &Adc_BufferGroupValue[NUMBER_CHANNELS_OF_GROUP0 +
+                                              NUMBER_CHANNELS_OF_GROUP1 +
+                                              NUMBER_CHANNELS_OF_GROUP2 +
+                                              NUMBER_CHANNELS_OF_GROUP3 +
+                                              NUMBER_CHANNELS_OF_GROUP4];
+        break;
+    case ADC_GROUP_6:
+        DataBufferPtr = &Adc_BufferGroupValue[NUMBER_CHANNELS_OF_GROUP0 +
+                                              NUMBER_CHANNELS_OF_GROUP1 +
+                                              NUMBER_CHANNELS_OF_GROUP2 +
+                                              NUMBER_CHANNELS_OF_GROUP3 +
+                                              NUMBER_CHANNELS_OF_GROUP4 +
+                                              NUMBER_CHANNELS_OF_GROUP5];
+        break;
+    case ADC_GROUP_7:
+        DataBufferPtr = &Adc_BufferGroupValue[NUMBER_CHANNELS_OF_GROUP0 +
+                                              NUMBER_CHANNELS_OF_GROUP1 +
+                                              NUMBER_CHANNELS_OF_GROUP2 +
+                                              NUMBER_CHANNELS_OF_GROUP3 +
+                                              NUMBER_CHANNELS_OF_GROUP4 +
+                                              NUMBER_CHANNELS_OF_GROUP5 +
+                                              NUMBER_CHANNELS_OF_GROUP6];
+        break;
+    default:
+        return E_NOT_OK;
+    }
     return E_OK;
 }
 
 void Adc_StartGroupConversion(Adc_GroupType Group)
 {
-    for (int i = 0; i < NUMBER_OF_CHANNELS; i++)
+    for (int i = 0; i < NUMBER_OF_GROUPS; i++)
     {
-        ADC[InternalUseConfigPtr[i].CommonConfig->AdcNumber]->CR2 |= (InternalUseConfigPtr[i].HwTriggerTimer) << 17;
         if (InternalUseConfigPtr[i].GroupNums == Group)
         {
             ADC[InternalUseConfigPtr[i].CommonConfig->AdcNumber]->CR2 |= (InternalUseConfigPtr[i].HwTriggerTimer) << 17;
-            ADC[InternalUseConfigPtr[i].CommonConfig->AdcNumber]->CR2 |= InternalUseConfigPtr[i].GroupConvMode << 1;
+            ADC[InternalUseConfigPtr[i].CommonConfig->AdcNumber]->CR2 |= (InternalUseConfigPtr[i].HwTriggerTimer) << 17;
+            ADC[InternalUseConfigPtr[i].CommonConfig->AdcNumber]->CR2 |= (InternalUseConfigPtr[i].GroupConvMode) << 1;
             ADC[InternalUseConfigPtr[i].CommonConfig->AdcNumber]->SQR1 |= (NUMBER_CHANNELS_OF_GROUP0 - 1) << 20;
             for (int j = 0; j < NUMBER_CHANNELS_OF_GROUP0; j++)
             {
@@ -68,12 +126,13 @@ void Adc_StartGroupConversion(Adc_GroupType Group)
                     ADC[InternalUseConfigPtr[i].CommonConfig->AdcNumber]->SQR1 |= ((InternalUseConfigPtr[i].SamplingTime) << ((InternalUseConfigPtr[i].ChannelId[j] - 13) * 5));
                 }
             }
+            ADC[InternalUseConfigPtr[i].CommonConfig->AdcNumber]->CR2 |= (1 << 0);
+            ADC[InternalUseConfigPtr[i].CommonConfig->AdcNumber]->CR2 |= (1 << 2);
+            ADC[InternalUseConfigPtr[i].CommonConfig->AdcNumber]->CR2 |= (1 << 3);
+            ADC[InternalUseConfigPtr[i].CommonConfig->AdcNumber]->CR2 |= (1 << 0);
+            ADC[InternalUseConfigPtr[i].CommonConfig->AdcNumber]->CR2 |= (1 << 22);
         }
     }
-    ADC1->CR2 |= (1 << 0);
-    ADC1->CR2 |= (1 << 2);
-    ADC1->CR2 |= (1 << 3);
-    ADC1->CR2 |= (1 << 0);
 }
 
 void Adc_StopGroupConversion(Adc_GroupType Group)
@@ -86,18 +145,31 @@ void Adc_StopGroupConversion(Adc_GroupType Group)
 
 Std_ReturnType Adc_ReadGroup(Adc_GroupType Group, Adc_ValueGroupType *DataBufferPtr)
 {
-    // Adc_ValueGroupType *sourceAddr = (Adc_ValueGroupType *)DMA1_Channel1->CMAR;
-    // uint8_t ChannelInGroup = 0;
-    // for (int j = 0; j < 16; j++)
-    // {
-    //     if (Adc_Group[Group][j] != 0)
-    //         ChannelInGroup++;
-    // }
+    if (!(InternalUseConfigPtr->CommonConfig->DMAEnable == ADC_USING_DMA))
+    {
 
-    // for (uint8_t i = 0; i < ChannelInGroup; i++)
-    // {
-    //     DataBufferPtr[i] = sourceAddr[i];
-    // }
-
-    return E_OK;
+        for (int i = 0; i < NUMBER_OF_GROUPS; i++)
+        {
+            if (InternalUseConfigPtr[i].GroupNums == Group)
+            {
+                switch (Group)
+                {
+                case ADC_GROUP_0:
+                    for (int i = 0; i < NUMBER_CHANNELS_OF_GROUP0; i++)
+                    {
+                        while (!(ADC1->SR & (1 << 1)))
+                            ;
+                        DataBufferPtr[i] = ADC1->DR;
+                    }
+                case ADC_GROUP_1:
+                    for (int i = 0; i < NUMBER_CHANNELS_OF_GROUP1; i++)
+                    {
+                        while (!(ADC1->SR & (1 << 1)))
+                            ;
+                        DataBufferPtr[i] = ADC1->DR;
+                    }
+                }
+            }
+        }
+    }
 }

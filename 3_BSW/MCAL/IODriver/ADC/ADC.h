@@ -3,12 +3,15 @@
 
 #include "Std_Types.h"
 
-#define NUMBER_OF_CHANNELS 2
+#define NUMBER_OF_GROUPS 2
 #define NUMBER_CHANNELS_OF_GROUP0 2
 #define NUMBER_CHANNELS_OF_GROUP1 2
 #define NUMBER_CHANNELS_OF_GROUP2 0
 #define NUMBER_CHANNELS_OF_GROUP3 0
 #define NUMBER_CHANNELS_OF_GROUP4 0
+#define NUMBER_CHANNELS_OF_GROUP5 0
+#define NUMBER_CHANNELS_OF_GROUP6 0
+#define NUMBER_CHANNELS_OF_GROUP7 0
 
 #define ADC_1 0
 #define ADC_2 1
@@ -83,6 +86,12 @@
 #define ADC_HWTRIGGER_EXTI_TIM8_TRGO 6
 #define ADC_SWTRIGGER_SWS 7
 
+#define ADC_USING_NORMAL 0
+#define ADC_USING_DMA 1
+
+#define ADC_SCAN_MODE_DISABLE 0
+#define ADC_SCAN_MODE_ENABLE 1
+
 typedef uint8_t Adc_AdcNumberType;
 typedef uint8_t Adc_GroupPriorityType;
 typedef uint8_t Adc_GroupDefType;
@@ -97,7 +106,8 @@ typedef uint8_t Adc_ResolutionType;
 typedef uint8_t Adc_ReferenceType;
 typedef uint8_t Adc_ClockSourceType;
 typedef uint8_t Adc_HwTriggerTimerType;
-
+typedef uint8_t Adc_ScanModeType;
+typedef uint8_t Adc_DMAEnableType;
 typedef enum
 {
     ADC_IDLE,
@@ -182,6 +192,8 @@ typedef struct
     Adc_PrescaleType Prescale;
     Adc_ResolutionType Resolution;
     Adc_ResultAlignmentType Adc_ResultAlignment;
+    Adc_ScanModeType ScanDMA;
+    Adc_DMAEnableType DMAEnable;
 } Adc_CommonConfigType;
 typedef struct
 {
@@ -193,6 +205,7 @@ typedef struct
     Adc_ReferenceType *Reference;
     Adc_SamplingTimeType SamplingTime;
     Adc_HwTriggerTimerType HwTriggerTimer;
+
 } Adc_ConfigType;
 
 void Adc_Init(const Adc_ConfigType *ConfigPtr);
