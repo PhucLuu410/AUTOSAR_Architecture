@@ -8,6 +8,7 @@
 
 uint32_t Count = 0;
 uint16_t adcValue[16] = {0};
+uint16_t adcBuffer[2] = {0};
 void delay(volatile uint32_t t)
 {
     while (t--)
@@ -37,10 +38,10 @@ const Port_ConfigType Port_Configuration[] = {
            .cfg = PORT_CNF_ANALOG_INPUT}};
 
 Pwm_ConfigType Pwm_Configuration[] = {
-    {0, 50, 0, 0, PWM_IDLE_STATE_HIGH, 1},
-    {1, 50, 60, 0, PWM_IDLE_STATE_LOW, 1},
-    {2, 50, 0, 0, PWM_IDLE_STATE_LOW, 1},
-    {3, 50, 40, 0, PWM_IDLE_STATE_LOW, 1}};
+    {PWM_CHANNEL_0, 50, 0, PWM_CPOL_0, PWM_IDLE_STATE_HIGH, PWM_VARIABLE_PERIOD},
+    {PWM_CHANNEL_1, 50, 60, PWM_CPOL_0, PWM_IDLE_STATE_LOW, PWM_VARIABLE_PERIOD},
+    {PWM_CHANNEL_2, 50, 0, PWM_CPOL_0, PWM_IDLE_STATE_LOW, PWM_VARIABLE_PERIOD},
+    {PWM_CHANNEL_3, 50, 40, PWM_CPOL_0, PWM_IDLE_STATE_LOW, PWM_VARIABLE_PERIOD}};
 
 Adc_ConfigType Adc_Configuration[] =
     {
@@ -79,6 +80,7 @@ int main(void)
         Adc_StopGroupConversion(ADC_GROUP_0);
         Adc_StartGroupConversion(ADC_GROUP_4);
         delay(1000000);
+        Adc_ReadGroup(ADC_GROUP_4, adcBuffer);
         Adc_StopGroupConversion(ADC_GROUP_4);
     }
 }

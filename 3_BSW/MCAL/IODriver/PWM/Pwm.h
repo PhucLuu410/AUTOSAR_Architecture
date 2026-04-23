@@ -6,7 +6,13 @@
 #include "stm32f103xb.h"
 #include "stdint.h"
 
+#define PWM_CHANNEL_0 0
+#define PWM_CHANNEL_1 1
+#define PWM_CHANNEL_2 2
+#define PWM_CHANNEL_3 3
 
+#define PWM_CPOL_0 0
+#define PWM_CPOL_1 1
 
 typedef uint16_t Pwm_ChannelType;
 typedef uint16_t Pwm_PeriodType;
@@ -36,11 +42,13 @@ typedef enum
     PWM_FIXED_PERIOD_SHIFTED
 } Pwm_ChannelClassType;
 
-typedef enum{
+typedef enum
+{
     PWM_IDLE_STATE_LOW,
     PWM_IDLE_STATE_HIGH
 } Pwm_IdleStateType;
-typedef struct {
+typedef struct
+{
     Pwm_ChannelType ChannelNumber;
     Pwm_PeriodType Period;
     Pwm_DutyCycleType DutyCycle;

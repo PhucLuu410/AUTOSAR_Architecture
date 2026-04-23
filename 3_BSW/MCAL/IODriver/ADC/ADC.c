@@ -1,4 +1,5 @@
 #include "Adc.h"
+#include <stdlib.h>
 
 static Adc_GroupDefType Adc_Group[8][16] = {0};
 
@@ -8,8 +9,6 @@ void Adc_Init(const Adc_ConfigType *ConfigPtr)
     ADC1->CR2 |= (ConfigPtr->ResultAlignment << 11);
     ADC1->CR1 |= 1 << 8;
     ADC1->CR2 |= 1 << 8;
-    ADC1->CR2 |= 7 << 17;
-
     for (int i = 0; i < NUMBER_OF_CHANNELS; i++)
     {
         if (ConfigPtr[i].ChannelId < 10)
@@ -92,4 +91,18 @@ void Adc_StopGroupConversion(Adc_GroupType Group)
 
 Std_ReturnType Adc_ReadGroup(Adc_GroupType Group, Adc_ValueGroupType *DataBufferPtr)
 {
+    Adc_ValueGroupType *sourceAddr = (Adc_ValueGroupType *)DMA1_Channel1->CMAR;
+    uint8_t ChannelInGroup = 0;
+    for (int j = 0; j < 16; j++)
+    {
+        if (Adc_Group[Group][j] != 0)
+            ChannelInGroup++;
+    }
+
+    for (uint8_t i = 0; i < ChannelInGroup; i++)
+    {
+        DataBufferPtr[i] = sourceAddr[i];
+    }
+
+    return E_OK;
 }

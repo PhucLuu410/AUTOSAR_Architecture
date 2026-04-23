@@ -66,6 +66,16 @@
 #define ADC_GROUP_6 6
 #define ADC_GROUP_7 7
 
+#define ADC_HWTRIGGER_TIM1_CC1 0
+#define ADC_HWTRIGGER_TIM1_CC2 1
+#define ADC_HWTRIGGER_TIM1_CC3 2
+#define ADC_HWTRIGGER_TIM2_CC2 3
+#define ADC_HWTRIGGER_TIM3_TRGO 4
+#define ADC_HWTRIGGER_TIM4_CC4 5
+#define ADC_HWTRIGGER_TIM4_CC4 5
+#define ADC_HWTRIGGER_EXTI_TIM8_TRGO 6
+#define ADC_SWTRIGGER_SWS 7
+
 typedef uint8_t Adc_GroupPriorityType;
 typedef uint8_t Adc_GroupDefType;
 typedef uint8_t Adc_StreamNumSampleType;
