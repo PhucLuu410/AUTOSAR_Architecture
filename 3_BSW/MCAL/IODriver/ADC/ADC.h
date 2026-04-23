@@ -1,71 +1,10 @@
 #ifndef __ADC_H
 #define __ADC_H
 
-#include "stm32f103xb.h"
 #include "Std_Types.h"
+// #include "Adc_Cfg.h"
 
-#define NUMBER_OF_CHANNELS 4
-
-#define ADC_CHANNEL_0 0
-#define ADC_CHANNEL_1 1
-#define ADC_CHANNEL_2 2
-#define ADC_CHANNEL_3 3
-#define ADC_CHANNEL_4 4
-#define ADC_CHANNEL_5 5
-#define ADC_CHANNEL_6 6
-#define ADC_CHANNEL_7 7
-#define ADC_CHANNEL_8 8
-#define ADC_CHANNEL_9 9
-#define ADC_CHANNEL_10 10
-#define ADC_CHANNEL_11 11
-#define ADC_CHANNEL_12 12
-#define ADC_CHANNEL_13 13
-#define ADC_CHANNEL_14 14
-#define ADC_CHANNEL_15 15
-
-#define ADC_SAMPLING_TIME_1_5_CYCLES 0
-#define ADC_SAMPLING_TIME_7_5_CYCLES 1
-#define ADC_SAMPLING_TIME_13_5_CYCLES 2
-#define ADC_SAMPLING_TIME_28_5_CYCLES 3
-#define ADC_SAMPLING_TIME_41_5_CYCLES 4
-#define ADC_SAMPLING_TIME_55_5_CYCLES 5
-#define ADC_SAMPLING_TIME_71_5_CYCLES 6
-#define ADC_SAMPLING_TIME_239_5_CYCLES 7
-
-#define ADC_RESOLUTION_12_BIT 0
-
-#define ADC_REFERENCE_0 0
-#define ADC_REFERENCE_1 1
-#define ADC_REFERENCE_2 2
-#define ADC_REFERENCE_3 3
-#define ADC_REFERENCE_4 4
-#define ADC_REFERENCE_5 5
-#define ADC_REFERENCE_6 6
-#define ADC_REFERENCE_7 7
-#define ADC_REFERENCE_8 8
-#define ADC_REFERENCE_9 9
-#define ADC_REFERENCE_10 10
-#define ADC_REFERENCE_11 11
-#define ADC_REFERENCE_12 12
-#define ADC_REFERENCE_13 13
-#define ADC_REFERENCE_14 14
-#define ADC_REFERENCE_15 15
-
-#define ADC_CLOCK_DIV_1 0
-#define ADC_CLOCK_DIV_2 4
-#define ADC_CLOCK_DIV_4 5
-#define ADC_CLOCK_DIV_8 6
-#define ADC_CLOCK_DIV_16 7
-
-#define ADC_GROUP_0 0
-#define ADC_GROUP_1 1
-#define ADC_GROUP_2 2
-#define ADC_GROUP_3 3
-#define ADC_GROUP_4 4
-#define ADC_GROUP_5 5
-#define ADC_GROUP_6 6
-#define ADC_GROUP_7 7
-
+typedef uint8_t Adc_AdcNumberType;
 typedef uint8_t Adc_GroupPriorityType;
 typedef uint8_t Adc_GroupDefType;
 typedef uint8_t Adc_StreamNumSampleType;
@@ -79,7 +18,8 @@ typedef uint8_t Adc_ResolutionType;
 typedef uint8_t Adc_ReferenceType;
 typedef uint8_t Adc_ClockSourceType;
 typedef uint8_t Adc_HwTriggerTimerType;
-
+typedef uint8_t Adc_ScanModeType;
+typedef uint8_t Adc_DMAEnableType;
 typedef enum
 {
     ADC_IDLE,
@@ -158,18 +98,25 @@ typedef enum
     ADC_POWER_STATE_NOT_SUPP,
     ADC_TRANS_NOT_POSSIBLE
 } Adc_PowerStateRequestResultType;
-
 typedef struct
 {
-    const Adc_GroupModeType GroupMode;
-    const Adc_GroupDefType GroupNums;
-    const Adc_GroupConvModeType GroupConvMode;
-    const Adc_ChannelType ChannelId;
-    const Adc_ResultAlignmentType ResultAlignment;
-    const Adc_SamplingTimeType SamplingTime;
-    const Adc_ResolutionType Resolution;
-    const Adc_ReferenceType Reference;
-    const Adc_ClockSourceType ClockSource;
+    Adc_AdcNumberType AdcNumber;
+    Adc_PrescaleType Prescale;
+    Adc_ResolutionType Resolution;
+    Adc_ResultAlignmentType Adc_ResultAlignment;
+    Adc_ScanModeType ScanDMA;
+    Adc_DMAEnableType DMAEnable;
+} Adc_CommonConfigType;
+typedef struct
+{
+    Adc_CommonConfigType *CommonConfig;
+    Adc_GroupDefType GroupNums;
+    Adc_GroupModeType GroupMode;
+    Adc_GroupConvModeType GroupConvMode;
+    Adc_ChannelType *ChannelId;
+    Adc_ReferenceType *Reference;
+    Adc_SamplingTimeType SamplingTime;
+    Adc_HwTriggerTimerType HwTriggerTimer;
 } Adc_ConfigType;
 
 void Adc_Init(const Adc_ConfigType *ConfigPtr);
@@ -183,11 +130,5 @@ void Adc_DisableHardwareTrigger(Adc_GroupType Group);
 void Adc_EnableGroupNotification(Adc_GroupType Group);
 void Adc_DisableGroupNotification(Adc_GroupType Group);
 Adc_StatusType Adc_GetGroupStatus(Adc_GroupType Group);
-Adc_StreamNumSampleType Adc_GetStreamLastPointer(Adc_GroupType Group, Adc_ValueGroupType **PtrToSamplePtr);
-Std_ReturnType Adc_SetPowerState(Adc_PowerStateRequestResultType *Result);
-Std_ReturnType Adc_GetCurrentPowerState(Adc_PowerStateType *CurrentPowerState, Adc_PowerStateRequestResultType *Result);
-Std_ReturnType Adc_GetTargetPowerState(Adc_PowerStateType *TargetPowerState, Adc_PowerStateRequestResultType *Result);
-Std_ReturnType Adc_PreparePowerState(Adc_PowerStateType PowerState, Adc_PowerStateRequestResultType *Result);
-void Adc_Main_PowerTransitionManager(void);
 
 #endif

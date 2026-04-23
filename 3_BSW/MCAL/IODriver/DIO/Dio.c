@@ -1,5 +1,7 @@
+#include <stddef.h>
 #include "Dio.h"
 #include "Dio_Cfg.h"
+#include "stm32f103xb.h"
 
 static GPIO_TypeDef *Dio_Port[] = {GPIOA, GPIOB, GPIOC, GPIOD};
 static Dio_TypeConfig TypeConfig[] = {0};
