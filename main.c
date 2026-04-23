@@ -8,7 +8,6 @@
 
 uint32_t Count = 0;
 uint16_t adcValueGr0[16] = {0};
-uint16_t adcValueGr4[2] = {0};
 void delay(volatile uint32_t t)
 {
     while (t--)
@@ -30,6 +29,11 @@ const Port_ConfigType Port_Configuration[NUMBER_OF_CHANNEL] = {
            .pin = 2,
            .mode = PORT_MODE_INPUT,
            .speed = PORT_OUTPUT_SPEED_50MHz,
+           .cfg = PORT_CNF_ANALOG_INPUT},
+    [3] = {.port = PORT_A,
+           .pin = 3,
+           .mode = PORT_MODE_INPUT,
+           .speed = PORT_OUTPUT_SPEED_50MHz,
            .cfg = PORT_CNF_ANALOG_INPUT}};
 
 Pwm_ConfigType Pwm_Configuration[4] = {
@@ -40,9 +44,11 @@ Pwm_ConfigType Pwm_Configuration[4] = {
 
 Adc_ConfigType Adc_Configuration[] =
     {
-        {0, 0, 0, 0, 0},
-        {1, 0, 0, 1, 0},
-        {2, 0, 0, 2, 0}};
+        {ADC_MODE_INDEPENDENT, ADC_GROUP_0, ADC_CONV_MODE_CONTINUOUS, ADC_CHANNEL_0, ADC_ALIGN_RIGHT, ADC_SAMPLING_TIME_239_5_CYCLES, ADC_RESOLUTION_12_BIT, ADC_REFERENCE_0, ADC_CLOCK_DIV_1},
+        {ADC_MODE_INDEPENDENT, ADC_GROUP_0, ADC_CONV_MODE_CONTINUOUS, ADC_CHANNEL_1, ADC_ALIGN_RIGHT, ADC_SAMPLING_TIME_239_5_CYCLES, ADC_RESOLUTION_12_BIT, ADC_REFERENCE_0, ADC_CLOCK_DIV_1},
+        {ADC_MODE_INDEPENDENT, ADC_GROUP_3, ADC_CONV_MODE_CONTINUOUS, ADC_CHANNEL_2, ADC_ALIGN_RIGHT, ADC_SAMPLING_TIME_239_5_CYCLES, ADC_RESOLUTION_12_BIT, ADC_REFERENCE_0, ADC_CLOCK_DIV_1},
+        {ADC_MODE_INDEPENDENT, ADC_GROUP_3, ADC_CONV_MODE_CONTINUOUS, ADC_CHANNEL_3, ADC_ALIGN_RIGHT, ADC_SAMPLING_TIME_239_5_CYCLES, ADC_RESOLUTION_12_BIT, ADC_REFERENCE_0, ADC_CLOCK_DIV_1}};
+
 int main(void)
 {
 
@@ -65,19 +71,14 @@ int main(void)
     DMA1_Channel1->CCR |= (1 << 12);
     DMA1_Channel1->CNDTR = 2;
     DMA1_Channel1->CPAR = (uint32_t)&ADC1->DR;
-
     Adc_SetupResultBuffer(ADC_GROUP_0, adcValueGr0);
-    Adc_StartGroupConversion(ADC_GROUP_0);
-    delay(100000);
-    Adc_StopGroupConversion(ADC_GROUP_0);
-
     while (1)
     {
         Adc_StartGroupConversion(ADC_GROUP_0);
         delay(1000000);
         Adc_StopGroupConversion(ADC_GROUP_0);
-        Adc_StartGroupConversion(ADC_GROUP_4);
+        Adc_StartGroupConversion(ADC_GROUP_3);
         delay(1000000);
-        Adc_StopGroupConversion(ADC_GROUP_4);
+        Adc_StopGroupConversion(ADC_GROUP_3);
     }
 }

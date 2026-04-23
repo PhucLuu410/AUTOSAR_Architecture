@@ -17,12 +17,10 @@
                 "enabled": true,
                 "samplesPerSecond": 10
             },
-
             "configFiles": [
                 "interface/stlink.cfg",
                 "target/stm32f1x.cfg"
             ],
-
             "runToEntryPoint": "main"
         }
     ]
