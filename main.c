@@ -8,7 +8,6 @@
 
 uint32_t Count = 0;
 uint16_t adcValue[16] = {0};
-uint16_t adcBuffer[2] = {0};
 void delay(volatile uint32_t t)
 {
     while (t--)
@@ -37,18 +36,17 @@ const Port_ConfigType Port_Configuration[] = {
            .speed = PORT_OUTPUT_SPEED_50MHz,
            .cfg = PORT_CNF_ANALOG_INPUT}};
 
-Pwm_ConfigType Pwm_Configuration[] = {
-    {PWM_CHANNEL_0, 50, 0, PWM_CPOL_0, PWM_IDLE_STATE_HIGH, PWM_VARIABLE_PERIOD},
-    {PWM_CHANNEL_1, 50, 60, PWM_CPOL_0, PWM_IDLE_STATE_LOW, PWM_VARIABLE_PERIOD},
-    {PWM_CHANNEL_2, 50, 0, PWM_CPOL_0, PWM_IDLE_STATE_LOW, PWM_VARIABLE_PERIOD},
-    {PWM_CHANNEL_3, 50, 40, PWM_CPOL_0, PWM_IDLE_STATE_LOW, PWM_VARIABLE_PERIOD}};
+Adc_ChannelType Adc_Group0_List[NUMBER_CHANNELS_OF_GROUP0] = {ADC_CHANNEL_0, ADC_CHANNEL_1};
+Adc_ReferenceType Adc_Group0_Reference[NUMBER_CHANNELS_OF_GROUP0] = {ADC_REFERENCE_0, ADC_REFERENCE_1};
 
-Adc_ConfigType Adc_Configuration[] =
+Adc_ChannelType Adc_Group1_List[NUMBER_CHANNELS_OF_GROUP0] = {ADC_CHANNEL_2, ADC_CHANNEL_3};
+Adc_ReferenceType Adc_Group1_Reference[NUMBER_CHANNELS_OF_GROUP0] = {ADC_REFERENCE_0, ADC_REFERENCE_1};
+
+Adc_CommonConfigType Adc_Common_Configuration[] = {{ADC_1, ADC_CLOCK_DIV_2, ADC_RESOLUTION_12_BIT, ADC_ALIGN_RIGHT}};
+Adc_ConfigType Adc_Configuration[NUMBER_OF_CHANNELS] =
     {
-        {ADC_MODE_INDEPENDENT, ADC_GROUP_0, ADC_CONV_MODE_CONTINUOUS, ADC_CHANNEL_0, ADC_ALIGN_RIGHT, ADC_SAMPLING_TIME_239_5_CYCLES, ADC_RESOLUTION_12_BIT, ADC_REFERENCE_0, ADC_CLOCK_DIV_1},
-        {ADC_MODE_INDEPENDENT, ADC_GROUP_0, ADC_CONV_MODE_CONTINUOUS, ADC_CHANNEL_1, ADC_ALIGN_RIGHT, ADC_SAMPLING_TIME_239_5_CYCLES, ADC_RESOLUTION_12_BIT, ADC_REFERENCE_1, ADC_CLOCK_DIV_1},
-        {ADC_MODE_INDEPENDENT, ADC_GROUP_4, ADC_CONV_MODE_CONTINUOUS, ADC_CHANNEL_2, ADC_ALIGN_RIGHT, ADC_SAMPLING_TIME_239_5_CYCLES, ADC_RESOLUTION_12_BIT, ADC_REFERENCE_2, ADC_CLOCK_DIV_1},
-        {ADC_MODE_INDEPENDENT, ADC_GROUP_4, ADC_CONV_MODE_CONTINUOUS, ADC_CHANNEL_3, ADC_ALIGN_RIGHT, ADC_SAMPLING_TIME_239_5_CYCLES, ADC_RESOLUTION_12_BIT, ADC_REFERENCE_3, ADC_CLOCK_DIV_1}};
+        {Adc_Common_Configuration, ADC_GROUP_0, ADC_MODE_INDEPENDENT, ADC_CONV_MODE_CONTINUOUS, Adc_Group0_List, Adc_Group0_Reference, ADC_SAMPLING_TIME_239_5_CYCLES, ADC_SWTRIGGER_SWS},
+        {Adc_Common_Configuration, ADC_GROUP_1, ADC_MODE_INDEPENDENT, ADC_CONV_MODE_ONESHOT, Adc_Group1_List, Adc_Group1_Reference, ADC_SAMPLING_TIME_239_5_CYCLES, ADC_HWTRIGGER_TIM2_CC2}};
 
 int main(void)
 {
@@ -72,15 +70,10 @@ int main(void)
     DMA1_Channel1->CCR |= (1 << 12);
     DMA1_Channel1->CPAR = (uint32_t)&ADC1->DR;
 
-    Adc_SetupResultBuffer(ADC_GROUP_0, adcValue);
+    Adc_SetupResultBuffer(ADC_GROUP_1, adcValue);
+    Adc_StartGroupConversion(ADC_GROUP_1);
+    ADC1->CR2 |= (1 << 22);
     while (1)
     {
-        Adc_StartGroupConversion(ADC_GROUP_0);
-        delay(1000000);
-        Adc_StopGroupConversion(ADC_GROUP_0);
-        Adc_StartGroupConversion(ADC_GROUP_4);
-        delay(1000000);
-        Adc_ReadGroup(ADC_GROUP_4, adcBuffer);
-        Adc_StopGroupConversion(ADC_GROUP_4);
     }
 }

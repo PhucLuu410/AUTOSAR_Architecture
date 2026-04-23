@@ -1,10 +1,18 @@
 #ifndef __ADC_H
 #define __ADC_H
 
-#include "stm32f103xb.h"
 #include "Std_Types.h"
 
-#define NUMBER_OF_CHANNELS 4
+#define NUMBER_OF_CHANNELS 2
+#define NUMBER_CHANNELS_OF_GROUP0 2
+#define NUMBER_CHANNELS_OF_GROUP1 2
+#define NUMBER_CHANNELS_OF_GROUP2 0
+#define NUMBER_CHANNELS_OF_GROUP3 0
+#define NUMBER_CHANNELS_OF_GROUP4 0
+
+#define ADC_1 0
+#define ADC_2 1
+#define ADC_3 2
 
 #define ADC_CHANNEL_0 0
 #define ADC_CHANNEL_1 1
@@ -51,11 +59,10 @@
 #define ADC_REFERENCE_14 14
 #define ADC_REFERENCE_15 15
 
-#define ADC_CLOCK_DIV_1 0
-#define ADC_CLOCK_DIV_2 4
-#define ADC_CLOCK_DIV_4 5
-#define ADC_CLOCK_DIV_8 6
-#define ADC_CLOCK_DIV_16 7
+#define ADC_CLOCK_DIV_2 0
+#define ADC_CLOCK_DIV_4 1
+#define ADC_CLOCK_DIV_6 2
+#define ADC_CLOCK_DIV_8 3
 
 #define ADC_GROUP_0 0
 #define ADC_GROUP_1 1
@@ -76,6 +83,7 @@
 #define ADC_HWTRIGGER_EXTI_TIM8_TRGO 6
 #define ADC_SWTRIGGER_SWS 7
 
+typedef uint8_t Adc_AdcNumberType;
 typedef uint8_t Adc_GroupPriorityType;
 typedef uint8_t Adc_GroupDefType;
 typedef uint8_t Adc_StreamNumSampleType;
@@ -168,18 +176,23 @@ typedef enum
     ADC_POWER_STATE_NOT_SUPP,
     ADC_TRANS_NOT_POSSIBLE
 } Adc_PowerStateRequestResultType;
-
 typedef struct
 {
-    const Adc_GroupModeType GroupMode;
-    const Adc_GroupDefType GroupNums;
-    const Adc_GroupConvModeType GroupConvMode;
-    const Adc_ChannelType ChannelId;
-    const Adc_ResultAlignmentType ResultAlignment;
-    const Adc_SamplingTimeType SamplingTime;
-    const Adc_ResolutionType Resolution;
-    const Adc_ReferenceType Reference;
-    const Adc_ClockSourceType ClockSource;
+    Adc_AdcNumberType AdcNumber;
+    Adc_PrescaleType Prescale;
+    Adc_ResolutionType Resolution;
+    Adc_ResultAlignmentType Adc_ResultAlignment;
+} Adc_CommonConfigType;
+typedef struct
+{
+    Adc_CommonConfigType *CommonConfig;
+    Adc_GroupDefType GroupNums;
+    Adc_GroupModeType GroupMode;
+    Adc_GroupConvModeType GroupConvMode;
+    Adc_ChannelType *ChannelId;
+    Adc_ReferenceType *Reference;
+    Adc_SamplingTimeType SamplingTime;
+    Adc_HwTriggerTimerType HwTriggerTimer;
 } Adc_ConfigType;
 
 void Adc_Init(const Adc_ConfigType *ConfigPtr);
