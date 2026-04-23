@@ -1,9 +1,7 @@
 #ifndef __DIO_H
 #define __DIO_H
 
-#include <stddef.h>
 #include "Std_Types.h"
-#include "stm32f103xb.h"
 
 #define DIO_VENDOR_ID 123
 #define DIO_MODULE_ID 120
