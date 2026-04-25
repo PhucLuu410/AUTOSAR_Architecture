@@ -10,250 +10,254 @@ RAM              0x20000000         0x00005000         xrw
 
 Linker script and memory map
 
-LOAD C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
-LOAD C:\Users\luuph\AppData\Local\Temp\ccttkMNr.o
-LOAD C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
-LOAD C:\Users\luuph\AppData\Local\Temp\ccnFnCyX.o
-LOAD C:\Users\luuph\AppData\Local\Temp\cc6q6FEk.o
-LOAD C:\Users\luuph\AppData\Local\Temp\ccdTIiCL.o
-LOAD C:\Users\luuph\AppData\Local\Temp\cc0EYZ3d.o
+LOAD C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
+LOAD C:\Users\luuph\AppData\Local\Temp\ccUZUKHP.o
+LOAD C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
+LOAD C:\Users\luuph\AppData\Local\Temp\cc6rAUAw.o
+LOAD C:\Users\luuph\AppData\Local\Temp\ccgTnErZ.o
+LOAD C:\Users\luuph\AppData\Local\Temp\cc2zTtBw.o
+LOAD C:\Users\luuph\AppData\Local\Temp\ccgtorZ8.o
 
 .isr_vector     0x08000000       0xe4
                 0x08000000                        . = ALIGN (0x4)
  *(.isr_vector)
- .isr_vector    0x08000000       0xe4 C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
+ .isr_vector    0x08000000       0xe4 C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
                 0x08000000                g_pfnVectors
                 0x080000e4                        . = ALIGN (0x4)
 
-.text           0x080000e4     0x2054
+.text           0x080000e4     0x2188
                 0x080000e4                        . = ALIGN (0x4)
  *(.text)
- .text          0x080000e4       0x6c C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
+ .text          0x080000e4       0x70 C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
                 0x080000e4                delay
                 0x08000104                main
- .text          0x08000150      0x2c4 C:\Users\luuph\AppData\Local\Temp\ccttkMNr.o
-                0x08000150                Dio_ReadChannel
-                0x0800019c                Dio_WriteChannel
-                0x0800022c                Dio_ReadPort
-                0x08000250                Dio_WritePort
-                0x0800027c                Dio_ReadChannelGroup
-                0x080002b8                Dio_WriteChannelGroup
-                0x08000310                Dio_GetVersionInfo
-                0x08000348                Dio_FlipChannel
-                0x080003c0                Dio_MaskedWritePort
- .text          0x08000414       0x64 C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
-                0x08000414                Reset_Handler
-                0x08000470                HardFault_Handler
-                0x08000470                SysTick_Handler
-                0x08000470                PVD_IRQHandler
-                0x08000470                PendSV_Handler
-                0x08000470                NMI_Handler
-                0x08000470                EXTI0_IRQHandler
-                0x08000470                UsageFault_Handler
-                0x08000470                DebugMon_Handler
-                0x08000470                TIM3_IRQHandler
-                0x08000470                Default_Handler
-                0x08000470                EXTI15_10_IRQHandler
-                0x08000470                MemManage_Handler
-                0x08000470                SVC_Handler
-                0x08000470                WWDG_IRQHandler
-                0x08000470                TIM2_IRQHandler
-                0x08000470                EXTI1_IRQHandler
-                0x08000470                BusFault_Handler
-                0x08000470                USART1_IRQHandler
- .text          0x08000478      0x808 C:\Users\luuph\AppData\Local\Temp\ccnFnCyX.o
-                0x08000478                Port_Init
-                0x08000654                Port_SetPinDirection
-                0x080008fc                Port_RefreshPortDirection
-                0x08000af0                Port_GetVersionInfo
-                0x08000b02                Port_SetPinMode
- .text          0x08000c80      0x738 C:\Users\luuph\AppData\Local\Temp\cc6q6FEk.o
-                0x08000c80                get_CCRx
-                0x08000cc4                Pwm_Init
-                0x08001144                Pwm_DeInit
-                0x08001168                Pwm_SetDutyCycle
-                0x08001224                Pwm_SetPeriodAndDuty
-                0x080012ec                Pwm_SetOutputToIdle
-                0x08001350                Pwm_GetOutputState
- .text          0x080013b8      0xb7c C:\Users\luuph\AppData\Local\Temp\ccdTIiCL.o
-                0x080013b8                Adc_Init
-                0x080014b4                Adc_DeInit
-                0x080014f0                Adc_SetupResultBuffer
-                0x08001604                Adc_StartGroupConversion
-                0x08001be0                Adc_StopGroupConversion
-                0x08001c24                Adc_ReadGroup
-                0x08001cf4                Adc_EnableHardwareTrigger
-                0x08001d7c                Adc_DisableHardwareTrigger
-                0x08001e04                Adc_EnableGroupNotification
-                0x08001e8c                Adc_DisableGroupNotification
-                0x08001f14                Adc_GetGroupStatus
- .text          0x08001f34      0x1c8 C:\Users\luuph\AppData\Local\Temp\cc0EYZ3d.o
-                0x08001f34                Mcu_Init
+ .text          0x08000154      0x2c4 C:\Users\luuph\AppData\Local\Temp\ccUZUKHP.o
+                0x08000154                Dio_ReadChannel
+                0x080001a0                Dio_WriteChannel
+                0x08000230                Dio_ReadPort
+                0x08000254                Dio_WritePort
+                0x08000280                Dio_ReadChannelGroup
+                0x080002bc                Dio_WriteChannelGroup
+                0x08000314                Dio_GetVersionInfo
+                0x0800034c                Dio_FlipChannel
+                0x080003c4                Dio_MaskedWritePort
+ .text          0x08000418       0x64 C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
+                0x08000418                Reset_Handler
+                0x08000474                HardFault_Handler
+                0x08000474                SysTick_Handler
+                0x08000474                PVD_IRQHandler
+                0x08000474                PendSV_Handler
+                0x08000474                NMI_Handler
+                0x08000474                EXTI0_IRQHandler
+                0x08000474                UsageFault_Handler
+                0x08000474                DebugMon_Handler
+                0x08000474                TIM3_IRQHandler
+                0x08000474                Default_Handler
+                0x08000474                EXTI15_10_IRQHandler
+                0x08000474                MemManage_Handler
+                0x08000474                SVC_Handler
+                0x08000474                WWDG_IRQHandler
+                0x08000474                TIM2_IRQHandler
+                0x08000474                EXTI1_IRQHandler
+                0x08000474                BusFault_Handler
+                0x08000474                USART1_IRQHandler
+ .text          0x0800047c      0x808 C:\Users\luuph\AppData\Local\Temp\cc6rAUAw.o
+                0x0800047c                Port_Init
+                0x08000658                Port_SetPinDirection
+                0x08000900                Port_RefreshPortDirection
+                0x08000af4                Port_GetVersionInfo
+                0x08000b06                Port_SetPinMode
+ .text          0x08000c84      0x738 C:\Users\luuph\AppData\Local\Temp\ccgTnErZ.o
+                0x08000c84                get_CCRx
+                0x08000cc8                Pwm_Init
+                0x08001148                Pwm_DeInit
+                0x0800116c                Pwm_SetDutyCycle
+                0x08001228                Pwm_SetPeriodAndDuty
+                0x080012f0                Pwm_SetOutputToIdle
+                0x08001354                Pwm_GetOutputState
+ .text          0x080013bc      0xb7c C:\Users\luuph\AppData\Local\Temp\cc2zTtBw.o
+                0x080013bc                Adc_Init
+                0x080014b8                Adc_DeInit
+                0x080014f4                Adc_SetupResultBuffer
+                0x08001608                Adc_StartGroupConversion
+                0x08001be4                Adc_StopGroupConversion
+                0x08001c28                Adc_ReadGroup
+                0x08001cf8                Adc_EnableHardwareTrigger
+                0x08001d80                Adc_DisableHardwareTrigger
+                0x08001e08                Adc_EnableGroupNotification
+                0x08001e90                Adc_DisableGroupNotification
+                0x08001f18                Adc_GetGroupStatus
+ .text          0x08001f38      0x2f0 C:\Users\luuph\AppData\Local\Temp\ccgtorZ8.o
+                0x08001f38                Mcu_Init
+                0x08001fc0                Mcu_InitClock
+                0x08002154                Mcu_InitRamSection
+                0x0800216a                Mcu_SetMode
  *(.text*)
  *(.rodata)
- .rodata        0x080020fc       0x3c C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
-                0x080020fc                Port_Configuration
-                0x08002110                Adc_Configuration
+ .rodata        0x08002228       0x44 C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
+                0x08002228                Port_Configuration
+                0x08002244                Adc_Configuration
  *(.rodata*)
-                0x08002138                        . = ALIGN (0x4)
-                0x08002138                        _etext = .
+                0x0800226c                        . = ALIGN (0x4)
+                0x0800226c                        _etext = .
 
-.glue_7         0x08002138        0x0
- .glue_7        0x08002138        0x0 linker stubs
+.glue_7         0x0800226c        0x0
+ .glue_7        0x0800226c        0x0 linker stubs
 
-.glue_7t        0x08002138        0x0
- .glue_7t       0x08002138        0x0 linker stubs
+.glue_7t        0x0800226c        0x0
+ .glue_7t       0x0800226c        0x0 linker stubs
 
-.vfp11_veneer   0x08002138        0x0
- .vfp11_veneer  0x08002138        0x0 linker stubs
+.vfp11_veneer   0x0800226c        0x0
+ .vfp11_veneer  0x0800226c        0x0 linker stubs
 
-.v4_bx          0x08002138        0x0
- .v4_bx         0x08002138        0x0 linker stubs
+.v4_bx          0x0800226c        0x0
+ .v4_bx         0x0800226c        0x0 linker stubs
 
-.iplt           0x08002138        0x0
- .iplt          0x08002138        0x0 C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
+.iplt           0x0800226c        0x0
+ .iplt          0x0800226c        0x0 C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
 
-.rel.dyn        0x08002138        0x0
- .rel.iplt      0x08002138        0x0 C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
+.rel.dyn        0x0800226c        0x0
+ .rel.iplt      0x0800226c        0x0 C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
 
-.data           0x20000000       0x54 load address 0x08002138
+.data           0x20000000       0x5c load address 0x0800226c
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        _sdata = .
  *(.data)
- .data          0x20000000       0x2a C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
-                0x20000000                Mcu_HSE_Configuration
-                0x20000004                Mcu_Configuration
-                0x20000014                Adc_Group0_List
-                0x20000018                Adc_Group0_Reference
-                0x2000001c                Adc_Group1_List
-                0x20000020                Adc_Group1_Reference
-                0x20000024                Adc_Common_Configuration
- *fill*         0x2000002a        0x2 
- .data          0x2000002c       0x10 C:\Users\luuph\AppData\Local\Temp\ccttkMNr.o
- .data          0x2000003c        0x0 C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
- .data          0x2000003c       0x10 C:\Users\luuph\AppData\Local\Temp\ccnFnCyX.o
- .data          0x2000004c        0x0 C:\Users\luuph\AppData\Local\Temp\cc6q6FEk.o
- .data          0x2000004c        0x8 C:\Users\luuph\AppData\Local\Temp\ccdTIiCL.o
- .data          0x20000054        0x0 C:\Users\luuph\AppData\Local\Temp\cc0EYZ3d.o
+ .data          0x20000000       0x32 C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
+                0x20000000                PrehiralConfig
+                0x2000000c                Mcu_Clock_Configuration
+                0x20000014                Mcu_Configuration
+                0x2000001c                Adc_Group0_List
+                0x20000020                Adc_Group0_Reference
+                0x20000024                Adc_Group1_List
+                0x20000028                Adc_Group1_Reference
+                0x2000002c                Adc_Common_Configuration
+ *fill*         0x20000032        0x2 
+ .data          0x20000034       0x10 C:\Users\luuph\AppData\Local\Temp\ccUZUKHP.o
+ .data          0x20000044        0x0 C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
+ .data          0x20000044       0x10 C:\Users\luuph\AppData\Local\Temp\cc6rAUAw.o
+ .data          0x20000054        0x0 C:\Users\luuph\AppData\Local\Temp\ccgTnErZ.o
+ .data          0x20000054        0x8 C:\Users\luuph\AppData\Local\Temp\cc2zTtBw.o
+ .data          0x2000005c        0x0 C:\Users\luuph\AppData\Local\Temp\ccgtorZ8.o
  *(.data*)
-                0x20000054                        . = ALIGN (0x4)
-                0x20000054                        _edata = .
-                0x08002138                        _sidata = LOADADDR (.data)
+                0x2000005c                        . = ALIGN (0x4)
+                0x2000005c                        _edata = .
+                0x0800226c                        _sidata = LOADADDR (.data)
 
-.igot.plt       0x20000054        0x0 load address 0x0800218c
- .igot.plt      0x20000054        0x0 C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
+.igot.plt       0x2000005c        0x0 load address 0x080022c8
+ .igot.plt      0x2000005c        0x0 C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
 
-.bss            0x20000054       0x28 load address 0x0800218c
-                0x20000054                        . = ALIGN (0x4)
-                0x20000054                        _sbss = .
+.bss            0x2000005c       0x28 load address 0x080022c8
+                0x2000005c                        . = ALIGN (0x4)
+                0x2000005c                        _sbss = .
  *(.bss)
- .bss           0x20000054       0x11 C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
-                0x20000054                Count
-                0x20000058                adcValue
-                0x2000005c                adcValue0
-                0x20000060                adcValue1
-                0x20000064                status
- *fill*         0x20000065        0x3 
- .bss           0x20000068        0x4 C:\Users\luuph\AppData\Local\Temp\ccttkMNr.o
- .bss           0x2000006c        0x0 C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
- .bss           0x2000006c        0x0 C:\Users\luuph\AppData\Local\Temp\ccnFnCyX.o
- .bss           0x2000006c        0x0 C:\Users\luuph\AppData\Local\Temp\cc6q6FEk.o
- .bss           0x2000006c       0x10 C:\Users\luuph\AppData\Local\Temp\ccdTIiCL.o
- .bss           0x2000007c        0x0 C:\Users\luuph\AppData\Local\Temp\cc0EYZ3d.o
+ .bss           0x2000005c       0x11 C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
+                0x2000005c                Count
+                0x20000060                adcValue
+                0x20000064                adcValue0
+                0x20000068                adcValue1
+                0x2000006c                status
+ *fill*         0x2000006d        0x3 
+ .bss           0x20000070        0x4 C:\Users\luuph\AppData\Local\Temp\ccUZUKHP.o
+ .bss           0x20000074        0x0 C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
+ .bss           0x20000074        0x0 C:\Users\luuph\AppData\Local\Temp\cc6rAUAw.o
+ .bss           0x20000074        0x0 C:\Users\luuph\AppData\Local\Temp\ccgTnErZ.o
+ .bss           0x20000074       0x10 C:\Users\luuph\AppData\Local\Temp\cc2zTtBw.o
+ .bss           0x20000084        0x0 C:\Users\luuph\AppData\Local\Temp\ccgtorZ8.o
  *(.bss*)
  *(COMMON)
-                0x2000007c                        . = ALIGN (0x4)
-                0x2000007c                        _ebss = .
-                0x2000007c                        _sheap = .
+                0x20000084                        . = ALIGN (0x4)
+                0x20000084                        _ebss = .
+                0x20000084                        _sheap = .
                 0x20005000                        _estack = (ORIGIN (RAM) + LENGTH (RAM))
 OUTPUT(firmware.elf elf32-littlearm)
 LOAD linker stubs
 
-.debug_info     0x00000000     0x1f4e
- .debug_info    0x00000000      0x709 C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
- .debug_info    0x00000709      0x45d C:\Users\luuph\AppData\Local\Temp\ccttkMNr.o
- .debug_info    0x00000b66      0x147 C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
- .debug_info    0x00000cad      0x38d C:\Users\luuph\AppData\Local\Temp\ccnFnCyX.o
- .debug_info    0x0000103a      0x4a0 C:\Users\luuph\AppData\Local\Temp\cc6q6FEk.o
- .debug_info    0x000014da      0x7dd C:\Users\luuph\AppData\Local\Temp\ccdTIiCL.o
- .debug_info    0x00001cb7      0x297 C:\Users\luuph\AppData\Local\Temp\cc0EYZ3d.o
+.debug_info     0x00000000     0x218c
+ .debug_info    0x00000000      0x6e2 C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
+ .debug_info    0x000006e2      0x45d C:\Users\luuph\AppData\Local\Temp\ccUZUKHP.o
+ .debug_info    0x00000b3f      0x147 C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
+ .debug_info    0x00000c86      0x38d C:\Users\luuph\AppData\Local\Temp\cc6rAUAw.o
+ .debug_info    0x00001013      0x4a0 C:\Users\luuph\AppData\Local\Temp\ccgTnErZ.o
+ .debug_info    0x000014b3      0x7dd C:\Users\luuph\AppData\Local\Temp\cc2zTtBw.o
+ .debug_info    0x00001c90      0x4fc C:\Users\luuph\AppData\Local\Temp\ccgtorZ8.o
 
-.debug_abbrev   0x00000000      0x94a
- .debug_abbrev  0x00000000      0x16d C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
- .debug_abbrev  0x0000016d      0x153 C:\Users\luuph\AppData\Local\Temp\ccttkMNr.o
- .debug_abbrev  0x000002c0       0xe7 C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
- .debug_abbrev  0x000003a7      0x17c C:\Users\luuph\AppData\Local\Temp\ccnFnCyX.o
- .debug_abbrev  0x00000523      0x170 C:\Users\luuph\AppData\Local\Temp\cc6q6FEk.o
- .debug_abbrev  0x00000693      0x1b7 C:\Users\luuph\AppData\Local\Temp\ccdTIiCL.o
- .debug_abbrev  0x0000084a      0x100 C:\Users\luuph\AppData\Local\Temp\cc0EYZ3d.o
+.debug_abbrev   0x00000000      0x97a
+ .debug_abbrev  0x00000000      0x17a C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
+ .debug_abbrev  0x0000017a      0x153 C:\Users\luuph\AppData\Local\Temp\ccUZUKHP.o
+ .debug_abbrev  0x000002cd       0xe7 C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
+ .debug_abbrev  0x000003b4      0x17c C:\Users\luuph\AppData\Local\Temp\cc6rAUAw.o
+ .debug_abbrev  0x00000530      0x170 C:\Users\luuph\AppData\Local\Temp\ccgTnErZ.o
+ .debug_abbrev  0x000006a0      0x1b7 C:\Users\luuph\AppData\Local\Temp\cc2zTtBw.o
+ .debug_abbrev  0x00000857      0x123 C:\Users\luuph\AppData\Local\Temp\ccgtorZ8.o
 
 .debug_aranges  0x00000000       0xe0
  .debug_aranges
-                0x00000000       0x20 C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
+                0x00000000       0x20 C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
  .debug_aranges
-                0x00000020       0x20 C:\Users\luuph\AppData\Local\Temp\ccttkMNr.o
+                0x00000020       0x20 C:\Users\luuph\AppData\Local\Temp\ccUZUKHP.o
  .debug_aranges
-                0x00000040       0x20 C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
+                0x00000040       0x20 C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
  .debug_aranges
-                0x00000060       0x20 C:\Users\luuph\AppData\Local\Temp\ccnFnCyX.o
+                0x00000060       0x20 C:\Users\luuph\AppData\Local\Temp\cc6rAUAw.o
  .debug_aranges
-                0x00000080       0x20 C:\Users\luuph\AppData\Local\Temp\cc6q6FEk.o
+                0x00000080       0x20 C:\Users\luuph\AppData\Local\Temp\ccgTnErZ.o
  .debug_aranges
-                0x000000a0       0x20 C:\Users\luuph\AppData\Local\Temp\ccdTIiCL.o
+                0x000000a0       0x20 C:\Users\luuph\AppData\Local\Temp\cc2zTtBw.o
  .debug_aranges
-                0x000000c0       0x20 C:\Users\luuph\AppData\Local\Temp\cc0EYZ3d.o
+                0x000000c0       0x20 C:\Users\luuph\AppData\Local\Temp\ccgtorZ8.o
 
-.debug_line     0x00000000     0x19c5
- .debug_line    0x00000000      0x1de C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
- .debug_line    0x000001de      0x2cf C:\Users\luuph\AppData\Local\Temp\ccttkMNr.o
- .debug_line    0x000004ad      0x154 C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
- .debug_line    0x00000601      0x4ea C:\Users\luuph\AppData\Local\Temp\ccnFnCyX.o
- .debug_line    0x00000aeb      0x4c2 C:\Users\luuph\AppData\Local\Temp\cc6q6FEk.o
- .debug_line    0x00000fad      0x798 C:\Users\luuph\AppData\Local\Temp\ccdTIiCL.o
- .debug_line    0x00001745      0x280 C:\Users\luuph\AppData\Local\Temp\cc0EYZ3d.o
+.debug_line     0x00000000     0x1a66
+ .debug_line    0x00000000      0x1da C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
+ .debug_line    0x000001da      0x2cd C:\Users\luuph\AppData\Local\Temp\ccUZUKHP.o
+ .debug_line    0x000004a7      0x154 C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
+ .debug_line    0x000005fb      0x4e8 C:\Users\luuph\AppData\Local\Temp\cc6rAUAw.o
+ .debug_line    0x00000ae3      0x4c0 C:\Users\luuph\AppData\Local\Temp\ccgTnErZ.o
+ .debug_line    0x00000fa3      0x796 C:\Users\luuph\AppData\Local\Temp\cc2zTtBw.o
+ .debug_line    0x00001739      0x32d C:\Users\luuph\AppData\Local\Temp\ccgtorZ8.o
 
-.debug_str      0x00000000      0xd15
- .debug_str     0x00000000      0xd15 C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
-                                0x6bf (size before relaxing)
- .debug_str     0x00000d15      0x360 C:\Users\luuph\AppData\Local\Temp\ccttkMNr.o
- .debug_str     0x00000d15      0x18c C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
- .debug_str     0x00000d15      0x315 C:\Users\luuph\AppData\Local\Temp\ccnFnCyX.o
- .debug_str     0x00000d15      0x379 C:\Users\luuph\AppData\Local\Temp\cc6q6FEk.o
- .debug_str     0x00000d15      0x61a C:\Users\luuph\AppData\Local\Temp\ccdTIiCL.o
- .debug_str     0x00000d15      0x2bf C:\Users\luuph\AppData\Local\Temp\cc0EYZ3d.o
+.debug_str      0x00000000      0xdbc
+ .debug_str     0x00000000      0xdbc C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
+                                0x695 (size before relaxing)
+ .debug_str     0x00000dbc      0x35e C:\Users\luuph\AppData\Local\Temp\ccUZUKHP.o
+ .debug_str     0x00000dbc      0x18c C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
+ .debug_str     0x00000dbc      0x313 C:\Users\luuph\AppData\Local\Temp\cc6rAUAw.o
+ .debug_str     0x00000dbc      0x377 C:\Users\luuph\AppData\Local\Temp\ccgTnErZ.o
+ .debug_str     0x00000dbc      0x618 C:\Users\luuph\AppData\Local\Temp\cc2zTtBw.o
+ .debug_str     0x00000dbc      0x37e C:\Users\luuph\AppData\Local\Temp\ccgtorZ8.o
 
 .comment        0x00000000       0x45
- .comment       0x00000000       0x45 C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
+ .comment       0x00000000       0x45 C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
                                  0x46 (size before relaxing)
- .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\ccttkMNr.o
- .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
- .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\ccnFnCyX.o
- .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\cc6q6FEk.o
- .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\ccdTIiCL.o
- .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\cc0EYZ3d.o
+ .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\ccUZUKHP.o
+ .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
+ .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\cc6rAUAw.o
+ .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\ccgTnErZ.o
+ .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\cc2zTtBw.o
+ .comment       0x00000045       0x46 C:\Users\luuph\AppData\Local\Temp\ccgtorZ8.o
 
 .ARM.attributes
                 0x00000000       0x2d
  .ARM.attributes
-                0x00000000       0x2d C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
+                0x00000000       0x2d C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
  .ARM.attributes
-                0x0000002d       0x2d C:\Users\luuph\AppData\Local\Temp\ccttkMNr.o
+                0x0000002d       0x2d C:\Users\luuph\AppData\Local\Temp\ccUZUKHP.o
  .ARM.attributes
-                0x0000005a       0x2d C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
+                0x0000005a       0x2d C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
  .ARM.attributes
-                0x00000087       0x2d C:\Users\luuph\AppData\Local\Temp\ccnFnCyX.o
+                0x00000087       0x2d C:\Users\luuph\AppData\Local\Temp\cc6rAUAw.o
  .ARM.attributes
-                0x000000b4       0x2d C:\Users\luuph\AppData\Local\Temp\cc6q6FEk.o
+                0x000000b4       0x2d C:\Users\luuph\AppData\Local\Temp\ccgTnErZ.o
  .ARM.attributes
-                0x000000e1       0x2d C:\Users\luuph\AppData\Local\Temp\ccdTIiCL.o
+                0x000000e1       0x2d C:\Users\luuph\AppData\Local\Temp\cc2zTtBw.o
  .ARM.attributes
-                0x0000010e       0x2d C:\Users\luuph\AppData\Local\Temp\cc0EYZ3d.o
+                0x0000010e       0x2d C:\Users\luuph\AppData\Local\Temp\ccgtorZ8.o
 
-.debug_frame    0x00000000      0x60c
- .debug_frame   0x00000000       0x54 C:\Users\luuph\AppData\Local\Temp\cc2MFzpg.o
- .debug_frame   0x00000054      0x178 C:\Users\luuph\AppData\Local\Temp\ccttkMNr.o
- .debug_frame   0x000001cc       0x48 C:\Users\luuph\AppData\Local\Temp\ccmc5S1E.o
- .debug_frame   0x00000214       0xec C:\Users\luuph\AppData\Local\Temp\ccnFnCyX.o
- .debug_frame   0x00000300      0x110 C:\Users\luuph\AppData\Local\Temp\cc6q6FEk.o
- .debug_frame   0x00000410      0x1c4 C:\Users\luuph\AppData\Local\Temp\ccdTIiCL.o
- .debug_frame   0x000005d4       0x38 C:\Users\luuph\AppData\Local\Temp\cc0EYZ3d.o
+.debug_frame    0x00000000      0x684
+ .debug_frame   0x00000000       0x54 C:\Users\luuph\AppData\Local\Temp\ccWMXrQx.o
+ .debug_frame   0x00000054      0x178 C:\Users\luuph\AppData\Local\Temp\ccUZUKHP.o
+ .debug_frame   0x000001cc       0x48 C:\Users\luuph\AppData\Local\Temp\ccgxcqY8.o
+ .debug_frame   0x00000214       0xec C:\Users\luuph\AppData\Local\Temp\cc6rAUAw.o
+ .debug_frame   0x00000300      0x110 C:\Users\luuph\AppData\Local\Temp\ccgTnErZ.o
+ .debug_frame   0x00000410      0x1c4 C:\Users\luuph\AppData\Local\Temp\cc2zTtBw.o
+ .debug_frame   0x000005d4       0xb0 C:\Users\luuph\AppData\Local\Temp\ccgtorZ8.o

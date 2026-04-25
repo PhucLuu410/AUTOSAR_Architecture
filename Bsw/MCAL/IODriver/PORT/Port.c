@@ -3,7 +3,7 @@
 
 static GPIO_TypeDef *Dio_Port[] = {GPIOA, GPIOB, GPIOC, GPIOD};
 
-void Port_Init(const Port_ConfigType* ConfigPtr)
+void Port_Init(const Port_ConfigType *ConfigPtr)
 {
     for (int i = 0; i < NUMBER_OF_CHANNEL; i++)
     {
@@ -66,16 +66,15 @@ void Port_RefreshPortDirection(void)
         }
     }
 }
-void Port_GetVersionInfo (Std_VersionInfoType* versioninfo)
+void Port_GetVersionInfo(Std_VersionInfoType *versioninfo)
 {
-
 }
-void Port_SetPinMode (Port_PinType Pin, Port_PinModeType Mode)
+void Port_SetPinMode(Port_PinType Pin, Port_PinModeType Mode)
 {
     if (Port_Configuration[Pin].pin < 8)
     {
-        Dio_Port[Port_Configuration[Pin].port]->CRL &= 
-        ~((0x10) << (Port_Configuration[Pin].pin * 4));
+        Dio_Port[Port_Configuration[Pin].port]->CRL &=
+            ~((0x10) << (Port_Configuration[Pin].pin * 4));
         Dio_Port[Port_Configuration[Pin].port]->CRL |= Mode << ((Port_Configuration[Pin].pin * 4) + 2);
     }
     else

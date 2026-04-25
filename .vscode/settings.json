@@ -9,7 +9,7 @@
             "color": "foldercolorizer.color_00cccc"
         },
         {
-            "folderPath": "AUTOSAR\\3_BSW\\",
+            "folderPath": "AUTOSAR\\Bsw",
             "color": "foldercolorizer.color_33ccff"
         },
         {
@@ -21,7 +21,7 @@
             "color": "foldercolorizer.color_9900cc"
         },
         {
-            "folderPath": "AUTOSAR\\1_APP\\",
+            "folderPath": "AUTOSAR\\App",
             "color": "foldercolorizer.color_996633"
         },
         {
@@ -46,7 +46,7 @@
             "color": "foldercolorizer.color_00cccc"
         },
         {
-            "folderPath": "AUTOSAR\\3_BSW\\",
+            "folderPath": "AUTOSAR\\Bsw",
             "isFolderOnly": true,
             "color": "foldercolorizer.color_00cccc"
         },

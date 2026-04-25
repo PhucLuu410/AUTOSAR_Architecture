@@ -20,50 +20,53 @@ void delay(volatile uint32_t t)
     while (t--)
         ;
 }
+MCU_PrehiralConfigType PrehiralConfig = {
+    MCU_PREHIRAL_AHB,
+    MCU_PREHIRAL_APB2,
+    MCU_PREHIRAL_APB1};
 
-Mcu_ConfigHSEType Mcu_HSE_Configuration = {
-    MCU_HSE_CLOCK,
-    HSE_Crystal_External_Clock,
-    MCU_CSS_ENABLE};
+Mcu_ClockConfigType Mcu_Clock_Configuration = {
+    MCU_PLL_CLOCK_HSE,
+    MCU_AHB_PRESCALE_1,
+    MCU_APB2_PRESCALE_1,
+    MCU_APB1_PRESCALE_1,
+    &PrehiralConfig};
 
 Mcu_ConfigType Mcu_Configuration[] = {
-    {
-        NULL_PTR,
-        &Mcu_HSE_Configuration,
-        MCU_PLL_ENABLE,              // PLL Choose
-        MCU_PLL_SRC_HSI_DIV_2,       // PLL Src
-        MCU_PLL_MULTIPLIER_8,        // PLL Multiplier
-        MCU_MCO_OUTPUT_SRC_SYSCLOCK, // MCO
-        MCU_HSE_CLOCK,               // System Clock
-        MCU_AHB_PRESCALE_1,          // AHB Prescale
-        MCU_APB2_PRESCALE_1,         // APB2 Prescale
-        MCU_APB1_PRESCALE_1,         // APB1 Prescale
-    }};
+    {&Mcu_Clock_Configuration,
+     NULL_PTR}};
 
 const Port_ConfigType Port_Configuration[] = {
-    [0] = {PORT_A,
-           0,
-           PORT_MODE_INPUT,
-           PORT_OUTPUT_SPEED_50MHz,
-           PORT_CNF_ANALOG_INPUT},
+    {PORT_A,
+     0,
+     PORT_MODE_INPUT,
+     PORT_OUTPUT_SPEED_50MHz,
+     PORT_CNF_ANALOG_INPUT},
 
-    [1] = {PORT_A,
-           1,
-           PORT_MODE_INPUT,
-           PORT_OUTPUT_SPEED_50MHz,
-           PORT_CNF_ANALOG_INPUT},
+    {PORT_A,
+     1,
+     PORT_MODE_INPUT,
+     PORT_OUTPUT_SPEED_50MHz,
+     PORT_CNF_ANALOG_INPUT},
 
-    [2] = {PORT_A,
-           2,
-           PORT_MODE_INPUT,
-           PORT_OUTPUT_SPEED_50MHz,
-           PORT_CNF_ANALOG_INPUT},
+    {PORT_A,
+     2,
+     PORT_MODE_INPUT,
+     PORT_OUTPUT_SPEED_50MHz,
+     PORT_CNF_ANALOG_INPUT},
 
-    [3] = {PORT_A,
-           3,
-           PORT_MODE_INPUT,
-           PORT_OUTPUT_SPEED_50MHz,
-           PORT_CNF_ANALOG_INPUT}};
+    {PORT_A,
+     3,
+     PORT_MODE_INPUT,
+     PORT_OUTPUT_SPEED_50MHz,
+     PORT_CNF_ANALOG_INPUT},
+
+    {PORT_A,
+     8,
+     PORT_MODE_OUTPUT,
+     PORT_OUTPUT_SPEED_50MHz,
+     PORT_CNF_AF_OUTPUT_PP},
+};
 
 Adc_ChannelType Adc_Group0_List[NUMBER_CHANNELS_OF_GROUP0] = {ADC_CHANNEL_0, ADC_CHANNEL_1};
 Adc_ReferenceType Adc_Group0_Reference[NUMBER_CHANNELS_OF_GROUP0] = {ADC_REFERENCE_0, ADC_REFERENCE_1};
@@ -95,15 +98,16 @@ const Adc_ConfigType Adc_Configuration[NUMBER_OF_GROUPS] =
 
 int main(void)
 {
+    Mcu_Init(&Mcu_Configuration[0]);
+    Mcu_InitClock(Mcu_Configuration[0].ClockConfig->ClockSrc);
 
-    Mcu_Init(Mcu_Configuration);
     Port_Init(Port_Configuration);
-    Adc_Init(Adc_Configuration);
-    status = Adc_GetGroupStatus(ADC_GROUP_1);
 
+    Adc_Init(Adc_Configuration);
     Adc_SetupResultBuffer(ADC_GROUP_0, adcValue0);
-    Adc_StartGroupConversion(ADC_GROUP_0);
+    Adc_SetupResultBuffer(ADC_GROUP_1, adcValue1);
     while (1)
     {
+        Adc_StartGroupConversion(ADC_GROUP_0);
     }
 }

@@ -1,8 +1,8 @@
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
 CFLAGS = -mcpu=cortex-m3 -mthumb -O0 -g -Wall
-IPATH = -I. -I./3_BSW/MCAL/IODriver/DIO -I./SYSTEM/Drivers/CMSIS -I./SYSTEM/Drivers/Common -I./3_BSW/MCAL/IODriver/PORT -I./3_BSW/MCAL/IODriver/PWM -I./3_BSW/MCAL/IODriver -I./3_BSW/MCAL/MCU
-SRC = main.c 3_BSW/MCAL/IODriver/DIO/Dio.c ./SYSTEM/Startup/startup.c 3_BSW/MCAL/IODriver/PORT/Port.c 3_BSW/MCAL/IODriver/PWM/Pwm.c 3_BSW/MCAL/IODriver/ADC/Adc.c 3_BSW/MCAL/MCU/Mcu.c
+IPATH = -I. -I./Bsw/MCAL/IODriver/DIO -I./SYSTEM/Drivers/CMSIS -I./SYSTEM/Drivers/Common -I./Bsw/MCAL/IODriver/PORT -I./Bsw/MCAL/IODriver/PWM -I./Bsw/MCAL/IODriver -I./Bsw/MCAL/MCU
+SRC = App/main.c Bsw/MCAL/IODriver/DIO/Dio.c ./SYSTEM/Startup/startup.c Bsw/MCAL/IODriver/PORT/Port.c Bsw/MCAL/IODriver/PWM/Pwm.c Bsw/MCAL/IODriver/ADC/Adc.c Bsw/MCAL/MCU/Mcu.c
 LDFLAGS = -T ./SYSTEM/Linker/linker.ld -nostdlib -Wl,-Map=output.map
 TARGET = firmware
 BIN = $(TARGET).bin

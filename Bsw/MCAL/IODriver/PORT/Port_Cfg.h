@@ -24,6 +24,6 @@
 #define PORT_C 2
 #define PORT_D 3
 
-#define NUMBER_OF_CHANNEL 4
+#define NUMBER_OF_CHANNEL 5
 
 #endif

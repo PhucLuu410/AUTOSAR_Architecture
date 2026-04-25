@@ -3,29 +3,7 @@
 
 #include "Std_Types.h"
 
-#define MCU_HSI_CLOCK 0
-#define MCU_HSE_CLOCK 1
-#define MCU_PLL_CLOCK 2
-
-#define MCU_CALIB_OFF 0
-#define MCU_CALIB_ON 1
-
-#define MCU_WDT_DISABLE 0
-#define MCU_WDT_ENABLE 1
-
-#define MCU_MASTER_CLOCK_OUTPUT_DISABLE 0
-#define MCU_MASTER_CLOCK_OUTPUT_ENABLE 1
-
-#define MCU_RTC_CLOCK_OFF 0
-#define MCU_RTC_CLOCK_LSE 1
-#define MCU_RTC_CLOCK_LSI 2
-
-#define MCU_CSS_DISABLE 0
-#define MCU_CSS_ENABLE 1
-
-#define MCU_PLL_DISABLE 0
-#define MCU_PLL_ENABLE 1
-
+typedef uint32_t Mcu_ClockPrehiralType;
 typedef uint8_t Mcu_ClockType;
 typedef uint8_t Mcu_RawResetType;
 typedef uint8_t Mcu_ModeType;
@@ -44,7 +22,6 @@ typedef enum
     MCU_WATCHDOG_RESET,
     MCU_SW_RESET,
     MCU_RESET_UNDEFINED
-
 } Mcu_ResetType;
 
 typedef enum
@@ -61,28 +38,32 @@ typedef enum
 
 typedef struct
 {
-    Mcu_ClockType ClockType;
-} Mcu_ConfigHSIType;
+    Mcu_ClockPrehiralType AhbEnable;
+    Mcu_ClockPrehiralType Apb2Enable;
+    Mcu_ClockPrehiralType Apb1Enable;
+} MCU_PrehiralConfigType;
+typedef struct
+{
+    Mcu_ClockType ClockSrc;
+    Mcu_ClockType AhbPrescale;
+    Mcu_ClockType Apb2Prescale;
+    Mcu_ClockType Apb1Prescale;
+    MCU_PrehiralConfigType *PrehiralConfig;
+} Mcu_ClockConfigType;
 
 typedef struct
 {
-    Mcu_ClockType ClockType;
-    Mcu_HSEClockSourceType HSESource;
-    Mcu_ClockType CSSType;
-} Mcu_ConfigHSEType;
+    Mcu_ModeType Mode;
+} Mcu_PowerModeConfigType;
 
 typedef struct
 {
-    Mcu_ConfigHSIType *HSIClockType;
-    Mcu_ConfigHSEType *HSEClockType;
-    Mcu_ClockType PLLChoose;
-    Mcu_ClockType PLLSrc;
-    Mcu_ClockType PLLMulti;
-    Mcu_ClockType McuMCO;
-    Mcu_ClockType SystemClock;
-    Mcu_ClockType McuAHBPrescale;
-    Mcu_ClockType McuAPB2Prescale;
-    Mcu_ClockType McuAPB1Prescale;
+
+} Mcu_RamSectionConfigType;
+typedef struct
+{
+    Mcu_ClockConfigType *ClockConfig;
+    Mcu_RamSectionConfigType *RamSectionConfig;
 } Mcu_ConfigType;
 
 void Mcu_Init(const Mcu_ConfigType *ConfigPtr);
