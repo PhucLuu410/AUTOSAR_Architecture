@@ -61,6 +61,7 @@ void TIM2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TIM3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void USART1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void EXTI15_10_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void ADC1_2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 /* Bạn có thể thêm các Handler khác tương tự nếu cần */
 
 __attribute__((section(".isr_vector"))) void (*const g_pfnVectors[])(void) = {
@@ -100,7 +101,7 @@ __attribute__((section(".isr_vector"))) void (*const g_pfnVectors[])(void) = {
     Default_Handler,      /* 31. DMA1 Channel 5 */
     Default_Handler,      /* 32. DMA1 Channel 6 */
     Default_Handler,      /* 33. DMA1 Channel 7 */
-    Default_Handler,      /* 34. ADC1 & ADC2 */
+    ADC1_2_IRQHandler,    /* 34. ADC1 & ADC2 */
     Default_Handler,      /* 35. USB HP / CAN TX */
     Default_Handler,      /* 36. USB LP / CAN RX0 */
     Default_Handler,      /* 37. CAN RX1 */

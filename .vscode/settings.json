@@ -9,7 +9,7 @@
             "color": "foldercolorizer.color_00cccc"
         },
         {
-            "folderPath": "AUTOSAR\\3_BSW\\",
+            "folderPath": "AUTOSAR\\Bsw",
             "color": "foldercolorizer.color_33ccff"
         },
         {
@@ -21,13 +21,12 @@
             "color": "foldercolorizer.color_9900cc"
         },
         {
-            "folderPath": "AUTOSAR\\1_APP\\",
+            "folderPath": "AUTOSAR\\App",
             "color": "foldercolorizer.color_996633"
         },
         {
-            "folderPath": "c",
-            "color": "foldercolorizer.color_d7d7d7",
-            "isForExtension": true
+            "extension": "c",
+            "color": "foldercolorizer.color_d7d7d7"
         },
         {
             "folderPath": "AUTOSAR\\SYSTEM\\",
@@ -43,18 +42,18 @@
         },
         {
             "folderPath": "AUTOSAR\\BSW\\ECUAbstraction\\",
-            "color": "foldercolorizer.color_00cccc",
-            "isFolderOnly": true
+            "isFolderOnly": true,
+            "color": "foldercolorizer.color_00cccc"
         },
         {
-            "folderPath": "AUTOSAR\\3_BSW\\",
-            "color": "foldercolorizer.color_00cccc",
-            "isFolderOnly": true
+            "folderPath": "AUTOSAR\\Bsw",
+            "isFolderOnly": true,
+            "color": "foldercolorizer.color_00cccc"
         },
         {
             "folderPath": "AUTOSAR\\BSW\\MCAL\\",
-            "color": "foldercolorizer.color_00cccc",
-            "isFolderOnly": true
+            "isFolderOnly": true,
+            "color": "foldercolorizer.color_00cccc"
         },
         {
             "folderPath": "AUTOSAR_Architecture\\CONFIG\\",
