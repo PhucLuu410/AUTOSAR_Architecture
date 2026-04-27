@@ -1,9 +1,12 @@
 #ifndef __ADC_CFG_H
 #define __ADC_CFG_H
 
+#define ADC_VOLTAGE 0
+#define ADC_CURRENT 1
+
 #define NUMBER_OF_GROUPS 2
-#define NUMBER_CHANNELS_OF_GROUP0 2
-#define NUMBER_CHANNELS_OF_GROUP1 2
+#define NUMBER_CHANNELS_OF_GROUP0 1
+#define NUMBER_CHANNELS_OF_GROUP1 1
 #define NUMBER_CHANNELS_OF_GROUP2 0
 #define NUMBER_CHANNELS_OF_GROUP3 0
 #define NUMBER_CHANNELS_OF_GROUP4 0
@@ -89,5 +92,10 @@
 
 #define ADC_SCAN_MODE_DISABLE 0
 #define ADC_SCAN_MODE_ENABLE 1
+
+extern const Adc_ConfigType Adc_Configuration[NUMBER_OF_GROUPS];
+
+extern uint16 adcValue0[2];
+extern uint16 adcValue1[2];
 
 #endif

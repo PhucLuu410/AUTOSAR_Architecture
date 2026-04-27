@@ -18,11 +18,14 @@ SRC = 	./SYSTEM/Startup/startup.c \
 		Bsw/MCAL/IODriver/DIO/Dio.c  \
 		Bsw/MCAL/IODriver/PORT/Port.c \
 		Bsw/MCAL/IODriver/PWM/Pwm.c \
+		Bsw/MCAL/IODriver/PWM/Pwm_Cfg.c \
 		Bsw/MCAL/IODriver/ADC/Adc.c \
+		Bsw/MCAL/IODriver/ADC/Adc_Cfg.c \
 		Bsw/MCAL/MCU/Mcu.c \
 		Bsw/SystemService/Os_Isr.c \
 		Bsw/SystemService/Os.c \
-		Bsw/ECUAbstraction/IoHwAb/IoHwAb.c
+		Bsw/ECUAbstraction/IoHwAb/IoHwAb.c \
+		
 
 LDFLAGS = -T ./SYSTEM/Linker/linker.ld -nostdlib -Wl,-Map=output.map
 TARGET = firmware

@@ -9,11 +9,11 @@
 #include "Mcu.h"
 #include "Mcu_Cfg.h"
 #include "Os.h"
+#include "IoHwAb.h"
+#include "IoHwAb_Cfg.h"
 
 uint32_t Count = 0;
 uint16_t *adcValue;
-uint16_t adcValue0[2];
-uint16_t adcValue1[2];
 Adc_StatusType status;
 
 void delay(volatile uint32_t t)
@@ -40,9 +40,9 @@ Mcu_ConfigType Mcu_Configuration[] = {
 const Port_ConfigType Port_Configuration[] = {
     {PORT_A,
      0,
-     PORT_MODE_INPUT,
+     PORT_MODE_OUTPUT,
      PORT_OUTPUT_SPEED_50MHz,
-     PORT_CNF_ANALOG_INPUT},
+     PORT_CNF_AF_OUTPUT_PP},
 
     {PORT_A,
      1,
@@ -52,9 +52,9 @@ const Port_ConfigType Port_Configuration[] = {
 
     {PORT_A,
      2,
-     PORT_MODE_INPUT,
+     PORT_MODE_OUTPUT,
      PORT_OUTPUT_SPEED_50MHz,
-     PORT_CNF_ANALOG_INPUT},
+     PORT_CNF_AF_OUTPUT_PP},
 
     {PORT_A,
      3,
@@ -75,33 +75,12 @@ const Port_ConfigType Port_Configuration[] = {
 
 Dio_TypeConfig Dio_Configuration = {PORT_C, PIN_13};
 
-Adc_ChannelType Adc_Group0_List[NUMBER_CHANNELS_OF_GROUP0] = {ADC_CHANNEL_0, ADC_CHANNEL_1};
-Adc_ReferenceType Adc_Group0_Reference[NUMBER_CHANNELS_OF_GROUP0] = {ADC_REFERENCE_0, ADC_REFERENCE_1};
+IoHwAbSensor_ConfigType SensorConfigType[] = {
+    [ADC_VOLTAGE] = {.ID = ADC_VOLTAGE},
+    [ADC_CURRENT] = {.ID = ADC_CURRENT}};
 
-Adc_ChannelType Adc_Group1_List[NUMBER_CHANNELS_OF_GROUP0] = {ADC_CHANNEL_2, ADC_CHANNEL_3};
-Adc_ReferenceType Adc_Group1_Reference[NUMBER_CHANNELS_OF_GROUP0] = {ADC_REFERENCE_0, ADC_REFERENCE_1};
-
-Adc_CommonConfigType Adc_Common_Configuration[] = {{ADC_1, ADC_CLOCK_DIV_2, ADC_RESOLUTION_12_BIT, ADC_ALIGN_RIGHT, ADC_SCAN_MODE_ENABLE, ADC_USING_DMA}};
-
-const Adc_ConfigType Adc_Configuration[NUMBER_OF_GROUPS] =
-    {
-        {Adc_Common_Configuration,
-         ADC_GROUP_0,
-         ADC_MODE_INDEPENDENT,
-         ADC_CONV_MODE_CONTINUOUS,
-         Adc_Group0_List,
-         Adc_Group0_Reference,
-         ADC_SAMPLING_TIME_239_5_CYCLES,
-         ADC_SWTRIGGER_SWS},
-
-        {Adc_Common_Configuration,
-         ADC_GROUP_1,
-         ADC_MODE_INDEPENDENT,
-         ADC_CONV_MODE_CONTINUOUS,
-         Adc_Group1_List,
-         Adc_Group1_Reference,
-         ADC_SAMPLING_TIME_239_5_CYCLES,
-         ADC_SWTRIGGER_SWS}};
+IoHwAbActuator_ConfigType ActuatorConfigType[] = {
+    [PWM_MOTOR] = {.ID = PWM_MOTOR, .DutyCycle = 50}};
 
 int main(void)
 {
@@ -109,12 +88,19 @@ int main(void)
     Mcu_InitClock(Mcu_Configuration[0].ClockConfig->ClockSrc);
 
     Port_Init(Port_Configuration);
-
-    Adc_Init(Adc_Configuration);
-    Adc_SetupResultBuffer(ADC_GROUP_0, adcValue0);
-    Adc_EnableGroupNotification(ADC_GROUP_0);
-    Adc_StartGroupConversion(ADC_GROUP_0);
+    IoHwAb_InitIoHwAbSensor(&SensorConfigType[ADC_VOLTAGE]);
+    IoHwAb_InitIoHwAbActuator(ActuatorConfigType);
+    IoHwAb_Dcm_Sensor(IoHwAb_Read, SensorConfigType[ADC_VOLTAGE]);
     while (1)
     {
+        if (adcValue0[0] > 2000)
+        {
+            IoHwAb_Dcm_Actuator(IoHwAb_Write, ActuatorConfigType[PWM_MOTOR]);
+        }
+        else
+        {
+            ActuatorConfigType[PWM_MOTOR].DutyCycle = 0;
+            IoHwAb_Dcm_Actuator(IoHwAb_Write, ActuatorConfigType[PWM_MOTOR]);
+        }
     }
 }

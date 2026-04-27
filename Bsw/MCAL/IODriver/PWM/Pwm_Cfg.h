@@ -3,6 +3,8 @@
 
 #include "Pwm.h"
 
+#define PWM_MOTOR 0
+
 #define TIM_Frequence 8000000UL
 #define PWM_Frequence 1000UL
 
@@ -13,5 +15,7 @@
 
 #define PWM_CPOL_0 0
 #define PWM_CPOL_1 1
+
+extern Pwm_ConfigType Pwm_Configuration[];
 
 #endif

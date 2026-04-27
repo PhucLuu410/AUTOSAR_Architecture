@@ -3,7 +3,7 @@
 #include "stm32f103xb.h"
 #include "stdint.h"
 
-CCRx_Type get_CCRx(Pwm_ChannelType ChannelNumber)
+static CCRx_Type get_CCRx(Pwm_ChannelType ChannelNumber)
 {
     switch (ChannelNumber)
     {
