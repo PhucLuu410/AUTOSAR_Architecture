@@ -2,7 +2,6 @@
 #include "stm32f103xb.h"
 #include "ADC/Adc.h"
 #include "ADC/Adc_Cfg.h"
-SystemFlagTypeDef SystemFlags = {0};
 
 void ADC1_2_IRQHandler(void)
 {
