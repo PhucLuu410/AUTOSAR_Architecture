@@ -84,4 +84,6 @@
 #define MCU_DEEP_SLEEP_MODE 2
 #define MCU_STOP_MODE 3
 
+extern Mcu_ConfigType Mcu_Configuration[];
+
 #endif

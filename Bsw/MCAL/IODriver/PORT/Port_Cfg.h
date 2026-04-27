@@ -26,4 +26,6 @@
 
 #define NUMBER_OF_CHANNEL 6
 
+extern const Port_ConfigType Port_Configuration[];
+
 #endif

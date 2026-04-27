@@ -16,15 +16,20 @@ IPATH = -I. \
 SRC = 	./SYSTEM/Startup/startup.c \
 		App/main.c \
 		Bsw/MCAL/IODriver/DIO/Dio.c  \
+		Bsw/MCAL/IODriver/DIO/Dio_Cfg.c \
 		Bsw/MCAL/IODriver/PORT/Port.c \
+		Bsw/MCAL/IODriver/PORT/Port_Cfg.c \
 		Bsw/MCAL/IODriver/PWM/Pwm.c \
 		Bsw/MCAL/IODriver/PWM/Pwm_Cfg.c \
 		Bsw/MCAL/IODriver/ADC/Adc.c \
 		Bsw/MCAL/IODriver/ADC/Adc_Cfg.c \
 		Bsw/MCAL/MCU/Mcu.c \
+		Bsw/MCAL/MCU/Mcu_Cfg.c \
 		Bsw/SystemService/Os_Isr.c \
 		Bsw/SystemService/Os.c \
 		Bsw/ECUAbstraction/IoHwAb/IoHwAb.c \
+		Bsw/ECUAbstraction/IoHwAb/IoHwAb_Cfg.c \
+
 		
 
 LDFLAGS = -T ./SYSTEM/Linker/linker.ld -nostdlib -Wl,-Map=output.map
