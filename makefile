@@ -3,36 +3,38 @@ OBJCOPY = arm-none-eabi-objcopy
 CFLAGS = -mcpu=cortex-m3 -mthumb -O0 -g -Wall
 
 IPATH = -I. \
-		-I./Bsw/MCAL/IODriver/DIO \
-		-I./SYSTEM/Drivers/CMSIS \
-		-I./SYSTEM/Drivers/Common \
-		-I./Bsw/MCAL/IODriver/PORT \
-		-I./Bsw/MCAL/IODriver/PWM \
-		-I./Bsw/MCAL/IODriver \
-		-I./Bsw/MCAL/MCU \
+		-I./Bsw/Mcal/IoDriver/DIO \
+		-I./System/Drivers/CMSIS \
+		-I./System/Drivers/Common \
+		-I./Bsw/Mcal/IoDriver/PORT \
+		-I./Bsw/Mcal/IoDriver/PWM \
+		-I./Bsw/Mcal/IoDriver \
+		-I./Bsw/Mcal/McuDriver/Mcu \
+		-I./Bsw/Mcal/ComDriver/Can \
 		-I./Bsw/SystemService \
-		-I./Bsw/ECUAbstraction/IoHwAb \
+		-I./Bsw/EcuAbstraction/IoHwAb \
 
-SRC = 	./SYSTEM/Startup/startup.c \
+SRC = 	./System/Startup/startup.c \
 		App/main.c \
-		Bsw/MCAL/IODriver/DIO/Dio.c  \
-		Bsw/MCAL/IODriver/DIO/Dio_Cfg.c \
-		Bsw/MCAL/IODriver/PORT/Port.c \
-		Bsw/MCAL/IODriver/PORT/Port_Cfg.c \
-		Bsw/MCAL/IODriver/PWM/Pwm.c \
-		Bsw/MCAL/IODriver/PWM/Pwm_Cfg.c \
-		Bsw/MCAL/IODriver/ADC/Adc.c \
-		Bsw/MCAL/IODriver/ADC/Adc_Cfg.c \
-		Bsw/MCAL/MCU/Mcu.c \
-		Bsw/MCAL/MCU/Mcu_Cfg.c \
+		Bsw/Mcal/IoDriver/DIO/Dio.c  \
+		Bsw/Mcal/IoDriver/DIO/Dio_Cfg.c \
+		Bsw/Mcal/IoDriver/PORT/Port.c \
+		Bsw/Mcal/IoDriver/PORT/Port_Cfg.c \
+		Bsw/Mcal/IoDriver/PWM/Pwm.c \
+		Bsw/Mcal/IoDriver/PWM/Pwm_Cfg.c \
+		Bsw/Mcal/IoDriver/ADC/Adc.c \
+		Bsw/Mcal/IoDriver/ADC/Adc_Cfg.c \
+		Bsw/Mcal/McuDriver/Mcu/Mcu.c \
+		Bsw/Mcal/McuDriver/Mcu/Mcu_Cfg.c \
+		Bsw/Mcal/ComDriver/Can/Can.c \
+		Bsw/Mcal/ComDriver/Can/Can_Cfg.c \
 		Bsw/SystemService/Os_Isr.c \
 		Bsw/SystemService/Os.c \
-		Bsw/ECUAbstraction/IoHwAb/IoHwAb.c \
-		Bsw/ECUAbstraction/IoHwAb/IoHwAb_Cfg.c \
-
+		Bsw/EcuAbstraction/IoHwAb/IoHwAb.c \
+		Bsw/EcuAbstraction/IoHwAb/IoHwAb_Cfg.c \
 		
 
-LDFLAGS = -T ./SYSTEM/Linker/linker.ld -nostdlib -Wl,-Map=output.map
+LDFLAGS = -T ./System/Linker/linker.ld -nostdlib -Wl,-Map=output.map
 TARGET = firmware
 BIN = $(TARGET).bin
 

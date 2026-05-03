@@ -11,6 +11,8 @@
 #include "Os.h"
 #include "IoHwAb.h"
 #include "IoHwAb_Cfg.h"
+#include "Can.h"
+#include "Can_Cfg.h"
 
 void delay(volatile uint32_t t)
 {
@@ -22,24 +24,10 @@ int main(void)
 {
     Mcu_Init(&Mcu_Configuration[0]);
     Mcu_InitClock(Mcu_Configuration[0].ClockConfig->ClockSrc);
-
     Port_Init(Port_Configuration);
-
-    IoHwAb_InitIoHwAbSensor(&SensorConfigType[ADC_VOLTAGE]);
-    IoHwAb_InitIoHwAbActuator(&ActuatorConfigType[PWM_MOTOR]);
-
-    IoHwAb_Dcm_Sensor(IoHwAb_Read, SensorConfigType[ADC_VOLTAGE]);
+    Can_Init(&CanConfig);
+    Can_DeInit();
     while (1)
     {
-        if (adcValue0[0] > 3500)
-        {
-            ActuatorConfigType[PWM_MOTOR].DutyCycle = 50;
-            IoHwAb_Dcm_Actuator(IoHwAb_Write, ActuatorConfigType[PWM_MOTOR]);
-        }
-        else
-        {
-            ActuatorConfigType[PWM_MOTOR].DutyCycle = 0;
-            IoHwAb_Dcm_Actuator(IoHwAb_Write, ActuatorConfigType[PWM_MOTOR]);
-        }
     }
 }
