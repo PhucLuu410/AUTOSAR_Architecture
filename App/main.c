@@ -13,7 +13,7 @@
 #include "IoHwAb_Cfg.h"
 #include "Can.h"
 #include "Can_Cfg.h"
-
+#include "stm32f103xb.h"
 void delay(volatile uint32_t t)
 {
     while (t--)
@@ -26,9 +26,7 @@ int main(void)
     Mcu_InitClock(Mcu_Configuration[0].ClockConfig->ClockSrc);
     Port_Init(Port_Configuration);
     Can_Init(&CanConfig);
-    Can_DeInit();
     while (1)
     {
     }
 }
-

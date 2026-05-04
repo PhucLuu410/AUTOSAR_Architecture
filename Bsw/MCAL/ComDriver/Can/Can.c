@@ -1,35 +1,16 @@
 #include "Can.h"
 #include "Can_Cfg.h"
-#include "Can_GeneralTypes.h"
 #include "stm32f103xb.h"
+
+static Can_ControllerStateType Can_ControllerState[CAN_MAX_CONTROLLER];
+static CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER] = {CAN1};
 
 void Can_Init(const Can_ConfigType *ConfigPtr)
 {
-    CAN1->MCR &= ~(1 << 1);
-    CAN1->MCR |= (1 << 0);
-
-    CAN1->BTR |= (ConfigPtr->mode << 30);
-    CAN1->BTR |= (((8000000 / ConfigPtr->baudRate) - 1) << 0);
-
-    CAN1->MCR &= ~(1 << 0);
-}
-
-void Can_DeInit(void)
-{
-    CAN1->MCR = 0x00010002;
-    CAN1->BTR = 0x01230002;
-}
-
-Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
-{
-    CAN_Controllers[Controller]->MCR |= (1 << 0);
-    CAN_Controllers[Controller]->BTR |= (((8000000 / BaudRateConfigID) - 1) << 0);
-    CAN_Controllers[Controller]->MCR &= ~(1 << 0);
-    return E_OK;
-}
-
-Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType Transition)
-{
-    
-    return E_OK;
+    Can_Controllers[CAN_1]->MCR &= ~(1 << 1);
+    Can_Controllers[CAN_1]->MCR |= (1 << 0);
+    Can_Controllers[CAN_1]->BTR = (((ConfigPtr->ControllerConfig->CanSjw) & 0x3) << 24) |
+                                  ((((ConfigPtr->ControllerConfig->CanTseg1) + (ConfigPtr->ControllerConfig->CanPropagationDelay)) & 0xF) << 16) |
+                                  (((ConfigPtr->ControllerConfig->CanTseg2) & 0x7) << 20) |
+                                  (8 << 0);
 }
