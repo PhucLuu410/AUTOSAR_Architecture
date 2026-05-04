@@ -5,6 +5,5 @@
 
 void ADC1_2_IRQHandler(void)
 {
-    uint32_t temp = ADC1->DR;
     SystemFlags.ADC_Flag = 1;
 }
