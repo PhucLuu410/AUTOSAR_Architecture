@@ -35,7 +35,7 @@ const Port_ConfigType Port_Configuration[] = {
      11,
      PORT_MODE_INPUT,
      PORT_OUTPUT_SPEED_50MHz,
-     PORT_CNF_PULL_UP_INPUT},
+     PORT_CNF_FLOATING_INPUT},
     {PORT_A,
      12,
      PORT_MODE_OUTPUT,

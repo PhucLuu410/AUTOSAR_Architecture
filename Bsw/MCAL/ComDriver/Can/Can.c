@@ -1,16 +1,157 @@
 #include "Can.h"
 #include "Can_Cfg.h"
-#include "stm32f103xb.h"
-
-static Can_ControllerStateType Can_ControllerState[CAN_MAX_CONTROLLER];
-static CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER] = {CAN1};
 
 void Can_Init(const Can_ConfigType *ConfigPtr)
 {
-    Can_Controllers[CAN_1]->MCR &= ~(1 << 1);
-    Can_Controllers[CAN_1]->MCR |= (1 << 0);
-    Can_Controllers[CAN_1]->BTR = (((ConfigPtr->ControllerConfig->CanSjw) & 0x3) << 24) |
-                                  ((((ConfigPtr->ControllerConfig->CanTseg1) + (ConfigPtr->ControllerConfig->CanPropagationDelay)) & 0xF) << 16) |
-                                  (((ConfigPtr->ControllerConfig->CanTseg2) & 0x7) << 20) |
-                                  (8 << 0);
+    Can_Controllers[ConfigPtr->CanControllerId]->MCR = 0x00010002;
+    Can_Controllers[ConfigPtr->CanControllerId]->MCR |= ConfigPtr->CanHohHandler->CanDebugMode << 16;
+    Can_Controllers[ConfigPtr->CanControllerId]->MCR |= ConfigPtr->CanTrigger << 7;
+    Can_Controllers[ConfigPtr->CanControllerId]->MCR |= ConfigPtr->CanHohHandler->CanAutoBusOff << 6;
+    Can_Controllers[ConfigPtr->CanControllerId]->MCR |= ConfigPtr->CanHohHandler->CanAutoWakeUp << 5;
+    Can_Controllers[ConfigPtr->CanControllerId]->MCR |= ConfigPtr->CanHohHandler->CanAutoRetransmission << 4;
+    Can_Controllers[ConfigPtr->CanControllerId]->MCR |= ConfigPtr->CanHohHandler->CanReceiveFifoLockedMode << 3;
+    Can_Controllers[ConfigPtr->CanControllerId]->MCR |= ConfigPtr->CanHohHandler->CanTransmitFifoPriority << 2;
+    Can_Controllers[ConfigPtr->CanControllerId]->FMR |= (1 << 0);
+    for (int i = 0; i < CAN_NUMBER_OF_FILTER; i++)
+    {
+        Can_Controllers[ConfigPtr->CanControllerId]->FS1R |= (ConfigPtr->CanIdMaskMode >> 1) << i;
+        Can_Controllers[ConfigPtr->CanControllerId]->FM1R |= (ConfigPtr->CanIdMaskMode & 0x01) << i;
+        Can_Controllers[ConfigPtr->CanControllerId]->FFA1R |= (ConfigPtr->CanFilter[i].Fifo << i);
+        Can_Controllers[ConfigPtr->CanControllerId]->FA1R |= (1 << ConfigPtr->CanFilter[i].Bank);
+        Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = ConfigPtr->CanFilter[i].Id;
+        Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = ConfigPtr->CanFilter[i].Mask;
+    }
+    Can_Controllers[ConfigPtr->CanControllerId]->FMR &= ~(1 << 0);
+}
+
+void Can_DeInit(void)
+{
+    for (uint8 i = 0; i < CAN_MAX_CONTROLLER; i++)
+    {
+        Can_Controllers[i]->MCR = 0x00010002;
+    }
+}
+
+Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
+{
+    Can_Controllers[Controller]->MCR &= ~(1 << 1);
+    while (Can_Controllers[Controller]->MSR & (1 << 1))
+        ;
+    Can_Controllers[Controller]->MCR |= (1 << 0);
+    while (!(Can_Controllers[Controller]->MSR & (1 << 0)))
+        ;
+    Can_Controllers[Controller]->BTR = (CanConfig[Controller].CanBaudrateConfig->CanBaudratePrescaler << 0) |
+                                       (CanConfig[Controller].CanBaudrateConfig->CanTseg1 << 16) |
+                                       (CanConfig[Controller].CanBaudrateConfig->CanTseg2 << 20) |
+                                       (CanConfig[Controller].CanBaudrateConfig->CanSjw << 24);
+    return E_OK;
+}
+
+Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType Transition)
+{
+    switch (Transition)
+    {
+    case CAN_CS_STARTED:
+        Can_Controllers[Controller]->MCR &= ~(1 << 0);
+        while ((Can_Controllers[Controller]->MSR & (1 << 0)))
+            ;
+        break;
+    case CAN_CS_STOPPED:
+        Can_Controllers[Controller]->MCR |= (1 << 0);
+        while (!(Can_Controllers[Controller]->MSR & (1 << 0)))
+            ;
+        break;
+    case CAN_CS_SLEEP:
+        Can_Controllers[Controller]->MCR |= (1 << 1);
+        while (!(Can_Controllers[Controller]->MSR & (1 << 1)))
+            ;
+        break;
+    default:
+        return E_NOT_OK;
+    }
+    return E_OK;
+}
+void Can_DisableControllerInterrupts(uint8 Controller)
+{
+    Can_Controllers[Controller]->IER = 0;
+}
+
+void Can_EnableControllerInterrupts(uint8 Controller)
+{
+    Can_Controllers[Controller]->IER = CanConfig[Controller].CanInterruptEnable;
+}
+
+Std_ReturnType Can_CheckWakeup(uint8 Controller)
+{
+    if (Can_Controllers[Controller]->MSR & (1 << 1))
+    {
+        return E_NOT_OK;
+    }
+    return E_OK;
+}
+
+Std_ReturnType Can_GetControllerErrorState(uint8 ControllerId, Can_ErrorStateType *ErrorStatePtr)
+{
+    if (ControllerId >= CAN_MAX_CONTROLLER || ErrorStatePtr == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+
+    if ((Can_Controllers[ControllerId]->ESR & (1 << 2)))
+    {
+        *ErrorStatePtr = CAN_ERRORSTATE_BUSOFF;
+    }
+    else if ((Can_Controllers[ControllerId]->ESR & (1 << 1)))
+    {
+        *ErrorStatePtr = CAN_ERRORSTATE_PASSIVE;
+    }
+    else
+    {
+        *ErrorStatePtr = CAN_ERRORSTATE_ACTIVE;
+    }
+    return E_OK;
+}
+
+Std_ReturnType Can_GetControllerMode(uint8 Controller, Can_ControllerStateType *ControllerModePtr)
+{
+    if (Controller >= CAN_MAX_CONTROLLER || ControllerModePtr == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+    ControllerModePtr = &Can_ControllerState[Controller];
+    return E_OK;
+}
+
+Std_ReturnType Can_GetControllerRxErrorCounter(uint8 ControllerId, uint8 *RxErrorCounterPtr)
+{
+    if (ControllerId >= CAN_MAX_CONTROLLER || RxErrorCounterPtr == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+    *RxErrorCounterPtr = (Can_Controllers[ControllerId]->ESR >> 24) & 0xFF;
+    return E_OK;
+}
+
+Std_ReturnType Can_GetControllerTxErrorCounter(uint8 ControllerId, uint8 *TxErrorCounterPtr)
+{
+    if (ControllerId >= CAN_MAX_CONTROLLER || TxErrorCounterPtr == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+    *TxErrorCounterPtr = (Can_Controllers[ControllerId]->ESR >> 16) & 0xFF;
+    return E_OK;
+}
+
+Std_ReturnType Can_SetCanPnFrameDataMask(uint8 Controller, uint8 *DataMaskArrayPtr, uint8 Length)
+{
+    return 0;
+}
+
+Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)
+{
+    Can_Controllers[Hth]->sTxMailBox[Hth].TDTR = PduInfo->length;
+    Can_Controllers[Hth]->sTxMailBox[Hth].TDLR = *((uint32 *)PduInfo->sdu);
+    Can_Controllers[Hth]->sTxMailBox[Hth].TDHR = *((uint32 *)(PduInfo->sdu + 4));
+    Can_Controllers[Hth]->sTxMailBox[Hth].TIR = (PduInfo->id << 21) | (1 << 0);
+    return E_OK;
 }
