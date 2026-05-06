@@ -18,8 +18,20 @@ void Can_Init(const Can_ConfigType *ConfigPtr)
         Can_Controllers[ConfigPtr->CanControllerId]->FM1R |= (ConfigPtr->CanIdMaskMode & 0x01) << i;
         Can_Controllers[ConfigPtr->CanControllerId]->FFA1R |= (ConfigPtr->CanFilter[i].Fifo << i);
         Can_Controllers[ConfigPtr->CanControllerId]->FA1R |= (1 << ConfigPtr->CanFilter[i].Bank);
-        Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = ConfigPtr->CanFilter[i].Id;
-        Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = ConfigPtr->CanFilter[i].Mask;
+        if (ConfigPtr->CanIdType == CAN_STANDARD_ID)
+        {
+            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = 0;
+            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = 0;
+            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = ((ConfigPtr->CanFilter[i].Id) << 20);
+            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = ((ConfigPtr->CanFilter[i].Mask) << 20);
+        }
+        else
+        {
+            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = 0;
+            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = 0;
+            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = ((ConfigPtr->CanFilter[i].Id) << 3) | (1 << 2);
+            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = ((ConfigPtr->CanFilter[i].Mask) << 3) | (1 << 2);
+        }
     }
     Can_Controllers[ConfigPtr->CanControllerId]->FMR &= ~(1 << 0);
 }
@@ -40,10 +52,10 @@ Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
     Can_Controllers[Controller]->MCR |= (1 << 0);
     while (!(Can_Controllers[Controller]->MSR & (1 << 0)))
         ;
-    Can_Controllers[Controller]->BTR = (CanConfig[Controller].CanBaudrateConfig->CanBaudratePrescaler << 0) |
-                                       (CanConfig[Controller].CanBaudrateConfig->CanTseg1 << 16) |
-                                       (CanConfig[Controller].CanBaudrateConfig->CanTseg2 << 20) |
-                                       (CanConfig[Controller].CanBaudrateConfig->CanSjw << 24);
+    Can_Controllers[Controller]->BTR = (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanBaudratePrescaler << 0) |
+                                       (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanTseg1 << 16) |
+                                       (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanTseg2 << 20) |
+                                       (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanSjw << 24);
     return E_OK;
 }
 
@@ -73,11 +85,13 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
 }
 void Can_DisableControllerInterrupts(uint8 Controller)
 {
+    NVIC_DisableIRQ(CAN1_RX0_IRQn);
     Can_Controllers[Controller]->IER = 0;
 }
 
 void Can_EnableControllerInterrupts(uint8 Controller)
 {
+    NVIC_EnableIRQ(CAN1_RX0_IRQn);
     Can_Controllers[Controller]->IER = CanConfig[Controller].CanInterruptEnable;
 }
 
@@ -149,9 +163,20 @@ Std_ReturnType Can_SetCanPnFrameDataMask(uint8 Controller, uint8 *DataMaskArrayP
 
 Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)
 {
-    Can_Controllers[Hth]->sTxMailBox[Hth].TDTR = PduInfo->length;
-    Can_Controllers[Hth]->sTxMailBox[Hth].TDLR = *((uint32 *)PduInfo->sdu);
-    Can_Controllers[Hth]->sTxMailBox[Hth].TDHR = *((uint32 *)(PduInfo->sdu + 4));
-    Can_Controllers[Hth]->sTxMailBox[Hth].TIR = (PduInfo->id << 21) | (1 << 0);
+    Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TDTR = PduInfo->length;
+    Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TDLR = *((uint32 *)PduInfo->sdu);
+    Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TDHR = *((uint32 *)(PduInfo->sdu + 4));
+    if (CanConfig[PduInfo->swPduHandle].CanIdType == Hth)
+    {
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR &= ~(0x7FF << 21);
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (PduInfo->id << 21);
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (1 << 0);
+    }
+    else
+    {
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR &= ~(0x1FFFFFFF << 3);
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR = (PduInfo->id >> 20) << 21 | ((PduInfo->id & 0xFFFFF) << 3) | (1 << 2);
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (1 << 0);
+    }
     return E_OK;
 }
