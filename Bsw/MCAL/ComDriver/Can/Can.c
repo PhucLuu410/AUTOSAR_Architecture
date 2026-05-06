@@ -92,6 +92,7 @@ void Can_DisableControllerInterrupts(uint8 Controller)
 void Can_EnableControllerInterrupts(uint8 Controller)
 {
     NVIC_EnableIRQ(CAN1_RX0_IRQn);
+    NVIC_EnableIRQ(CAN1_TX_IRQn);
     Can_Controllers[Controller]->IER = CanConfig[Controller].CanInterruptEnable;
 }
 

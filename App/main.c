@@ -14,34 +14,10 @@
 #include "Can.h"
 #include "Can_Cfg.h"
 
-typedef struct
-{
-    uint32_t id;
-    uint8_t len;
-    uint8_t data[8];
-} Can_RxMessageType;
-
-static Can_RxMessageType Can_RxMessage;
-
 void delay(volatile uint32_t t)
 {
     while (t--)
         ;
-}
-
-static void Can_Read(Can_RxMessageType *RxMsg)
-{
-    RxMsg->id = (CAN1->sFIFOMailBox[0].RIR >> 21) & 0x7FF;
-    RxMsg->len = (CAN1->sFIFOMailBox[0].RDTR) & 0xF;
-    RxMsg->data[0] = CAN1->sFIFOMailBox[0].RDLR & 0xFF;
-    RxMsg->data[1] = (CAN1->sFIFOMailBox[0].RDLR >> 8) & 0xFF;
-    RxMsg->data[2] = (CAN1->sFIFOMailBox[0].RDLR >> 16) & 0xFF;
-    RxMsg->data[3] = (CAN1->sFIFOMailBox[0].RDLR >> 24) & 0xFF;
-    RxMsg->data[4] = CAN1->sFIFOMailBox[0].RDHR & 0xFF;
-    RxMsg->data[5] = (CAN1->sFIFOMailBox[0].RDHR >> 8) & 0xFF;
-    RxMsg->data[6] = (CAN1->sFIFOMailBox[0].RDHR >> 16) & 0xFF;
-    RxMsg->data[7] = (CAN1->sFIFOMailBox[0].RDHR >> 24) & 0xFF;
-    CAN1->RF0R |= (1 << 5);
 }
 
 int main(void)
@@ -56,6 +32,6 @@ int main(void)
     Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
     while (1)
     {
-        Can_Read(&Can_RxMessage);
+        Can_Write(CAN_1, &Can_TxPduInfo);
     }
 }

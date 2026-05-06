@@ -49,7 +49,7 @@ const Can_ConfigType CanConfig[] = {
 Can_PduType Can_TxPduInfo = {
     .swPduHandle = CAN_1,
     .length = 8,
-    .id = 0x567,
+    .id = 0x123,
     .sdu = (uint8 *)"ABCDEEGH"};
 
 CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER] = {CAN1};

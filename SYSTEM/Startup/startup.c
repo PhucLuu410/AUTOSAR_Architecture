@@ -123,9 +123,8 @@ __attribute__((section(".isr_vector"))) void (*const g_pfnVectors[])(void) = {
     Default_Handler,            /* 50. I2C2 ER */
     Default_Handler,            /* 51. SPI1 */
     Default_Handler,            /* 52. SPI2 */
-    USART1_IRQHandler,          /* 53. USART1 (IRQ37) <--- ĐÃ THÊM Ở ĐÂY */
+    USART1_IRQHandler,          /* 53. USART1 */
     Default_Handler,            /* 54. USART2 */
     Default_Handler,            /* 55. USART3 */
     EXTI15_10_IRQHandler,       /* 56. EXTI Line 15..10 */
-    /* ... tiếp tục các IRQ khác ... */
 };
