@@ -84,6 +84,10 @@
 #define CAN_FILTER_BANK_13 13
 #define CAN_FILTER_BANK_14 14
 
+#define CAN_MAILBOX_0 0
+#define CAN_MAILBOX_1 1
+#define CAN_MAILBOX_2 2
+
 extern const Can_ConfigType CanConfig[];
 extern CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER];
 extern Can_ControllerStateType Can_ControllerState[CAN_MAX_CONTROLLER];
