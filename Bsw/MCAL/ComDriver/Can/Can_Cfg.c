@@ -49,8 +49,8 @@ const Can_ConfigType CanConfig[] = {
 Can_PduType Can_TxPduInfo = {
     .swPduHandle = 0,
     .length = 8,
-    .id = 0x7f9,
-    .sdu = (uint8 *)"ABCDEFGH"};
+    .id = 0x567,
+    .sdu = (uint8 *)"ABCDEEGH"};
 
 CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER] = {CAN1};
 Can_ControllerStateType Can_ControllerState[CAN_MAX_CONTROLLER] = {CAN_CS_UNINIT};
