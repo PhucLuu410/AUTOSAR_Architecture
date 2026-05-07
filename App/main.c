@@ -27,11 +27,17 @@ int main(void)
     Port_Init(Port_Configuration);
 
     Can_Init(&CanConfig[0]);
-    Can_EnableControllerInterrupts(CAN_1);
+    Can_DisableControllerInterrupts(CAN_1);
     Can_SetBaudrate(CAN_1, 0);
     Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
     while (1)
     {
-        Can_Write(CAN_1, &Can_TxPduInfo);
+        Can_Write(CAN_MAILBOX_0, &Can_TxPduInfo);
     }
+}
+
+void USB_LP_CAN1_RX0_IRQHandler(void)
+{
+    CAN1->RF0R |= (1 << 5);
+    return;
 }

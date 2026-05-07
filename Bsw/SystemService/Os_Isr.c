@@ -8,7 +8,3 @@ void ADC1_2_IRQHandler(void)
     SystemFlags.ADC_Flag = 1;
 }
 
-void USB_HP_CAN1_TX_IRQHandler(void)
-{
-    return;
-}

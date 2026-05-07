@@ -6,7 +6,7 @@ static Can_HohHandlerConfigType CanHohHandler = {
     .CanDebugMode = CAN_DEBUG_MODE_FREEZE,
     .CanAutoBusOff = CAN_AUTO_BUS_OFF_OFF,
     .CanAutoWakeUp = CAN_AUTO_WAKEUP_OFF,
-    .CanAutoRetransmission = CAN_RETRANSMISSION_OFF,
+    .CanAutoRetransmission = CAN_RETRANSMISSION_ON,
     .CanReceiveFifoLockedMode = CAN_RECEIVE_FIFO_LOCKED_MODE_OFF,
     .CanTransmitFifoPriority = CAN_TRANSMIT_FIFO_PRIORITY_OFF};
 
@@ -18,7 +18,7 @@ static Can_BaudrateConfigType CanBaudrateConfig[] = {
      .CanSjw = 1}};
 
 static Can_FilterType CanFilterList[CAN_NUMBER_OF_FILTER] = {
-    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0x123, .Mask = 0x7FF}};
+    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0x678, .Mask = 0x7FF}};
 
 const Can_ConfigType CanConfig[] = {
     [0] = {
@@ -49,7 +49,7 @@ const Can_ConfigType CanConfig[] = {
 Can_PduType Can_TxPduInfo = {
     .swPduHandle = CAN_1,
     .length = 8,
-    .id = 0x123,
+    .id = 0x678,
     .sdu = (uint8 *)"ABCDEEGH"};
 
 CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER] = {CAN1};

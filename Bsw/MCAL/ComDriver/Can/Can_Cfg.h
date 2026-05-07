@@ -9,6 +9,10 @@
 #define CAN_1 0
 #define CAN_2 1
 
+#define CAN_MAILBOX_0 0
+#define CAN_MAILBOX_1 1
+#define CAN_MAILBOX_2 2
+
 #define CAN_CLOCK 8000000
 
 #define CAN_STANDARD_ID 0

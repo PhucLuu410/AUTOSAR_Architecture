@@ -85,14 +85,13 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
 }
 void Can_DisableControllerInterrupts(uint8 Controller)
 {
-    NVIC_DisableIRQ(CAN1_RX0_IRQn);
+    NVIC_DisableIRQ(USB_LP_CAN1_RX0_IRQn);
     Can_Controllers[Controller]->IER = 0;
 }
 
 void Can_EnableControllerInterrupts(uint8 Controller)
 {
-    NVIC_EnableIRQ(CAN1_RX0_IRQn);
-    NVIC_EnableIRQ(CAN1_TX_IRQn);
+    NVIC_EnableIRQ(USB_LP_CAN1_RX0_IRQn);
     Can_Controllers[Controller]->IER = CanConfig[Controller].CanInterruptEnable;
 }
 
@@ -169,14 +168,15 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)
     Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TDHR = *((uint32 *)(PduInfo->sdu + 4));
     if (CanConfig[PduInfo->swPduHandle].CanIdType == Hth)
     {
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR &= ~(0x7FF << 21);
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR = 0;
         Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (PduInfo->id << 21);
         Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (1 << 0);
     }
     else
     {
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR &= ~(0x1FFFFFFF << 3);
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR = (PduInfo->id >> 20) << 21 | ((PduInfo->id & 0xFFFFF) << 3) | (1 << 2);
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR = 0;
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= ((PduInfo->id) << 3);
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (1 << 2);
         Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (1 << 0);
     }
     return E_OK;
