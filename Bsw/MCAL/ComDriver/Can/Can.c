@@ -22,8 +22,8 @@ void Can_Init(const Can_ConfigType *ConfigPtr)
         {
             Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = 0;
             Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = 0;
-            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = ((ConfigPtr->CanFilter[i].Id) << 20);
-            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = ((ConfigPtr->CanFilter[i].Mask) << 20);
+            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = ((ConfigPtr->CanFilter[i].Id) << 21);
+            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = ((ConfigPtr->CanFilter[i].Mask) << 21);
         }
         else
         {
@@ -56,6 +56,7 @@ Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
                                        (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanTseg1 << 16) |
                                        (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanTseg2 << 20) |
                                        (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanSjw << 24);
+    // CAN1->BTR |= CAN_BTR_SILM;
     return E_OK;
 }
 

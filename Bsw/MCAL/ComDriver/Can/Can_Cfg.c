@@ -12,13 +12,13 @@ static Can_HohHandlerConfigType CanHohHandler = {
 
 static Can_BaudrateConfigType CanBaudrateConfig[] = {
     {.CanBaudrateId = 0,
-     .CanTseg1 = 6,
-     .CanTseg2 = 1,
-     .CanBaudratePrescaler = 7,
+     .CanTseg1 = 12,
+     .CanTseg2 = 3,
+     .CanBaudratePrescaler = 19,
      .CanSjw = 1}};
 
 static Can_FilterType CanFilterList[CAN_NUMBER_OF_FILTER] = {
-    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0x678, .Mask = 0x7FF}};
+    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0x00000000, .Mask = 0x00000000}};
 
 const Can_ConfigType CanConfig[] = {
     [0] = {
@@ -49,7 +49,7 @@ const Can_ConfigType CanConfig[] = {
 Can_PduType Can_TxPduInfo = {
     .swPduHandle = CAN_1,
     .length = 8,
-    .id = 0x678,
+    .id = 0x127,
     .sdu = (uint8 *)"ABCDEEGH"};
 
 CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER] = {CAN1};
