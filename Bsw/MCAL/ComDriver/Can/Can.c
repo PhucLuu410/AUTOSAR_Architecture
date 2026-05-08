@@ -22,8 +22,8 @@ void Can_Init(const Can_ConfigType *ConfigPtr)
         {
             Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = 0;
             Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = 0;
-            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = ((ConfigPtr->CanFilter[i].Id) << 20);
-            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = ((ConfigPtr->CanFilter[i].Mask) << 20);
+            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = ((ConfigPtr->CanFilter[i].Id) << 21);
+            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = ((ConfigPtr->CanFilter[i].Mask) << 21);
         }
         else
         {
@@ -56,6 +56,9 @@ Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
                                        (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanTseg1 << 16) |
                                        (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanTseg2 << 20) |
                                        (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanSjw << 24);
+
+    CAN1->BTR |= (1 << 30);
+    CAN1->BTR |= (1 << 31);
     return E_OK;
 }
 
@@ -92,7 +95,6 @@ void Can_DisableControllerInterrupts(uint8 Controller)
 void Can_EnableControllerInterrupts(uint8 Controller)
 {
     NVIC_EnableIRQ(CAN1_RX0_IRQn);
-    NVIC_EnableIRQ(CAN1_TX_IRQn);
     Can_Controllers[Controller]->IER = CanConfig[Controller].CanInterruptEnable;
 }
 
@@ -169,15 +171,24 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)
     Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TDHR = *((uint32 *)(PduInfo->sdu + 4));
     if (CanConfig[PduInfo->swPduHandle].CanIdType == Hth)
     {
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR &= ~(0x7FF << 21);
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR = 0;
         Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (PduInfo->id << 21);
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR &= ~(1 << 1);
         Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (1 << 0);
     }
     else
     {
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR &= ~(0x1FFFFFFF << 3);
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR = (PduInfo->id >> 20) << 21 | ((PduInfo->id & 0xFFFFF) << 3) | (1 << 2);
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR = 0;
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (PduInfo->id << 3);
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (1 << 2);
+        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR &= ~(1 << 1);
         Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (1 << 0);
     }
     return E_OK;
+}
+
+void USB_LP_CAN1_RX0_IRQHandler(void)
+{
+    while (1)
+        ;
 }

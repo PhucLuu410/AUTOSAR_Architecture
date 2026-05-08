@@ -4,8 +4,5 @@
 #include "stm32f103xb.h"
 boolean LPDU_CAN_RX(uint8 Hrh, Can_IdType CanId, uint8 CanDataLegth, const uint8 *CanSduPtr)
 {
-    // Tao mang
-    // Lay gia tri tu thanh ghi
-    // tro CansduPtr vao mang
-    // return true
+    return true;
 }

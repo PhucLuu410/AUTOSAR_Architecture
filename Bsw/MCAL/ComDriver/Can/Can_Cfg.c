@@ -12,9 +12,9 @@ static Can_HohHandlerConfigType CanHohHandler = {
 
 static Can_BaudrateConfigType CanBaudrateConfig[] = {
     {.CanBaudrateId = 0,
-     .CanTseg1 = 6,
-     .CanTseg2 = 1,
-     .CanBaudratePrescaler = 7,
+     .CanTseg1 = 15,
+     .CanTseg2 = 4,
+     .CanBaudratePrescaler = 19,
      .CanSjw = 1}};
 
 static Can_FilterType CanFilterList[CAN_NUMBER_OF_FILTER] = {
