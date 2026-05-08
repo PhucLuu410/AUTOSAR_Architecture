@@ -40,8 +40,6 @@ void Default_Handler(void)
 
 void Reset_Handler(void);
 void Default_Handler(void);
-
-/* System Exceptions */
 void NMI_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void HardFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void MemManage_Handler(void) __attribute__((weak, alias("Default_Handler")));
@@ -51,8 +49,6 @@ void SVC_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void DebugMon_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void PendSV_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void SysTick_Handler(void) __attribute__((weak, alias("Default_Handler")));
-
-/* External Interrupts (Cần dùng cái nào thì khai báo cái đó) */
 void WWDG_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void PVD_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void EXTI0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
@@ -62,10 +58,8 @@ void TIM3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void USART1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void EXTI15_10_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void ADC1_2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void USB_HP_CAN1_TX_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void USB_LP_CAN1_RX0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void CAN1_RX1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-/* Bạn có thể thêm các Handler khác tương tự nếu cần */
 
 __attribute__((section(".isr_vector"))) void (*const g_pfnVectors[])(void) = {
     (void (*)(void))(&_estack), /* 0. Top of Stack */
@@ -78,14 +72,12 @@ __attribute__((section(".isr_vector"))) void (*const g_pfnVectors[])(void) = {
     0,
     0,
     0,
-    0,                /* 7-10. Reserved */
-    SVC_Handler,      /* 11. SVCall */
-    DebugMon_Handler, /* 12. Debug Monitor */
-    0,                /* 13. Reserved */
-    PendSV_Handler,   /* 14. PendSV */
-    SysTick_Handler,  /* 15. SysTick */
-
-    /* External Interrupts */
+    0,                          /* 7-10. Reserved */
+    SVC_Handler,                /* 11. SVCall */
+    DebugMon_Handler,           /* 12. Debug Monitor */
+    0,                          /* 13. Reserved */
+    PendSV_Handler,             /* 14. PendSV */
+    SysTick_Handler,            /* 15. SysTick */
     WWDG_IRQHandler,            /* 16. Window Watchdog */
     PVD_IRQHandler,             /* 17. PVD */
     Default_Handler,            /* 18. TAMPER */
@@ -105,7 +97,7 @@ __attribute__((section(".isr_vector"))) void (*const g_pfnVectors[])(void) = {
     Default_Handler,            /* 32. DMA1 Channel 6 */
     Default_Handler,            /* 33. DMA1 Channel 7 */
     ADC1_2_IRQHandler,          /* 34. ADC1 & ADC2 */
-    USB_HP_CAN1_TX_IRQHandler,  /* 35. USB HP / CAN TX */
+    Default_Handler,            /* 35. USB HP / CAN TX */
     USB_LP_CAN1_RX0_IRQHandler, /* 36. USB LP / CAN RX0 */
     CAN1_RX1_IRQHandler,        /* 37. CAN RX1 */
     Default_Handler,            /* 38. CAN SCE */
@@ -123,7 +115,7 @@ __attribute__((section(".isr_vector"))) void (*const g_pfnVectors[])(void) = {
     Default_Handler,            /* 50. I2C2 ER */
     Default_Handler,            /* 51. SPI1 */
     Default_Handler,            /* 52. SPI2 */
-    USART1_IRQHandler,          /* 53. USART1 */
+    USART1_IRQHandler,          /* 53. USART1 (IRQ37) <--- ĐÃ THÊM Ở ĐÂY */
     Default_Handler,            /* 54. USART2 */
     Default_Handler,            /* 55. USART3 */
     EXTI15_10_IRQHandler,       /* 56. EXTI Line 15..10 */

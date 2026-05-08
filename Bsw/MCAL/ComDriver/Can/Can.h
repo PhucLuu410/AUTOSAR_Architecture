@@ -1,5 +1,5 @@
-#ifndef CAN_H
-#define CAN_H
+#ifndef __CAN_H
+#define __CAN_H
 
 #include "Std_Types.h"
 #include "ComStack_Types.h"

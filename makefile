@@ -3,11 +3,11 @@ OBJCOPY = arm-none-eabi-objcopy
 CFLAGS = -mcpu=cortex-m3 -mthumb -O0 -g -Wall
 
 IPATH = -I. \
-		-I./Bsw/Mcal/IoDriver/DIO \
+		-I./Bsw/Mcal/IoDriver/Dio \
 		-I./System/Drivers/CMSIS \
 		-I./System/Drivers/Common \
-		-I./Bsw/Mcal/IoDriver/PORT \
-		-I./Bsw/Mcal/IoDriver/PWM \
+		-I./Bsw/Mcal/IoDriver/Port \
+		-I./Bsw/Mcal/IoDriver/Pwm \
 		-I./Bsw/Mcal/IoDriver \
 		-I./Bsw/Mcal/McuDriver/Mcu \
 		-I./Bsw/Mcal/ComDriver/Can \
@@ -16,14 +16,14 @@ IPATH = -I. \
 
 SRC = 	./System/Startup/startup.c \
 		App/main.c \
-		Bsw/Mcal/IoDriver/DIO/Dio.c  \
-		Bsw/Mcal/IoDriver/DIO/Dio_Cfg.c \
-		Bsw/Mcal/IoDriver/PORT/Port.c \
-		Bsw/Mcal/IoDriver/PORT/Port_Cfg.c \
-		Bsw/Mcal/IoDriver/PWM/Pwm.c \
-		Bsw/Mcal/IoDriver/PWM/Pwm_Cfg.c \
-		Bsw/Mcal/IoDriver/ADC/Adc.c \
-		Bsw/Mcal/IoDriver/ADC/Adc_Cfg.c \
+		Bsw/Mcal/IoDriver/Dio/Dio.c  \
+		Bsw/Mcal/IoDriver/Dio/Dio_Cfg.c \
+		Bsw/Mcal/IoDriver/Port/Port.c \
+		Bsw/Mcal/IoDriver/Port/Port_Cfg.c \
+		Bsw/Mcal/IoDriver/Pwm/Pwm.c \
+		Bsw/Mcal/IoDriver/Pwm/Pwm_Cfg.c \
+		Bsw/Mcal/IoDriver/Adc/Adc.c \
+		Bsw/Mcal/IoDriver/Adc/Adc_Cfg.c \
 		Bsw/Mcal/McuDriver/Mcu/Mcu.c \
 		Bsw/Mcal/McuDriver/Mcu/Mcu_Cfg.c \
 		Bsw/Mcal/ComDriver/Can/Can.c \

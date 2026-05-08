@@ -12,13 +12,16 @@ static Can_HohHandlerConfigType CanHohHandler = {
 
 static Can_BaudrateConfigType CanBaudrateConfig[] = {
     {.CanBaudrateId = 0,
-     .CanTseg1 = 12,
-     .CanTseg2 = 3,
-     .CanBaudratePrescaler = 19,
+     .CanTseg1 = 8,
+     .CanTseg2 = 1,
+     .CanBaudratePrescaler = 69,
      .CanSjw = 1}};
 
 static Can_FilterType CanFilterList[CAN_NUMBER_OF_FILTER] = {
-    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0x00000000, .Mask = 0x00000000}};
+    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0, .Mask = 0}
+    // {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_1, .Id = 0x127, .Mask = 0x7FF},
+    // {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_2, .Id = 0x323, .Mask = 0x7FF},
+};
 
 const Can_ConfigType CanConfig[] = {
     [0] = {
@@ -46,11 +49,19 @@ const Can_ConfigType CanConfig[] = {
                               0xFFFF,
         .CanTxHardwareObject = 0}};
 
-Can_PduType Can_TxPduInfo = {
-    .swPduHandle = CAN_1,
-    .length = 8,
-    .id = 0x127,
-    .sdu = (uint8 *)"ABCDEEGH"};
+Can_PduType Can_TxPduInfo[] = {
+    [0] = {.swPduHandle = CAN_1,
+           .length = 8,
+           .id = 0x127,
+           .sdu = (uint8 *)"11111111"},
+    [1] = {.swPduHandle = CAN_1,
+           .length = 8,
+           .id = 0x123,
+           .sdu = (uint8 *)"22222222"},
+    [2] = {.swPduHandle = CAN_1,
+           .length = 8,
+           .id = 0x321,
+           .sdu = (uint8 *)"33333333"}};
 
 CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER] = {CAN1};
 Can_ControllerStateType Can_ControllerState[CAN_MAX_CONTROLLER] = {CAN_CS_UNINIT};
