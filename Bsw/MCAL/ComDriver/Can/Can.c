@@ -21,15 +21,11 @@ void Can_Init(const Can_ConfigType *ConfigPtr)
         Can_Controllers[ConfigPtr->CanControllerId]->FA1R |= (1 << ConfigPtr->CanFilter[i].Bank);
         if (ConfigPtr->CanIdType == CAN_STANDARD_ID)
         {
-            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = 0;
-            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = 0;
             Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = ((ConfigPtr->CanFilter[i].Id) << 21);
             Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = ((ConfigPtr->CanFilter[i].Mask) << 21);
         }
         else
         {
-            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = 0;
-            Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = 0;
             Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR1 = ((ConfigPtr->CanFilter[i].Id) << 3) | (1 << 2);
             Can_Controllers[ConfigPtr->CanControllerId]->sFilterRegister[i].FR2 = ((ConfigPtr->CanFilter[i].Mask) << 3) | (1 << 2);
         }

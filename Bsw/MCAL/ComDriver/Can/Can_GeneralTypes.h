@@ -11,6 +11,13 @@ typedef uint32 Can_TimeStampType;
 
 typedef struct
 {
+    Can_IdType CanId;
+    Can_HwHandleType Hoh;
+    uint8 ControllerId;
+} Can_HwType;
+
+typedef struct
+{
     PduIdType swPduHandle;
     uint8 length;
     Can_IdType id;

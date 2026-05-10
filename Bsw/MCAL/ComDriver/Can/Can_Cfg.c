@@ -12,14 +12,14 @@ static Can_HohHandlerConfigType CanHohHandler = {
 
 static Can_BaudrateConfigType CanBaudrateConfig[] = {
     {.CanBaudrateId = 0,
-     .CanTseg1 = 8,
+     .CanTseg1 = 6,
      .CanTseg2 = 1,
-     .CanBaudratePrescaler = 69,
+     .CanBaudratePrescaler = 7,
      .CanSjw = 1}};
 
 static Can_FilterType CanFilterList[CAN_NUMBER_OF_FILTER] = {
-    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0, .Mask = 0}
-    // {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_1, .Id = 0x127, .Mask = 0x7FF},
+    // {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0, .Mask = 0}
+    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0x127, .Mask = 0x7FF}
     // {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_2, .Id = 0x323, .Mask = 0x7FF},
 };
 

@@ -46,6 +46,7 @@ void delay(volatile uint32_t t)
     while (t--)
         ;
 }
+
 int main(void)
 {
     Mcu_Init(&Mcu_Configuration[0]);
@@ -69,7 +70,5 @@ int main(void)
 
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
-    while (1)
-        ;
     Can_Read(&RxMsg);
 }
