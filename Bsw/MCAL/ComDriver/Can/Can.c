@@ -208,5 +208,7 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
     rxPdu.SduDataPtr = tempPayload;
     rxPdu.SduLength = (CAN1->sFIFOMailBox[0].RDTR & 0x0F);
 
+    CAN1->RF0R |= (1 << 5);
+
     CanIf_RxIndication(&mailbox, &rxPdu);
 }

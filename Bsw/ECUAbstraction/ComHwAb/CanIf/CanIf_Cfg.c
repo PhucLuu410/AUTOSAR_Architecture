@@ -10,11 +10,11 @@ Can_PduType Can_RxPduInfo[] = {
            .length = 8,
            .id = 0x127,
            .sdu = CanIfBuffer_ReceiveSensor1},
-    [1] = {.swPduHandle = 0,
+    [1] = {.swPduHandle = 1,
            .length = 8,
            .id = 0x123,
            .sdu = CanIfBuffer_ReceiveSensor2},
-    [2] = {.swPduHandle = 0,
+    [2] = {.swPduHandle = 2,
            .length = 8,
            .id = 0x321,
            .sdu = CanIfBuffer_ReceiveSensor3}};

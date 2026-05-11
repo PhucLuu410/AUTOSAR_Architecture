@@ -42,6 +42,13 @@ void Can_Read(Can_RxMessageType *RxMsg)
     CAN1->RF0R |= (1 << 5);
 }
 
+uint8 buffer[8];
+
+PduInfoType info = {
+    .SduDataPtr = buffer,
+    .SduLength = 8,
+};
+
 void delay(volatile uint32_t t)
 {
     while (t--)
@@ -62,7 +69,6 @@ int main(void)
 
     while (1)
     {
-        // CanIf_Transmit(CAN_SENSOR_2, &CanIfPduInfo);
-        // delay(1000000);
+        CanIf_ReadRxPduData(CAN_SENSOR_0, &info);
     }
 }

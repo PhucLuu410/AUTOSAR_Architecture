@@ -34,4 +34,10 @@ void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfPtr)
 
 Std_ReturnType CanIf_ReadRxPduData(PduIdType CanIfRxPduId, PduInfoType *PduInfoPtr)
 {
+    for (int i = 0; i < CanIf_GlobalConfigPtr->RxPduConfig->RxPduType[CanIfRxPduId].length; i++)
+    {
+        PduInfoPtr->SduDataPtr[i] = CanIf_GlobalConfigPtr->RxPduConfig->RxPduType[CanIfRxPduId].sdu[i];
+    }
+    PduInfoPtr->SduLength = CanIf_GlobalConfigPtr->RxPduConfig->RxPduType[CanIfRxPduId].length;
+    return E_OK;
 }
