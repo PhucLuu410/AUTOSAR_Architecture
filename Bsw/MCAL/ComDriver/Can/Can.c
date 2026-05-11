@@ -1,5 +1,6 @@
 #include "Can.h"
 #include "Can_Cfg.h"
+#include "CanIf.h"
 
 void Can_Init(const Can_ConfigType *ConfigPtr)
 {
@@ -192,7 +193,20 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)
     return E_OK;
 }
 
-// void USB_LP_CAN1_RX0_IRQHandler(void)
-// {
-//     Can_Read(&RxMsg);
-// }
+void USB_LP_CAN1_RX0_IRQHandler(void)
+{
+    uint8 tempPayload[8];
+    PduInfoType rxPdu;
+    Can_HwType mailbox;
+
+    mailbox.CanId = (CAN1->sFIFOMailBox[0].RIR >> 21) & 0x7FF;
+    mailbox.Hoh = 0;
+
+    *((uint32 *)(&tempPayload[0])) = CAN1->sFIFOMailBox[0].RDLR;
+    *((uint32 *)(&tempPayload[4])) = CAN1->sFIFOMailBox[0].RDHR;
+
+    rxPdu.SduDataPtr = tempPayload;
+    rxPdu.SduLength = (CAN1->sFIFOMailBox[0].RDTR & 0x0F);
+
+    CanIf_RxIndication(&mailbox, &rxPdu);
+}

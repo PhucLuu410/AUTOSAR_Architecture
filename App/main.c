@@ -13,7 +13,8 @@
 #include "IoHwAb_Cfg.h"
 #include "Can.h"
 #include "Can_Cfg.h"
-
+#include "CanIf.h"
+#include "CanIf_Cfg.h"
 typedef struct
 {
     uint32_t id;
@@ -46,6 +47,7 @@ void delay(volatile uint32_t t)
     while (t--)
         ;
 }
+
 int main(void)
 {
     Mcu_Init(&Mcu_Configuration[0]);
@@ -56,18 +58,11 @@ int main(void)
     Can_EnableControllerInterrupts(CAN_1);
     Can_SetBaudrate(CAN_1, 0);
     Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
+    CanIf_Init(&CanIf_Config);
+
     while (1)
     {
-        // Can_Write(CAN_MAILBOX_0, &Can_TxPduInfo[0]);
-        // delay(10000);
-        // Can_Write(CAN_MAILBOX_1, &Can_TxPduInfo[1]);
-        // delay(10000);
-        // Can_Write(CAN_MAILBOX_2, &Can_TxPduInfo[2]);
-        // Can_Read(&RxMsg);
+        // CanIf_Transmit(CAN_SENSOR_2, &CanIfPduInfo);
+        // delay(1000000);
     }
-}
-
-void USB_LP_CAN1_RX0_IRQHandler(void)
-{
-    Can_Read(&RxMsg);
 }

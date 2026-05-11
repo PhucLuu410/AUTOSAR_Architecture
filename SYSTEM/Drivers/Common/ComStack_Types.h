@@ -58,12 +58,10 @@ typedef struct
     PduLengthType TxTpDataCnt;
 } RetryInfoType;
 
-/*
-typedef struct {
-   P2VAR(uint8,AUTOMATIC,AUTOSAR_COMSTACKDATA) SduDataPtr
-   PduLengthType   SduLength;
-} PduInfoType;
-*/
+// typedef struct {
+//    P2VAR(uint8,AUTOMATIC,AUTOSAR_COMSTACKDATA) SduDataPtr
+//    PduLengthType   SduLength;
+// } PduInfoType;
 
 typedef enum
 {
