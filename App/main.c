@@ -59,9 +59,9 @@ int main(void)
     while (1)
     {
         // Can_Write(CAN_MAILBOX_0, &Can_TxPduInfo[0]);
-        // delay(1000000);
+        // delay(10000);
         // Can_Write(CAN_MAILBOX_1, &Can_TxPduInfo[1]);
-        // delay(1000000);
+        // delay(10000);
         // Can_Write(CAN_MAILBOX_2, &Can_TxPduInfo[2]);
         // Can_Read(&RxMsg);
     }
@@ -69,7 +69,5 @@ int main(void)
 
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
-    while (1)
-        ;
     Can_Read(&RxMsg);
 }
