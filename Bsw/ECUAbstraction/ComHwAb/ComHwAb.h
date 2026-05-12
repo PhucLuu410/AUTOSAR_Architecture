@@ -31,7 +31,7 @@ typedef struct
 
 typedef struct
 {
-    CanIfInitHohCfg *HogCfg;
+    CanIfInitHohCfg *HogCfg;    
     CanIfRxPduCfg *RxPduCfg;
     CanIfTxPduCfg *TxPduCfg;
     CanIfBufferCfg *BufferCfg;
