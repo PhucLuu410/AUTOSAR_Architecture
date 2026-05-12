@@ -8,39 +8,14 @@
 #include "Adc/Adc_Cfg.h"
 #include "Mcu.h"
 #include "Mcu_Cfg.h"
-#include "Os.h"
 #include "IoHwAb.h"
 #include "IoHwAb_Cfg.h"
 #include "Can.h"
 #include "Can_Cfg.h"
 #include "CanIf.h"
 #include "CanIf_Cfg.h"
-typedef struct
-{
-    uint32_t id;
-    uint8_t len;
-    uint8_t data[8];
-} Can_RxMessageType;
-
-Can_RxMessageType RxMsg;
-
-void Can_Read(Can_RxMessageType *RxMsg)
-{
-    if ((CAN1->RF0R & 0x3) == 0)
-        return;
-    GPIOC->BSRR = (1 << 13);
-    RxMsg->id = (CAN1->sFIFOMailBox[0].RIR >> 21) & 0x7FF;
-    RxMsg->len = (CAN1->sFIFOMailBox[0].RDTR) & 0xF;
-    RxMsg->data[0] = CAN1->sFIFOMailBox[0].RDLR & 0xFF;
-    RxMsg->data[1] = (CAN1->sFIFOMailBox[0].RDLR >> 8) & 0xFF;
-    RxMsg->data[2] = (CAN1->sFIFOMailBox[0].RDLR >> 16) & 0xFF;
-    RxMsg->data[3] = (CAN1->sFIFOMailBox[0].RDLR >> 24) & 0xFF;
-    RxMsg->data[4] = CAN1->sFIFOMailBox[0].RDHR & 0xFF;
-    RxMsg->data[5] = (CAN1->sFIFOMailBox[0].RDHR >> 8) & 0xFF;
-    RxMsg->data[6] = (CAN1->sFIFOMailBox[0].RDHR >> 16) & 0xFF;
-    RxMsg->data[7] = (CAN1->sFIFOMailBox[0].RDHR >> 24) & 0xFF;
-    CAN1->RF0R |= (1 << 5);
-}
+#include "PduR.h"
+#include "PduR_Cfg.h"
 
 uint8 buffer[8];
 
@@ -65,10 +40,20 @@ int main(void)
     Can_EnableControllerInterrupts(CAN_1);
     Can_SetBaudrate(CAN_1, 0);
     Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
-    CanIf_Init(&CanIf_Config);
-
+    CanIf_Init(&CanIfConfig);
+    PduR_Init(&PduR_GlobalConfig);
     while (1)
     {
-        CanIf_ReadRxPduData(CAN_SENSOR_0, &info);
+        CanIf_Transmit(SENSOR_0, &CanIfTxPduInfo[SENSOR_0]);
+        delay(100000);
+        CanIf_Transmit(SENSOR_1, &CanIfTxPduInfo[SENSOR_1]);
+        delay(100000);
+        CanIf_Transmit(SENSOR_2, &CanIfTxPduInfo[SENSOR_2]);
     }
+}
+
+void HardFault_Handler(void)
+{
+    while (1)
+        ;
 }

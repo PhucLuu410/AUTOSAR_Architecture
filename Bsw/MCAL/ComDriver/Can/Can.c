@@ -195,20 +195,46 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)
 
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
-    uint8 tempPayload[8];
-    PduInfoType rxPdu;
-    Can_HwType mailbox;
+    Can_HwType CanMailBox;
+    PduInfoType CanRxPdu;
+    uint32_t temp_data[2];
 
-    mailbox.CanId = (CAN1->sFIFOMailBox[0].RIR >> 21) & 0x7FF;
-    mailbox.Hoh = 0;
+    CanMailBox.ControllerId = CAN_1;
 
-    *((uint32 *)(&tempPayload[0])) = CAN1->sFIFOMailBox[0].RDLR;
-    *((uint32 *)(&tempPayload[4])) = CAN1->sFIFOMailBox[0].RDHR;
-
-    rxPdu.SduDataPtr = tempPayload;
-    rxPdu.SduLength = (CAN1->sFIFOMailBox[0].RDTR & 0x0F);
-
-    CAN1->RF0R |= (1 << 5);
-
-    CanIf_RxIndication(&mailbox, &rxPdu);
+    if ((Can_Controllers[CAN_1]->RF0R & 0x03) != 0)
+    {
+        if (Can_Controllers[CAN_1]->sFIFOMailBox[0].RIR & (1 << 2))
+        {
+            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[0].RIR >> 3;
+        }
+        else
+        {
+            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[0].RIR >> 21;
+        }
+        CanMailBox.Hoh = 0;
+        CanRxPdu.SduLength = Can_Controllers[CAN_1]->sFIFOMailBox[0].RDTR & 0x0F;
+        CanRxPdu.SduDataPtr = (uint8_t *)temp_data;
+        temp_data[0] = Can_Controllers[CAN_1]->sFIFOMailBox[0].RDLR;
+        temp_data[1] = Can_Controllers[CAN_1]->sFIFOMailBox[0].RDHR;
+        CanIf_RxIndication(&CanMailBox, &CanRxPdu);
+        Can_Controllers[CAN_1]->RF0R |= (1 << 5);
+    }
+    if ((Can_Controllers[CAN_1]->RF1R & 0x03) != 0)
+    {
+        if (Can_Controllers[CAN_1]->sFIFOMailBox[1].RIR & (1 << 2))
+        {
+            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[1].RIR >> 3;
+        }
+        else
+        {
+            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[1].RIR >> 21;
+        }
+        CanMailBox.Hoh = 1;
+        CanRxPdu.SduLength = Can_Controllers[CAN_1]->sFIFOMailBox[1].RDTR & 0x0F;
+        CanRxPdu.SduDataPtr = (uint8_t *)temp_data;
+        temp_data[0] = Can_Controllers[CAN_1]->sFIFOMailBox[1].RDLR;
+        temp_data[1] = Can_Controllers[CAN_1]->sFIFOMailBox[1].RDHR;
+        CanIf_RxIndication(&CanMailBox, &CanRxPdu);
+        Can_Controllers[CAN_1]->RF1R |= (1 << 5);
+    }
 }

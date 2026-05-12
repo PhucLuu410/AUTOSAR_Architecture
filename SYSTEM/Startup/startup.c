@@ -37,7 +37,6 @@ void Default_Handler(void)
     while (1)
         ;
 }
-
 void Reset_Handler(void);
 void Default_Handler(void);
 void NMI_Handler(void) __attribute__((weak, alias("Default_Handler")));

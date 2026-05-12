@@ -3,12 +3,13 @@
 
 #include "CanIf.h"
 
-#define CAN_SENSOR_0 0
-#define CAN_SENSOR_1 1
-#define CAN_SENSOR_2 2
+#define SENSOR_0_ID 0x127
+#define SENSOR_1_ID 0x123
+#define SENSOR_2_ID 0x321
 
-extern Can_PduType Can_TxPduInfo[];
-extern CanIf_ConfigType CanIf_Config;
-extern PduInfoType CanIfPduInfo;
+extern Can_PduType CanTxPduInfo[];
+extern PduInfoType CanIfRxPduInfo[];
+extern CanIf_ConfigType CanIfConfig;
+extern PduInfoType CanIfTxPduInfo[];
 
 #endif

@@ -7,46 +7,9 @@
 
 typedef struct
 {
-
-} CanIfBufferCfg;
-
-typedef struct
-{
-
-} CanIfInitHohCfg;
-
-typedef struct
-{
-    Can_PduType *RxPduType;
-} CanIfRxPduCfg;
-
-typedef struct
-{
-    Can_PduType *TxPduType;
-} CanIfTxPduCfg;
-
-typedef struct
-{
-    CanIfInitHohCfg *InitHohCfg;
-    CanIfTxPduCfg *TxPduConfig;
-    CanIfRxPduCfg *RxPduConfig;
-    CanIfBufferCfg *BufferCfg;
+    Can_PduType *TxPduConfig;
+    PduInfoType *RxPduConfig;
 } CanIf_ConfigType;
-
-typedef struct
-{
-
-} CanIfCtrlDrvCfg;
-
-typedef struct
-{
-
-} CanIfDispatchCfg;
-
-typedef struct
-{
-
-} CanIfPublicCfg;
 
 typedef enum
 {
