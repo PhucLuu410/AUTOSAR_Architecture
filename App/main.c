@@ -41,14 +41,16 @@ int main(void)
     Can_SetBaudrate(CAN_1, 0);
     Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
     CanIf_Init(&CanIfConfig);
-    PduR_Init(&PduR_GlobalConfig);
+    // PduR_Init(PduR_RxRouteTable);
     while (1)
     {
-        CanIf_Transmit(SENSOR_0, &CanIfTxPduInfo[SENSOR_0]);
-        delay(100000);
-        CanIf_Transmit(SENSOR_1, &CanIfTxPduInfo[SENSOR_1]);
-        delay(100000);
-        CanIf_Transmit(SENSOR_2, &CanIfTxPduInfo[SENSOR_2]);
+        // CanIf_Transmit(SENSOR_0, &CanIfTxPduInfo[SENSOR_0]);
+        // delay(100000);
+        // CanIf_Transmit(SENSOR_1, &CanIfTxPduInfo[SENSOR_1]);
+        // delay(100000);
+        // CanIf_Transmit(SENSOR_2, &CanIfTxPduInfo[SENSOR_2]);
+        // delay(100000);
+        // GPIOC->ODR ^= GPIO_ODR_ODR13;
     }
 }
 

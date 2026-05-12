@@ -18,9 +18,9 @@ static Can_BaudrateConfigType CanBaudrateConfig[] = {
      .CanSjw = 1}};
 
 static Can_FilterType CanFilterList[CAN_NUMBER_OF_FILTER] = {
-    // {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0, .Mask = 0}
-    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0x127, .Mask = 0x7FF}
-    // {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_2, .Id = 0x323, .Mask = 0x7FF},
+    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0x123, .Mask = 0x7FF},
+    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_1, .Id = 0x127, .Mask = 0x7FF},
+    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_2, .Id = 0x321, .Mask = 0x7FF},
 };
 
 const Can_ConfigType CanConfig[] = {

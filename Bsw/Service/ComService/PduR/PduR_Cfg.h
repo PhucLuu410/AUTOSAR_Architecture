@@ -4,7 +4,6 @@
 #include "PduR.h"
 #include "CanIf.h"
 #include "CanIf_Cfg.h"
-
-extern const PduR_PBConfigType PduR_GlobalConfig;
+#include "Can_Cfg.h"
 
 #endif

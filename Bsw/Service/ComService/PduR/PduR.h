@@ -15,9 +15,7 @@ typedef enum
 
 typedef struct
 {
-    uint16 SourcePduId;
-    uint16 TargetPduId;
-    uint8 TargetModule;
+
 } PduR_RoutingPathType;
 
 typedef struct
