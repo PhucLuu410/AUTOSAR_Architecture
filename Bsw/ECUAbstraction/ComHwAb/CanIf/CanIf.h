@@ -7,7 +7,20 @@
 
 typedef struct
 {
-    PduInfoType *TxPduConfig;
+    PduIdType RxPduId;
+    Can_IdType CanId;
+} CanIfPduRxTableType;
+
+typedef struct
+{
+    PduIdType TxPduId;
+    Can_PduType *TxPduTable;
+} CanIfPduTxTableType;
+
+typedef struct
+{
+    CanIfPduRxTableType *RxTableConfig;
+    CanIfPduTxTableType *TxTableConfig;
 } CanIf_ConfigType;
 
 typedef enum

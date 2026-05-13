@@ -1,10 +1,7 @@
 #include "CanIf.h"
 #include "CanIf_Cfg.h"
 #include "Can.h"
-#include "Can_Cfg.h"
-#include "Can_GeneralTypes.h"
 #include "PduR.h"
-#include "PduR_Cfg.h"
 
 static const CanIf_ConfigType *CanIfGlobalConfigPtr = NULL_PTR;
 
@@ -13,20 +10,31 @@ void CanIf_Init(const CanIf_ConfigType *ConfigPtr)
     CanIfGlobalConfigPtr = ConfigPtr;
 }
 
-Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
+Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoType)
 {
-    for (int i = 0; i < PduInfoPtr->SduLength; i++)
+    for (int i = 0; i < CAN_SERSOR_DATA_LENGTH; i++)
     {
-        CanTxPduInfo[TxPduId].sdu[i] = PduInfoPtr->SduDataPtr[i];
+        if (TxPduId == CanIfGlobalConfigPtr->TxTableConfig[i].TxPduId)
+        {
+            for (int j = 0; j < PduInfoType->SduLength; j++)
+            {
+                CanIfGlobalConfigPtr->TxTableConfig[i].TxPduTable->sdu[j] = PduInfoType->SduDataPtr[j];
+            }
+            CanIfGlobalConfigPtr->TxTableConfig[i].TxPduTable->length = PduInfoType->SduLength;
+        }
     }
-    CanTxPduInfo[TxPduId].length = PduInfoPtr->SduLength;
-
-    return Can_Write(TxPduId, &CanTxPduInfo[TxPduId]);
+    return Can_Write(CAN_MAILBOX_0, &CanTxPduInfo[TxPduId]);
 }
 
 void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfPtr)
 {
-    PduR_RxIndication(Mailbox->CanId, PduInfPtr);
+    for (int i = 0; i < CAN_SERSOR_DATA_LENGTH; i++)
+    {
+        if (Mailbox->CanId == CanIfGlobalConfigPtr->RxTableConfig[i].CanId)
+        {
+            PduR_RxIndication(CanIfGlobalConfigPtr->RxTableConfig[i].RxPduId, PduInfPtr);
+        }
+    }
 }
 
 // Std_ReturnType CanIf_ReadRxPduData(PduIdType CanIfRxPduId, PduInfoType *PduInfoPtr)

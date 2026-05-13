@@ -92,16 +92,8 @@
 #define CAN_MAILBOX_1 1
 #define CAN_MAILBOX_2 2
 
-#define SENSOR_0 0
-#define SENSOR_1 1
-#define SENSOR_2 2
-
-#define SENSOR_0_ID 0x127
-#define SENSOR_1_ID 0x123
-#define SENSOR_2_ID 0x321
-
 extern const Can_ConfigType CanConfig[];
 extern CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER];
 extern Can_ControllerStateType Can_ControllerState[CAN_MAX_CONTROLLER];
-extern Can_PduType CanTxPduInfo[];
+
 #endif

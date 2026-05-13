@@ -7,21 +7,21 @@
 typedef uint16 PduR_PBConfigIdType;
 typedef uint16 PduR_RoutingPathGroupIdType;
 
-typedef enum
+typedef struct
 {
-    PDUR_UNINIT = 0,
-    PDUR_ONLINE
-} PduR_StateType;
+    PduIdType TxPduId;
+    Std_ReturnType (*Transmit_Func)(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
+} PduR_TxRoutingPathType;
+typedef struct
+{
+    PduIdType RxPduId;
+    void (*Rx_Func)(PduIdType PduId, const PduInfoType *PduInfoPtr);
+} PduR_RxRoutingPathType;
 
 typedef struct
 {
-
-} PduR_RoutingPathType;
-
-typedef struct
-{
-    const PduR_RoutingPathType *RxRoutingTable;
-    const PduR_RoutingPathType *TxRoutingTable;
+    PduR_TxRoutingPathType *TxRoutingTable;
+    PduR_RxRoutingPathType *RxRoutingTable;
 } PduR_PBConfigType;
 
 void PduR_Init(const PduR_PBConfigType *ConfigPtr);

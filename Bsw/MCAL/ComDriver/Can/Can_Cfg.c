@@ -51,20 +51,3 @@ const Can_ConfigType CanConfig[] = {
 
 CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER] = {CAN1};
 Can_ControllerStateType Can_ControllerState[CAN_MAX_CONTROLLER] = {CAN_CS_UNINIT};
-
-static uint8 CanSensor0BufferTransmit[8] = {0};
-static uint8 CanSensor1BufferTransmit[8] = {0};
-static uint8 CanSensor2BufferTransmit[8] = {0};
-
-Can_PduType CanTxPduInfo[] = {[SENSOR_0] = {.swPduHandle = 0,
-                                            .length = 8,
-                                            .id = 0x127,
-                                            .sdu = CanSensor0BufferTransmit},
-                              [SENSOR_1] = {.swPduHandle = 0,
-                                            .length = 8,
-                                            .id = 0x123,
-                                            .sdu = CanSensor1BufferTransmit},
-                              [SENSOR_2] = {.swPduHandle = 0,
-                                            .length = 8,
-                                            .id = 0x321,
-                                            .sdu = CanSensor2BufferTransmit}};

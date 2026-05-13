@@ -2,18 +2,36 @@
 
 #include "Can_Cfg.h"
 
-static uint8 CanIfSensor1TxDataBuffer[8] = {0x01, 0x02, 0x04, 0x04, 0x05, 0x06, 0x07, 0x08};
-static uint8 CanIfSensor2TxDataBuffer[8] = {0x02, 0x01, 0x01, 0x04, 0x05, 0x06, 0x07, 0x08};
-static uint8 CanIfSensor3TxDataBuffer[8] = {0x03, 0x02, 0x02, 0x04, 0x05, 0x06, 0x07, 0x08};
+CanIfPduRxTableType CanIfRxTable[] = {
+    [0] = {.RxPduId = 0,
+           .CanId = SENSOR_0_ID},
+    [1] = {.RxPduId = 1,
+           .CanId = SENSOR_1_ID},
+    [2] = {.RxPduId = 2,
+           .CanId = SENSOR_2_ID}};
 
-PduInfoType CanIfTxPduInfo[] = {
-    [SENSOR_0] = {.SduDataPtr = CanIfSensor1TxDataBuffer,
-                  .SduLength = 8},
-    [SENSOR_1] = {.SduDataPtr = CanIfSensor2TxDataBuffer,
-                  .SduLength = 8},
-    [SENSOR_2] = {.SduDataPtr = CanIfSensor3TxDataBuffer,
-                  .SduLength = 8},
-};
+static uint8 CanIfBufferTransmit[8] = {0};
 
-CanIf_ConfigType CanIfConfig = {
-    .TxPduConfig = CanIfTxPduInfo};
+Can_PduType CanTxPduInfo[] = {[SENSOR_0] = {.swPduHandle = 0,
+                                            .length = 0,
+                                            .id = SENSOR_0_ID,
+                                            .sdu = CanIfBufferTransmit},
+                              [SENSOR_1] = {.swPduHandle = 0,
+                                            .length = 0,
+                                            .id = SENSOR_1_ID,
+                                            .sdu = CanIfBufferTransmit},
+                              [SENSOR_2] = {.swPduHandle = 0,
+                                            .length = 0,
+                                            .id = SENSOR_2_ID,
+                                            .sdu = CanIfBufferTransmit}};
+
+CanIfPduTxTableType CanIfTxTable[] = {
+    [0] = {.TxPduId = 0,
+           .TxPduTable = &CanTxPduInfo[0]},
+    [1] = {.TxPduId = 1,
+           .TxPduTable = &CanTxPduInfo[1]},
+    [2] = {.TxPduId = 2,
+           .TxPduTable = &CanTxPduInfo[2]}};
+
+CanIf_ConfigType CanIfConfig = {.RxTableConfig = CanIfRxTable,
+                                .TxTableConfig = CanIfTxTable};
