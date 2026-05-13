@@ -8,38 +8,21 @@
 #include "Adc/Adc_Cfg.h"
 #include "Mcu.h"
 #include "Mcu_Cfg.h"
-#include "Os.h"
 #include "IoHwAb.h"
 #include "IoHwAb_Cfg.h"
 #include "Can.h"
 #include "Can_Cfg.h"
+#include "CanIf.h"
+#include "CanIf_Cfg.h"
+#include "PduR.h"
+#include "PduR_Cfg.h"
 
-typedef struct
-{
-    uint32_t id;
-    uint8_t len;
-    uint8_t data[8];
-} Can_RxMessageType;
+uint8 buffer[8];
 
-Can_RxMessageType RxMsg;
-
-void Can_Read(Can_RxMessageType *RxMsg)
-{
-    if ((CAN1->RF0R & 0x3) == 0)
-        return;
-    GPIOC->BSRR = (1 << 13);
-    RxMsg->id = (CAN1->sFIFOMailBox[0].RIR >> 21) & 0x7FF;
-    RxMsg->len = (CAN1->sFIFOMailBox[0].RDTR) & 0xF;
-    RxMsg->data[0] = CAN1->sFIFOMailBox[0].RDLR & 0xFF;
-    RxMsg->data[1] = (CAN1->sFIFOMailBox[0].RDLR >> 8) & 0xFF;
-    RxMsg->data[2] = (CAN1->sFIFOMailBox[0].RDLR >> 16) & 0xFF;
-    RxMsg->data[3] = (CAN1->sFIFOMailBox[0].RDLR >> 24) & 0xFF;
-    RxMsg->data[4] = CAN1->sFIFOMailBox[0].RDHR & 0xFF;
-    RxMsg->data[5] = (CAN1->sFIFOMailBox[0].RDHR >> 8) & 0xFF;
-    RxMsg->data[6] = (CAN1->sFIFOMailBox[0].RDHR >> 16) & 0xFF;
-    RxMsg->data[7] = (CAN1->sFIFOMailBox[0].RDHR >> 24) & 0xFF;
-    CAN1->RF0R |= (1 << 5);
-}
+PduInfoType info = {
+    .SduDataPtr = buffer,
+    .SduLength = 8,
+};
 
 void delay(volatile uint32_t t)
 {
@@ -57,18 +40,22 @@ int main(void)
     Can_EnableControllerInterrupts(CAN_1);
     Can_SetBaudrate(CAN_1, 0);
     Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
+    CanIf_Init(&CanIfConfig);
+    // PduR_Init(PduR_RxRouteTable);
     while (1)
     {
-        // Can_Write(CAN_MAILBOX_0, &Can_TxPduInfo[0]);
-        // delay(1000000);
-        // Can_Write(CAN_MAILBOX_1, &Can_TxPduInfo[1]);
-        // delay(1000000);
-        // Can_Write(CAN_MAILBOX_2, &Can_TxPduInfo[2]);
-        // Can_Read(&RxMsg);
+        // CanIf_Transmit(SENSOR_0, &CanIfTxPduInfo[SENSOR_0]);
+        // delay(100000);
+        // CanIf_Transmit(SENSOR_1, &CanIfTxPduInfo[SENSOR_1]);
+        // delay(100000);
+        // CanIf_Transmit(SENSOR_2, &CanIfTxPduInfo[SENSOR_2]);
+        // delay(100000);
+        // GPIOC->ODR ^= GPIO_ODR_ODR13;
     }
 }
 
-void USB_LP_CAN1_RX0_IRQHandler(void)
+void HardFault_Handler(void)
 {
-    Can_Read(&RxMsg);
+    while (1)
+        ;
 }

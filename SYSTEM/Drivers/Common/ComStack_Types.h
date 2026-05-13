@@ -36,6 +36,19 @@
 // There might be several ranges of PduIds in a module, one for each type of
 // operation performed within that module (e.g. sending and receiving).
 
+#define SENSOR_USING_CAN 3
+#define SENSOR_USING_LIN 2
+
+#define SENSOR_0 0
+#define SENSOR_1 1
+#define SENSOR_2 2
+#define SENSOR_3 3
+#define SENSOR_4 4
+
+#define SENSOR_0_ID 0x127
+#define SENSOR_1_ID 0x123
+#define SENSOR_2_ID 0x321
+
 typedef uint16 PduIdType;
 typedef uint16 PduLengthType;
 typedef struct

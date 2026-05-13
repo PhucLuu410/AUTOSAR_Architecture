@@ -65,7 +65,7 @@
 #define CAN_FIFO0_MESSAGE_PENDING_INTERUPT 1
 #define CAN_TX_MAILBOX_EMPTY_INTERUPT 0
 
-#define CAN_NUMBER_OF_FILTER 1
+#define CAN_NUMBER_OF_FILTER 3
 #define CAN_FIFO_0_MASK 0
 #define CAN_FIFO_1_MASK 1
 #define CAN_ID_MASK_1_32_BIT 0b10
@@ -95,5 +95,5 @@
 extern const Can_ConfigType CanConfig[];
 extern CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER];
 extern Can_ControllerStateType Can_ControllerState[CAN_MAX_CONTROLLER];
-extern Can_PduType Can_TxPduInfo[];
+extern Can_PduType CanTxPduInfo[];
 #endif
