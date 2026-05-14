@@ -12,18 +12,18 @@ CanIfPduRxTableType CanIfRxTable[] = {
 
 static uint8 CanIfBufferTransmit[8] = {0};
 
-Can_PduType CanTxPduInfo[] = {[SENSOR_0] = {.swPduHandle = 0,
-                                            .length = 0,
-                                            .id = SENSOR_0_ID,
-                                            .sdu = CanIfBufferTransmit},
-                              [SENSOR_1] = {.swPduHandle = 0,
-                                            .length = 0,
-                                            .id = SENSOR_1_ID,
-                                            .sdu = CanIfBufferTransmit},
-                              [SENSOR_2] = {.swPduHandle = 0,
-                                            .length = 0,
-                                            .id = SENSOR_2_ID,
-                                            .sdu = CanIfBufferTransmit}};
+Can_PduType CanTxPduInfo[] = {[0] = {.swPduHandle = SENSOR_0,
+                                     .length = 0,
+                                     .id = SENSOR_0_ID,
+                                     .sdu = CanIfBufferTransmit},
+                              [1] = {.swPduHandle = SENSOR_1,
+                                     .length = 0,
+                                     .id = SENSOR_1_ID,
+                                     .sdu = CanIfBufferTransmit},
+                              [2] = {.swPduHandle = SENSOR_2,
+                                     .length = 0,
+                                     .id = SENSOR_2_ID,
+                                     .sdu = CanIfBufferTransmit}};
 
 CanIfPduTxTableType CanIfTxTable[] = {
     [0] = {.TxPduId = 0,

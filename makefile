@@ -15,6 +15,8 @@ IPATH = -I. \
 		-I./Bsw/EcuAbstraction/ComHwAb/CanIf \
 		-I./Bsw/Service/ComService/PduR \
 		-I./Bsw/Service/ComService/Com \
+		-I./Bsw/Service/SystemService/Os \
+		-I./Rte
 
 SRC = 	./System/Startup/startup.c \
 		App/main.c \
@@ -37,6 +39,9 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Service/ComService/PduR/PduR.c \
 		Bsw/Service/ComService/PduR/PduR_Cfg.c \
 		Bsw/Service/ComService/Com/Com.c \
+		Bsw/Service/ComService/Com/Com_Cfg.c \
+		Bsw/Service/SystemService/Os/Os.c \
+		Rte/Rte.c \
 
 		
 
