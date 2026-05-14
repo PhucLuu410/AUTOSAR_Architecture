@@ -17,10 +17,20 @@
 #include "PduR.h"
 #include "PduR_Cfg.h"
 
-uint8 buffer[8];
+static uint8 CanIfSensor1TxDataBuffer[8] = {0x08, 0x01, 0x04, 0x04, 0x05, 0x06, 0x07, 0x08};
+static uint8 CanIfSensor2TxDataBuffer[8] = {0x00, 0x04, 0x04, 0x04, 0x05, 0x06, 0x07, 0x08};
+static uint8 CanIfSensor3TxDataBuffer[8] = {0x01, 0x02, 0x04, 0x04, 0x05, 0x06, 0x07, 0x08};
 
-PduInfoType info = {
-    .SduDataPtr = buffer,
+PduInfoType CanIfTx1PduInfo = {
+    .SduDataPtr = CanIfSensor1TxDataBuffer,
+    .SduLength = 8,
+};
+PduInfoType CanIfTx2PduInfo = {
+    .SduDataPtr = CanIfSensor2TxDataBuffer,
+    .SduLength = 8,
+};
+PduInfoType CanIfTx3PduInfo = {
+    .SduDataPtr = CanIfSensor3TxDataBuffer,
     .SduLength = 8,
 };
 
@@ -41,16 +51,16 @@ int main(void)
     Can_SetBaudrate(CAN_1, 0);
     Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
     CanIf_Init(&CanIfConfig);
-    // PduR_Init(PduR_RxRouteTable);
+    PduR_Init(&PduR_PBConfig);
     while (1)
     {
-        // CanIf_Transmit(SENSOR_0, &CanIfTxPduInfo[SENSOR_0]);
-        // delay(100000);
-        // CanIf_Transmit(SENSOR_1, &CanIfTxPduInfo[SENSOR_1]);
-        // delay(100000);
-        // CanIf_Transmit(SENSOR_2, &CanIfTxPduInfo[SENSOR_2]);
-        // delay(100000);
-        // GPIOC->ODR ^= GPIO_ODR_ODR13;
+
+        // PduR_ComTransmit(SENSOR_0, &CanIfTx1PduInfo);
+        // delay(1000000);
+        // PduR_ComTransmit(SENSOR_1, &CanIfTx2PduInfo);
+        // delay(1000000);
+        // PduR_ComTransmit(SENSOR_2, &CanIfTx3PduInfo);
+        // delay(1000000);
     }
 }
 

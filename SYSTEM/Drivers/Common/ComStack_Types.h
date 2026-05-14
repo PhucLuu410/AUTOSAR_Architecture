@@ -22,19 +22,15 @@
 
 #include "Std_Types.h"
 
-// Zero-based integer number
-// The size of this global type depends on the maximum
-// number of PDUs used within one software module.
-// Example :
-// If  no software module deals with more PDUs that
-// 256, this type can be set to uint8.
-// If at least one software module handles more than
-// 256 PDUs, this type must globally be set to uint16.
+#define CAN_SERSOR_DATA_LENGTH 3
 
-// In order to be able to perform table-indexing within a software
-// module, variables of this type shall be zero-based and consecutive.
-// There might be several ranges of PduIds in a module, one for each type of
-// operation performed within that module (e.g. sending and receiving).
+#define SENSOR_0 0
+#define SENSOR_1 1
+#define SENSOR_2 2
+
+#define SENSOR_0_ID 0x127
+#define SENSOR_1_ID 0x123
+#define SENSOR_2_ID 0x321
 
 #define SENSOR_USING_CAN 3
 #define SENSOR_USING_LIN 2

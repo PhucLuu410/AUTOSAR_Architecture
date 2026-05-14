@@ -6,4 +6,7 @@
 #include "CanIf_Cfg.h"
 #include "Can_Cfg.h"
 
+extern PduR_RxRoutingPathType PduR_RxRouteTable[];
+extern PduR_TxRoutingPathType PduR_TxRouteTable[];
+extern PduR_PBConfigType PduR_PBConfig;
 #endif

@@ -95,5 +95,5 @@
 extern const Can_ConfigType CanConfig[];
 extern CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER];
 extern Can_ControllerStateType Can_ControllerState[CAN_MAX_CONTROLLER];
-extern Can_PduType CanTxPduInfo[];
+
 #endif

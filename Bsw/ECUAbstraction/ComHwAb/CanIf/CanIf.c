@@ -10,25 +10,29 @@ void CanIf_Init(const CanIf_ConfigType *ConfigPtr)
     CanIfGlobalConfigPtr = ConfigPtr;
 }
 
-Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
+Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoType)
 {
-    for (int i = 0; i < PduInfoPtr->SduLength; i++)
+    for (int i = 0; i < CAN_SERSOR_DATA_LENGTH; i++)
     {
-        CanTxPduInfo[TxPduId].sdu[i] = PduInfoPtr->SduDataPtr[i];
+        if (TxPduId == CanIfGlobalConfigPtr->TxTableConfig[i].TxPduId)
+        {
+            for (int j = 0; j < PduInfoType->SduLength; j++)
+            {
+                CanIfGlobalConfigPtr->TxTableConfig[i].TxPduTable->sdu[j] = PduInfoType->SduDataPtr[j];
+            }
+            CanIfGlobalConfigPtr->TxTableConfig[i].TxPduTable->length = PduInfoType->SduLength;
+        }
     }
-    CanTxPduInfo[TxPduId].length = PduInfoPtr->SduLength;
-
-    return Can_Write(TxPduId, &CanTxPduInfo[TxPduId]);
+    return Can_Write(0, &CanTxPduInfo[TxPduId]);
 }
 
 void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfPtr)
 {
-    for (int i = 0; i < SENSOR_USING_CAN; i++)
+    for (int i = 0; i < CAN_SERSOR_DATA_LENGTH; i++)
     {
-        if (Mailbox->CanId == CanIfGlobalConfigPtr->RxTable[i].CanId)
+        if (Mailbox->CanId == CanIfGlobalConfigPtr->RxTableConfig[i].CanId)
         {
-            PduR_RxIndication(i, PduInfPtr);
-            break;
+            PduR_RxIndication(CanIfGlobalConfigPtr->RxTableConfig[i].RxPduId, PduInfPtr);
         }
     }
 }

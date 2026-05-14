@@ -3,8 +3,9 @@
 
 #include "CanIf.h"
 
-extern Can_PduType CanTxPduInfo[];
 extern CanIf_ConfigType CanIfConfig;
-extern PduInfoType CanIfTxPduInfo[];
 
+extern Can_PduType CanTxPduInfo[];
+
+extern CanIfPduRxTableType CanIfRxTable[];
 #endif
