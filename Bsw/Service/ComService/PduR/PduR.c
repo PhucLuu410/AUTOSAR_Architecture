@@ -18,7 +18,7 @@ void PduR_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
     PduR_ConfigPtr->RxRoutingTable[RxPduId].Rx_Func(RxPduId, PduInfoPtr);
 }
 
-Std_ReturnType PduR_ComTransmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
+Std_ReturnType PduR_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 {
     return PduR_ConfigPtr->TxRoutingTable[TxPduId].Transmit_Func(TxPduId, PduInfoPtr);
 }

@@ -3,7 +3,6 @@
 #include "CanIf.h"
 
 static uint8 PduIdRecentSent = 0;
-
 void Can_Init(const Can_ConfigType *ConfigPtr)
 {
     GPIOA->ODR |= (1 << 11);
@@ -34,14 +33,13 @@ void Can_Init(const Can_ConfigType *ConfigPtr)
         }
     }
     Can_Controllers[ConfigPtr->CanControllerId]->FMR &= ~(1 << 0);
+    Can_ControllerState = CAN_CS_STARTED;
 }
 
 void Can_DeInit(void)
 {
-    for (uint8 i = 0; i < CAN_MAX_CONTROLLER; i++)
-    {
-        Can_Controllers[i]->MCR = 0x00010002;
-    }
+    Can_Controllers[CAN_1]->MCR = 0x00010002;
+    Can_ControllerState = CAN_CS_UNINIT;
 }
 
 Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
@@ -75,11 +73,14 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
         Can_Controllers[Controller]->MCR |= (1 << 0);
         while (!(Can_Controllers[Controller]->MSR & (1 << 0)))
             ;
+        Can_ControllerState = CAN_CS_STOPPED;
         break;
     case CAN_CS_SLEEP:
+        Can_Controllers[Controller]->MCR &= ~(1 << 0);
         Can_Controllers[Controller]->MCR |= (1 << 1);
         while (!(Can_Controllers[Controller]->MSR & (1 << 1)))
             ;
+        Can_ControllerState = CAN_CS_SLEEP;
         break;
     default:
         return E_NOT_OK;
@@ -138,7 +139,7 @@ Std_ReturnType Can_GetControllerMode(uint8 Controller, Can_ControllerStateType *
     {
         return E_NOT_OK;
     }
-    ControllerModePtr = &Can_ControllerState[Controller];
+    *ControllerModePtr = Can_ControllerState;
     return E_OK;
 }
 
@@ -201,6 +202,52 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)
         return E_NOT_OK;
     }
     return E_OK;
+}
+
+void Can_MainFunction_Read(void)
+{
+    Can_HwType CanMailBox;
+    PduInfoType CanRxPdu;
+    uint32_t temp_data[2];
+
+    CanMailBox.ControllerId = CAN_1;
+
+    if ((Can_Controllers[CAN_1]->RF0R & 0x03) != 0)
+    {
+        if (Can_Controllers[CAN_1]->sFIFOMailBox[0].RIR & (1 << 2))
+        {
+            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[0].RIR >> 3;
+        }
+        else
+        {
+            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[0].RIR >> 21;
+        }
+        CanMailBox.Hoh = 0;
+        CanRxPdu.SduLength = Can_Controllers[CAN_1]->sFIFOMailBox[0].RDTR & 0x0F;
+        CanRxPdu.SduDataPtr = (uint8_t *)temp_data;
+        temp_data[0] = Can_Controllers[CAN_1]->sFIFOMailBox[0].RDLR;
+        temp_data[1] = Can_Controllers[CAN_1]->sFIFOMailBox[0].RDHR;
+        CanIf_RxIndication(&CanMailBox, &CanRxPdu);
+        Can_Controllers[CAN_1]->RF0R |= (1 << 5);
+    }
+    if ((Can_Controllers[CAN_1]->RF1R & 0x03) != 0)
+    {
+        if (Can_Controllers[CAN_1]->sFIFOMailBox[1].RIR & (1 << 2))
+        {
+            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[1].RIR >> 3;
+        }
+        else
+        {
+            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[1].RIR >> 21;
+        }
+        CanMailBox.Hoh = 1;
+        CanRxPdu.SduLength = Can_Controllers[CAN_1]->sFIFOMailBox[1].RDTR & 0x0F;
+        CanRxPdu.SduDataPtr = (uint8_t *)temp_data;
+        temp_data[0] = Can_Controllers[CAN_1]->sFIFOMailBox[1].RDLR;
+        temp_data[1] = Can_Controllers[CAN_1]->sFIFOMailBox[1].RDHR;
+        CanIf_RxIndication(&CanMailBox, &CanRxPdu);
+        Can_Controllers[CAN_1]->RF1R |= (1 << 5);
+    }
 }
 
 void USB_LP_CAN1_RX0_IRQHandler(void)

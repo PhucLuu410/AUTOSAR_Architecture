@@ -50,4 +50,4 @@ const Can_ConfigType CanConfig[] = {
         .CanTxHardwareObject = 0}};
 
 CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER] = {CAN1};
-Can_ControllerStateType Can_ControllerState[CAN_MAX_CONTROLLER] = {CAN_CS_UNINIT};
+Can_ControllerStateType Can_ControllerState = CAN_CS_UNINIT;

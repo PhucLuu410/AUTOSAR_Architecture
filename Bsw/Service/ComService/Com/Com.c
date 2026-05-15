@@ -1,6 +1,7 @@
 #include "Com.h"
 #include "Com_Cfg.h"
 
+uint32 count = 0;
 Std_ReturnType Com_SendSignal(PduIdType PduId)
 {
     for (int i = 0; i < 3; i++)
@@ -10,7 +11,7 @@ Std_ReturnType Com_SendSignal(PduIdType PduId)
             PduInfoType PduInfo;
             PduInfo.SduLength = ComTxSignalConfig[i].DataLength;
             PduInfo.SduDataPtr = ComTxSignalConfig[i].SduDataPtr;
-            return PduR_ComTransmit(PduId, &PduInfo);
+            return PduR_Transmit(PduId, &PduInfo);
         }
     }
     return E_NOT_OK;
@@ -27,6 +28,7 @@ void Com_RxIndication(PduIdType PduId, const PduInfoType *PduInfoPtr)
                 ComRxSignalConfig[i].SduDataPtr[j] = PduInfoPtr->SduDataPtr[j];
             }
             ComRxSignalConfig[i].DataLength = PduInfoPtr->SduLength;
+            break;
         }
     }
 }

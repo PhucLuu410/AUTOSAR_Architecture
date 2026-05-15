@@ -20,6 +20,8 @@
 #include "Rte.h"
 #include "Os.h"
 
+Can_ControllerStateType ControllerMode;
+PduInfoType CanIfRxDataSave[2] = {0};
 void delay(volatile uint32_t t)
 {
     while (t--)
@@ -46,14 +48,15 @@ int main(void)
     SysTick_Init_8MHz();
 
     Can_Init(&CanConfig[0]);
-    Can_EnableControllerInterrupts(CAN_1);
+    Can_DisableControllerInterrupts(CAN_1);
     Can_SetBaudrate(CAN_1, 0);
-    Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
     CanIf_Init(&CanIfConfig);
+    CanIf_SetControllerMode(CAN_1, CAN_CS_STARTED);
     PduR_Init(&PduR_PBConfig);
+    Os_Init();
     while (1)
     {
-        Os_Start();
+        // Os_Start();
     }
 }
 

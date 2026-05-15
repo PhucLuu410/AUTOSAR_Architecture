@@ -4,11 +4,14 @@
 #include "Std_Types.h "
 #include "Can_GeneralTypes.h"
 #include "ComStack_Types.h "
+#include "EcuM.h"
 
 typedef struct
 {
     PduIdType RxPduId;
     Can_IdType CanId;
+    uint8 Length;
+    uint8 *data;
 } CanIfPduRxTableType;
 
 typedef struct
@@ -44,18 +47,11 @@ Std_ReturnType CanIf_GetControllerMode(uint8 ControllerId, Can_ControllerStateTy
 Std_ReturnType CanIf_GetControllerErrorState(uint8 ControllerId, Can_ErrorStateType *ErrorStatePtr);
 Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
 Std_ReturnType CanIf_ReadRxPduData(PduIdType CanIfRxSduId, PduInfoType *CanIfRxInfoPtr);
-CanIf_NotifStatusType CanIf_ReadTxNotifStatus(PduIdType CanIfTxSduId);
-CanIf_NotifStatusType CanIf_ReadRxNotifStatus(PduIdType CanIfRxSduId);
 Std_ReturnType CanIf_SetPduMode(uint8 ControllerId, CanIf_PduModeType PduModeRequest);
 Std_ReturnType CanIf_GetPduMode(uint8 ControllerId, CanIf_PduModeType *PduModePtr);
 void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId, Can_IdType CanId);
-CanIf_NotifStatusType CanIf_GetTxConfirmationState(uint8 ControllerId);
 void CanIf_TxConfirmation(PduIdType CanTxPduId);
 void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfoPtr);
-void CanIf_ControllerBusOff(uint8 ControllerId);
-void CanIf_ErrorNotification(uint8 ControllerId, Can_ErrorType Can_ErrorType);
-Std_ReturnType CanIf_GetControllerRxErrorCounter(uint8 ControllerId, uint8 *RxErrorCounterPtr);
-Std_ReturnType CanIf_GetControllerTxErrorCounter(uint8 ControllerId, uint8 *TxErrorCounterPtr);
 
 //----------------------STUB-------------------------------------------------//
 // Std_ReturnType CanIf_CheckWakeup(EcuM_WakeupSourceType WakeupSource);
@@ -76,5 +72,11 @@ void CanIf_ClearTrcvWufFlagIndication(uint8 TransceiverId);
 void CanIf_CheckTrcvWakeFlagIndication(uint8 TransceiverId);
 void CanIf_ControllerModeIndication(uint8 ControllerId, Can_ControllerStateType ControllerMode);
 void CanIf_ControllerErrorStatePassive(uint8 ControllerId, uint16 RxErrorCounter, uint16 TxErrorCounter);
-
+CanIf_NotifStatusType CanIf_ReadTxNotifStatus(PduIdType CanIfTxSduId);
+CanIf_NotifStatusType CanIf_ReadRxNotifStatus(PduIdType CanIfRxSduId);
+CanIf_NotifStatusType CanIf_GetTxConfirmationState(uint8 ControllerId);
+void CanIf_ErrorNotification(uint8 ControllerId, Can_ErrorType Can_ErrorType);
+void CanIf_ControllerBusOff(uint8 ControllerId);
+Std_ReturnType CanIf_GetControllerRxErrorCounter(uint8 ControllerId, uint8 *RxErrorCounterPtr);
+Std_ReturnType CanIf_GetControllerTxErrorCounter(uint8 ControllerId, uint8 *TxErrorCounterPtr);
 #endif

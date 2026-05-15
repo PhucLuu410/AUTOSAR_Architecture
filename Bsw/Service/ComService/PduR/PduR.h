@@ -26,7 +26,7 @@ typedef struct
 
 void PduR_Init(const PduR_PBConfigType *ConfigPtr);
 void PduR_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr);
-Std_ReturnType PduR_ComTransmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
+Std_ReturnType PduR_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
 void PduR_CanIfTxConfirmation(PduIdType TxPduId, Std_ReturnType result);
 
 // void PduR_Init(const PduR_PBConfigType *ConfigPtr);
