@@ -62,4 +62,5 @@ Std_ReturnType Can_GetControllerTxErrorCounter(uint8 ControllerId, uint8 *TxErro
 Std_ReturnType Can_SetCanPnFrameDataMask(uint8 Controller, uint8 *DataMaskArrayPtr, uint8 Length);
 Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo);
 void Can_MainFunction_Read(void);
+
 #endif

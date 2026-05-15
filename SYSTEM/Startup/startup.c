@@ -59,6 +59,7 @@ void EXTI15_10_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void ADC1_2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void USB_LP_CAN1_RX0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void CAN1_RX1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+void USB_HP_CAN1_TX_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 
 __attribute__((section(".isr_vector"))) void (*const g_pfnVectors[])(void) = {
     (void (*)(void))(&_estack), /* 0. Top of Stack */
@@ -96,7 +97,7 @@ __attribute__((section(".isr_vector"))) void (*const g_pfnVectors[])(void) = {
     Default_Handler,            /* 32. DMA1 Channel 6 */
     Default_Handler,            /* 33. DMA1 Channel 7 */
     ADC1_2_IRQHandler,          /* 34. ADC1 & ADC2 */
-    Default_Handler,            /* 35. USB HP / CAN TX */
+    USB_HP_CAN1_TX_IRQHandler,  /* 35. USB HP / CAN TX */
     USB_LP_CAN1_RX0_IRQHandler, /* 36. USB LP / CAN RX0 */
     CAN1_RX1_IRQHandler,        /* 37. CAN RX1 */
     Default_Handler,            /* 38. CAN SCE */

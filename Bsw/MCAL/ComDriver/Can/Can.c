@@ -2,6 +2,8 @@
 #include "Can_Cfg.h"
 #include "CanIf.h"
 
+static uint8 PduIdRecentSent = 0;
+
 void Can_Init(const Can_ConfigType *ConfigPtr)
 {
     GPIOA->ODR |= (1 << 11);
@@ -87,12 +89,15 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
 void Can_DisableControllerInterrupts(uint8 Controller)
 {
     NVIC_DisableIRQ(USB_LP_CAN1_RX0_IRQn);
+    NVIC_DisableIRQ(USB_HP_CAN1_TX_IRQn);
     Can_Controllers[Controller]->IER = 0;
 }
 
 void Can_EnableControllerInterrupts(uint8 Controller)
 {
     NVIC_EnableIRQ(USB_LP_CAN1_RX0_IRQn);
+    NVIC_EnableIRQ(USB_HP_CAN1_TX_IRQn);
+    NVIC_SetPriority(USB_HP_CAN1_TX_IRQn, 1);
     Can_Controllers[Controller]->IER = CanConfig[Controller].CanInterruptEnable;
 }
 
@@ -164,27 +169,32 @@ Std_ReturnType Can_SetCanPnFrameDataMask(uint8 Controller, uint8 *DataMaskArrayP
 
 Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)
 {
-    if (!(Can_Controllers[PduInfo->swPduHandle]->TSR & (1 << (26 + Hth))))
+    if ((Can_Controllers[CAN_1]->TSR & (0x7 << 24)) == 0)
     {
-        return E_NOT_OK;
+        return CAN_BUSY;
     }
-    Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TDTR = PduInfo->length;
-    Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TDLR = *((uint32 *)PduInfo->sdu);
-    Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TDHR = *((uint32 *)(PduInfo->sdu + 4));
-    if (CanConfig[PduInfo->swPduHandle].CanIdType == CAN_STANDARD_ID)
+    PduIdRecentSent = PduInfo->swPduHandle;
+    if (!(Can_Controllers[CAN_1]->TSR & (1 << (26 + Hth))))
     {
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR = 0;
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (PduInfo->id << 21);
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR &= ~(1 << 1);
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (1 << 0);
+        return CAN_BUSY;
     }
-    else if (CanConfig[PduInfo->swPduHandle].CanIdType == CAN_EXTENDED_ID)
+    Can_Controllers[CAN_1]->sTxMailBox[Hth].TDTR = PduInfo->length;
+    Can_Controllers[CAN_1]->sTxMailBox[Hth].TDLR = *((uint32 *)PduInfo->sdu);
+    Can_Controllers[CAN_1]->sTxMailBox[Hth].TDHR = *((uint32 *)(PduInfo->sdu + 4));
+    if (CanConfig[CAN_1].CanIdType == CAN_STANDARD_ID)
     {
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR = 0;
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (PduInfo->id << 3);
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (1 << 2);
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR &= ~(1 << 1);
-        Can_Controllers[PduInfo->swPduHandle]->sTxMailBox[Hth].TIR |= (1 << 0);
+        Can_Controllers[CAN_1]->sTxMailBox[Hth].TIR = 0;
+        Can_Controllers[CAN_1]->sTxMailBox[Hth].TIR |= (PduInfo->id << 21);
+        Can_Controllers[CAN_1]->sTxMailBox[Hth].TIR &= ~(1 << 1);
+        Can_Controllers[CAN_1]->sTxMailBox[Hth].TIR |= (1 << 0);
+    }
+    else if (CanConfig[CAN_1].CanIdType == CAN_EXTENDED_ID)
+    {
+        Can_Controllers[CAN_1]->sTxMailBox[Hth].TIR = 0;
+        Can_Controllers[CAN_1]->sTxMailBox[Hth].TIR |= (PduInfo->id << 3);
+        Can_Controllers[CAN_1]->sTxMailBox[Hth].TIR |= (1 << 2);
+        Can_Controllers[CAN_1]->sTxMailBox[Hth].TIR &= ~(1 << 1);
+        Can_Controllers[CAN_1]->sTxMailBox[Hth].TIR |= (1 << 0);
     }
     else
     {
@@ -237,4 +247,10 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
         CanIf_RxIndication(&CanMailBox, &CanRxPdu);
         Can_Controllers[CAN_1]->RF1R |= (1 << 5);
     }
+}
+
+void USB_HP_CAN1_TX_IRQHandler(void)
+{
+    CAN1->TSR = 0x01010101;
+    CanIf_TxConfirmation(PduIdRecentSent);
 }

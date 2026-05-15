@@ -16,23 +16,9 @@
 #include "CanIf_Cfg.h"
 #include "PduR.h"
 #include "PduR_Cfg.h"
-
-static uint8 CanIfSensor1TxDataBuffer[8] = {0x08, 0x01, 0x04, 0x04, 0x05, 0x06, 0x07, 0x08};
-static uint8 CanIfSensor2TxDataBuffer[8] = {0x00, 0x04, 0x04, 0x04, 0x05, 0x06, 0x07, 0x08};
-static uint8 CanIfSensor3TxDataBuffer[8] = {0x01, 0x02, 0x04, 0x04, 0x05, 0x06, 0x07, 0x08};
-
-PduInfoType CanIfTx1PduInfo = {
-    .SduDataPtr = CanIfSensor1TxDataBuffer,
-    .SduLength = 8,
-};
-PduInfoType CanIfTx2PduInfo = {
-    .SduDataPtr = CanIfSensor2TxDataBuffer,
-    .SduLength = 8,
-};
-PduInfoType CanIfTx3PduInfo = {
-    .SduDataPtr = CanIfSensor3TxDataBuffer,
-    .SduLength = 8,
-};
+#include "Com.h"
+#include "Rte.h"
+#include "Os.h"
 
 void delay(volatile uint32_t t)
 {
@@ -40,11 +26,24 @@ void delay(volatile uint32_t t)
         ;
 }
 
+void SysTick_Init_8MHz(void)
+{
+    SysTick->CTRL = 0;
+    SysTick->LOAD = 7999;
+    SysTick->VAL = 0;
+    SysTick->CTRL = 0x07;
+    CoreDebug->DEMCR |= (1 << 24);
+    DWT->CYCCNT = 0;
+    DWT->CTRL |= (1 << 0);
+}
+
 int main(void)
 {
     Mcu_Init(&Mcu_Configuration[0]);
     Mcu_InitClock(Mcu_Configuration[0].ClockConfig->ClockSrc);
     Port_Init(Port_Configuration);
+
+    SysTick_Init_8MHz();
 
     Can_Init(&CanConfig[0]);
     Can_EnableControllerInterrupts(CAN_1);
@@ -54,13 +53,7 @@ int main(void)
     PduR_Init(&PduR_PBConfig);
     while (1)
     {
-
-        // PduR_ComTransmit(SENSOR_0, &CanIfTx1PduInfo);
-        // delay(1000000);
-        // PduR_ComTransmit(SENSOR_1, &CanIfTx2PduInfo);
-        // delay(1000000);
-        // PduR_ComTransmit(SENSOR_2, &CanIfTx3PduInfo);
-        // delay(1000000);
+        Os_Start();
     }
 }
 
