@@ -42,7 +42,7 @@ void SysTick_Init_8MHz(void)
     SysTick->CTRL = 0;
     SysTick->LOAD = 7999;
     SysTick->VAL = 0;
-    SysTick->CTRL = 0x07;
+    // SysTick->CTRL = 0x07;
     CoreDebug->DEMCR |= (1 << 24);
     DWT->CYCCNT = 0;
     DWT->CTRL |= (1 << 0);
@@ -50,6 +50,7 @@ void SysTick_Init_8MHz(void)
 
 int main(void)
 {
+
     Mcu_Init(&Mcu_Configuration[0]);
     Mcu_InitClock(Mcu_Configuration[0].ClockConfig->ClockSrc);
     Port_Init(Port_Configuration);
@@ -62,8 +63,8 @@ int main(void)
     CanIf_Init(&CanIfConfig);
     CanIf_SetControllerMode(CAN_1, CAN_CS_STARTED);
     PduR_Init(&PduR_PBConfig);
-    // Os_Init();
-    // Os_Start();
+    Os_Init();
+    Os_Start();
     while (1)
     {
     }
