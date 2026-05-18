@@ -32,30 +32,44 @@ Robot_Safety_PDU_Type RobotSafetyData2 = {
 
 TASK(Task_3ms)
 {
-    Can_MainFunction_Read();
-    count1 = 1;
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-    __ISB();
     while (1)
-        ;
+    {
+        if (TaskList[0].ReadyFlag == 1)
+        {
+            TaskList[0].ReadyFlag = 0;
+            Can_MainFunction_Read();
+            __DSB();
+            __ISB();
+        }
+    }
 }
+
 TASK(Task_5ms)
 {
-    Rte_Write_RobotControl(&RobotControlData1);
-    count1 = 2;
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-    __ISB();
     while (1)
-        ;
+    {
+        if (TaskList[1].ReadyFlag == 1)
+        {
+            TaskList[1].ReadyFlag = 0;
+            Rte_Write_RobotControl(&RobotControlData1);
+            __DSB();
+            __ISB();
+        }
+    }
 }
 
 TASK(Task_10ms)
 {
-    Rte_Write_RobotSafety(&RobotSafetyData2);
-    count1 = 3;
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
     while (1)
-        ;
+    {
+        if (TaskList[2].ReadyFlag == 1)
+        {
+            TaskList[2].ReadyFlag = 0;
+            Rte_Write_RobotSafety(&RobotSafetyData2);
+            __DSB();
+            __ISB();
+        }
+    }
 }
 
 Task_ConfigType TaskList[] = {
@@ -102,24 +116,26 @@ uint32 *PrepareTaskStack(uint32 *stack_pointer, void (*pTask)(void))
 
 void SysTick_Handler(void)
 {
-    // system_tick++;
-    // if (system_tick % 3 == 0)
-    // {
-    //     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-    //     TaskList[2].ReadyFlag = 1;
-    // }
-    // if (system_tick % 5 == 0)
-    // {
-    //     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-    //     TaskList[0].ReadyFlag = 1;
-    // }
-    // if (system_tick % 10 == 0)
-    // {
-    //     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-    //     TaskList[1].ReadyFlag = 1;
-    // }
-}
+    system_tick++;
 
+    if ((system_tick % 3) == 0)
+    {
+        TaskList[0].ReadyFlag = 1;
+    }
+
+    if ((system_tick % 5) == 0)
+    {
+        TaskList[1].ReadyFlag = 1;
+    }
+
+    if ((system_tick % 10) == 0)
+    {
+        TaskList[2].ReadyFlag = 1;
+    }
+    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+    __DSB();
+    __ISB();
+}
 void Os_Init(void)
 {
     TaskList[0].OsStackPointer = PrepareTaskStack(&OS_TASK_0[127], Task_3ms);
@@ -129,20 +145,21 @@ void Os_Init(void)
 void Os_Start(void)
 {
     current_psp = TaskList[0].OsStackPointer;
+    __asm volatile("SVC #0");
+}
+
+void SVC_Handler(void)
+{
     __asm__ __volatile__(
-        "LDR     R0, =current_psp \n"
-        "LDR     R2, [R0] \n"
-        "LDMIA   R2!, {R4-R11} \n"
-        "MSR     PSP, R2 \n"
-        "MOV     R0, #2 \n"
-        "MSR     CONTROL, R0 \n"
-        "ISB \n"
-        "POP     {R0-R3, R12} \n"
-        "POP     {LR} \n"
-        "POP     {R4} \n"
-        "POP     {R5} \n"
-        "MSR     APSR, R5 \n"
-        "BX      R4 \n");
+        "LDR     R0, =current_psp     \n"
+        "LDR     R2, [R0]             \n"
+        "LDMIA   R2!, {R4-R11}        \n"
+        "MSR     PSP, R2              \n"
+        "MOV     R0, #2               \n"
+        "MSR     CONTROL, R0          \n"
+        "ISB                          \n"
+        "LDR     LR, =0xFFFFFFFD      \n"
+        "BX      LR                   \n");
 }
 
 void Os_Scheduler(void)
@@ -154,23 +171,25 @@ void Os_Scheduler(void)
     {
         current_task_index = 0;
     }
-    SCB->ICSR |= SCB_ICSR_PENDSVCLR_Msk;
     current_psp = TaskList[current_task_index].OsStackPointer;
 }
 
 __attribute__((naked)) void PendSV_Handler(void)
 {
     __asm__ __volatile__(
-        "MRS     R0, PSP \n"
-        "STMDB   R0!, {R4-R11} \n"
-        "LDR     R1, =current_psp \n"
-        "STR     R0, [R1] \n"
-        "MOV     R4, LR \n"
-        "BL      Os_Scheduler \n"
-        "MOV     LR, R4 \n"
-        "LDR     R1, =current_psp \n"
-        "LDR     R0, [R1] \n"
-        "LDMIA   R0!, {R4-R11} \n"
-        "MSR     PSP, R0 \n"
-        "BX      LR \n");
+        "MRS     R0, PSP                 \n"
+        "STMDB   R0!, {R4-R11}          \n"
+        "LDR     R1, =current_psp       \n"
+        "STR     R0, [R1]               \n"
+        "PUSH    {LR}                   \n"
+        "BL      Os_Scheduler           \n"
+        "POP     {LR}                   \n"
+        "LDR     R1, =current_psp       \n"
+        "LDR     R0, [R1]               \n"
+        "LDMIA   R0!, {R4-R11}          \n"
+        "MSR     PSP, R0                \n"
+        "BX      LR                     \n"
+        :
+        :
+        : "memory");
 }

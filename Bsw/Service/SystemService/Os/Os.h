@@ -1,6 +1,6 @@
 #include "Rte.h"
 
-#define TASK(FunctionName)  __attribute__((naked)) void FunctionName(void)
+#define TASK(FunctionName) __attribute__((naked)) void FunctionName(void)
 
 typedef struct
 {
@@ -11,5 +11,6 @@ typedef struct
     volatile uint8 ReadyFlag;
 } Task_ConfigType;
 
+extern Task_ConfigType TaskList[];
 void Os_Start(void);
 void Os_Init(void);
