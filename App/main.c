@@ -42,7 +42,6 @@ void SysTick_Init_8MHz(void)
     SysTick->CTRL = 0;
     SysTick->LOAD = 7999;
     SysTick->VAL = 0;
-    SysTick->CTRL = 0x07;
     CoreDebug->DEMCR |= (1 << 24);
     DWT->CYCCNT = 0;
     DWT->CTRL |= (1 << 0);

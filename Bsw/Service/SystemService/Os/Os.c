@@ -38,8 +38,6 @@ TASK(Task_3ms)
         {
             TaskList[0].ReadyFlag = 0;
             Can_MainFunction_Read();
-            __DSB();
-            __ISB();
         }
     }
 }
@@ -50,10 +48,16 @@ TASK(Task_5ms)
     {
         if (TaskList[1].ReadyFlag == 1)
         {
+            // ---- BẮT ĐẦU VÙNG BẢO VỆ ----
+            uint32_t primask = __get_PRIMASK();
+            __disable_irq(); // Khóa ngắt, cấm Task 2 chen ngang
+
+            Rte_Write_RobotControl(&RobotControlData1); // Ghi dữ liệu Task 1 an toàn
+
+            __set_PRIMASK(primask); // Mở ngắt lại
+            // ---- KẾT THÚC VÙNG BẢO VỆ ----
+
             TaskList[1].ReadyFlag = 0;
-            Rte_Write_RobotControl(&RobotControlData1);
-            __DSB();
-            __ISB();
         }
     }
 }
@@ -64,10 +68,16 @@ TASK(Task_10ms)
     {
         if (TaskList[2].ReadyFlag == 1)
         {
+            // ---- BẮT ĐẦU VÙNG BẢO VỆ ----
+            uint32_t primask = __get_PRIMASK();
+            __disable_irq(); // Khóa ngắt, cấm Task 1 chen ngang
+
+            Rte_Write_RobotSafety(&RobotSafetyData2); // Ghi dữ liệu Task 2 an toàn
+
+            __set_PRIMASK(primask); // Mở ngắt lại
+            // ---- KẾT THÚC VÙNG BẢO VỆ ----
+
             TaskList[2].ReadyFlag = 0;
-            Rte_Write_RobotSafety(&RobotSafetyData2);
-            __DSB();
-            __ISB();
         }
     }
 }
@@ -123,12 +133,12 @@ void SysTick_Handler(void)
         TaskList[0].ReadyFlag = 1;
     }
 
-    if ((system_tick % 5) == 0)
+    else if ((system_tick % 5) == 0)
     {
         TaskList[1].ReadyFlag = 1;
     }
 
-    if ((system_tick % 10) == 0)
+    else if ((system_tick % 10) == 0)
     {
         TaskList[2].ReadyFlag = 1;
     }
@@ -145,6 +155,7 @@ void Os_Init(void)
 void Os_Start(void)
 {
     current_psp = TaskList[0].OsStackPointer;
+    SysTick->CTRL = 0x07;
     __asm volatile("SVC #0");
 }
 
