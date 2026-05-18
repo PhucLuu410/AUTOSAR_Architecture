@@ -1,12 +1,16 @@
 #include "OS.h"
 
-uint32 OS_TASK_1[128] __attribute__((aligned(8)));
-uint32 OS_TASK_2[128] __attribute__((aligned(8)));
-uint32 OS_TASK_3[128] __attribute__((aligned(8)));
+uint32 OS_TASK_1[128];
+uint32 OS_TASK_2[128];
+uint32 OS_TASK_3[128];
+
+uint32 count1;
 
 uint32 system_tick = 0;
 uint32 current_task_index = 0;
 uint32 *current_psp;
+
+uint32_t address = 0;
 
 Robot_Control_PDU_Type RobotControlData1 = {
     .SteeringAngle = 2,
@@ -29,124 +33,125 @@ Robot_Safety_PDU_Type RobotSafetyData2 = {
 TASK(Task_5ms)
 {
     Rte_Write_RobotControl(&RobotControlData1);
+    count1++;
 }
 
 TASK(Task_10ms)
 {
     Rte_Write_RobotSafety(&RobotSafetyData2);
+    count1++;
 }
 TASK(Task_3ms)
 {
     Can_MainFunction_Read();
-}
-
-uint32 *PrepareTaskStack(uint32 *stack_top, void (*pTask)(void))
-{
-    stack_top--;
-    *stack_top = 0x01000000;
-    stack_top--;
-    *stack_top = (uint32)pTask;
-    stack_top--;
-    *stack_top = 0xFFFFFFFD;
-    for (int i = 0; i < 5; i++)
-    {
-        stack_top--;
-        *stack_top = 0;
-    }
-
-    for (int i = 0; i < 8; i++)
-    {
-        stack_top--;
-        *stack_top = 0;
-    }
-    return stack_top;
+    count1++;
 }
 
 Task_ConfigType TaskList[] = {
-    {.pTask = Task_5ms, .interval = 5, .timer = &system_tick, .OsStackPointer = NULL_PTR, .ReadyFlag = 0},
-    {.pTask = Task_10ms, .interval = 10, .timer = &system_tick, .OsStackPointer = NULL_PTR, .ReadyFlag = 0},
-    {.pTask = Task_3ms, .interval = 3, .timer = &system_tick, .OsStackPointer = NULL_PTR, .ReadyFlag = 0}};
+    {.OsStackPointer = &OS_TASK_1[127], .pTask = Task_5ms, .interval = 5, .timer = &system_tick, .ReadyFlag = 0},
+    {.OsStackPointer = &OS_TASK_2[127], .pTask = Task_10ms, .interval = 10, .timer = &system_tick, .ReadyFlag = 0},
+    {.OsStackPointer = &OS_TASK_3[127], .pTask = Task_3ms, .interval = 3, .timer = &system_tick, .ReadyFlag = 0}};
+
+uint32 *PrepareTaskStack(uint32 *stack_pointer, void (*pTask)(void))
+{
+    *stack_pointer = 0x01000000; // xPSR
+    stack_pointer--;
+    *stack_pointer = (uint32_t)pTask | 0x01; // PC
+    stack_pointer--;
+    *stack_pointer = 0xFFFFFFFD; // LR
+    stack_pointer--;
+    *stack_pointer = 0x12121212; // R12
+    stack_pointer--;
+    *stack_pointer = 0x03030303; // R3
+    stack_pointer--;
+    *stack_pointer = 0x02020202; // R2
+    stack_pointer--;
+    *stack_pointer = 0x01010101; // R1
+    stack_pointer--;
+    *stack_pointer = 0x00000000; // R0
+    stack_pointer--;
+    *stack_pointer = 0x11111111;
+    stack_pointer--;
+    *stack_pointer = 0x10101010;
+    stack_pointer--;
+    *stack_pointer = 0x09090909;
+    stack_pointer--;
+    *stack_pointer = 0x08080808;
+    stack_pointer--;
+    *stack_pointer = 0x07070707;
+    stack_pointer--;
+    *stack_pointer = 0x06060606;
+    stack_pointer--;
+    *stack_pointer = 0x05050505;
+    stack_pointer--;
+    *stack_pointer = 0x04040404;
+    address = &OS_TASK_1[112];
+    return stack_pointer;
+}
 
 void SysTick_Handler(void)
 {
     system_tick++;
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
     if (system_tick % 5 == 0)
     {
+        SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
         TaskList[0].ReadyFlag = 1;
     }
     if (system_tick % 10 == 0)
     {
+        SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
         TaskList[1].ReadyFlag = 1;
     }
     if (system_tick % 3 == 0)
     {
+        SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
         TaskList[2].ReadyFlag = 1;
     }
 }
 
 void Os_Init(void)
 {
-    for (int i = 0; i < sizeof(TaskList) / sizeof(Task_ConfigType); i++)
-    {
-        if (TaskList[i].pTask == Task_5ms)
-        {
-            TaskList[i].OsStackPointer = PrepareTaskStack(&OS_TASK_1[128], Task_5ms);
-        }
-        else if (TaskList[i].pTask == Task_10ms)
-        {
-            TaskList[i].OsStackPointer = PrepareTaskStack(&OS_TASK_2[128], Task_10ms);
-        }
-        else if (TaskList[i].pTask == Task_3ms)
-        {
-            TaskList[i].OsStackPointer = PrepareTaskStack(&OS_TASK_3[128], Task_3ms);
-        }
-    }
+    TaskList[0].OsStackPointer = PrepareTaskStack(&OS_TASK_1[127], Task_5ms);
+    TaskList[1].OsStackPointer = PrepareTaskStack(&OS_TASK_2[127], Task_10ms);
+    TaskList[2].OsStackPointer = PrepareTaskStack(&OS_TASK_3[127], Task_3ms);
 }
 void Os_Start(void)
 {
-    while (1)
-    {
-        for (int i = 0; i < sizeof(TaskList) / sizeof(Task_ConfigType); i++)
-        {
-            if (TaskList[i].ReadyFlag == 1)
-            {
-                TaskList[i].pTask();
-                TaskList[i].ReadyFlag = 0;
-            }
-        }
-    }
+    current_psp = TaskList[0].OsStackPointer;
+    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 }
 
-void PendSV_Handler(void)
+void Os_Scheduler(void)
 {
-    __asm volatile(
-        "CPSID   I                 \n"
+    TaskList[current_task_index].OsStackPointer = current_psp;
+    current_task_index++;
+    if (current_task_index >= 3)
+    {
+        current_task_index = 0;
+    }
+    current_psp = TaskList[current_task_index].OsStackPointer;
+}
+
+__attribute__((naked)) void PendSV_Handler(void)
+{
+    __asm__ __volatile__(
         "MRS     R0, PSP           \n"
-        "CBZ     R0, FIRST_TIME    \n"
+        "CBZ     R0, Skip_Save     \n"
+
         "STMDB   R0!, {R4-R11}     \n"
-        "LDR     R1, =current_task_index \n"
-        "LDR     R1, [R1]          \n"
-        "LDR     R2, =TaskList     \n"
-        "MOV     R3, #16           \n"
-        "MLA     R2, R1, R3, R2    \n"
-        "STR     R0, [R2]          \n"
-        "FIRST_TIME:               \n"
-        "LDR     R1, =current_task_index \n"
-        "LDR     R2, [R1]          \n"
-        "ADD     R2, R2, #1        \n"
-        "CMP     R2, #3            \n"
-        "IT      GE                \n"
-        "MOVGE   R2, #0            \n"
-        "STR     R2, [R1]          \n"
-        "LDR     R2, =TaskList     \n"
-        "LDR     R1, =current_task_index \n"
-        "LDR     R1, [R1]          \n"
-        "MOV     R3, #16           \n"
-        "MLA     R2, R1, R3, R2    \n"
-        "LDR     R0, [R2]          \n"
-        "LDMIA   R0!, {R4-R11}     \n"
-        "MSR     PSP, R0           \n"
-        "CPSIE   I                 \n"
-        "BX      LR                \n");
+        "LDR     R1, =current_psp  \n"
+        "STR     R0, [R1]          \n"
+
+        "Skip_Save:                \n"
+
+        // "PUSH    {LR}              \n"
+        // "BL      Os_Scheduler      \n"
+        // "POP     {LR}              \n"
+
+        // "LDR     R1, =current_psp  \n"
+        // "LDR     R0, [R1]          \n"
+        // "LDMIA   R0!, {R4-R11}     \n"
+        // "MSR     PSP, R0           \n"
+        // "BX      LR                \n"
+    );
 }

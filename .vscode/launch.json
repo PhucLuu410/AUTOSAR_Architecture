@@ -22,6 +22,17 @@
                 "target/stm32f1x.cfg"
             ],
             "runToEntryPoint": "main"
+        },
+        {
+            "name": "QEMU STM32 Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/firmware.elf", // <-- Thay bằng đường dẫn tới file .elf của bạn
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "external",
+            "gdbTarget": "localhost:1234",
+            "gdbpath": "arm-none-eabi-gdb", // <-- Trình gdb trong bộ GCC ARM Toolchain của bạn
+            "armToolchainPath": "C:/ProgramData/chocolatey/lib/gcc-arm-embedded/tools/gcc-arm-none-eabi-10.3-2021.10/bin" // <-- Thay bằng đường dẫn bin của Toolchain trên máy bạn
         }
     ]
 }

@@ -20,6 +20,15 @@
 #include "Rte.h"
 #include "Os.h"
 
+Robot_Control_PDU_Type RobotControlData = {
+    .SteeringAngle = 2,
+    .Speed = 2,
+    .Mode = 2,
+    .BrakeForce = 2,
+    .Reserved = 2,
+    .AliveCounter = 2,
+    .Checksum = 2};
+
 Can_ControllerStateType ControllerMode;
 PduInfoType CanIfRxDataSave[2] = {0};
 void delay(volatile uint32_t t)
@@ -53,10 +62,10 @@ int main(void)
     CanIf_Init(&CanIfConfig);
     CanIf_SetControllerMode(CAN_1, CAN_CS_STARTED);
     PduR_Init(&PduR_PBConfig);
-    Os_Init();
+    // Os_Init();
+    // Os_Start();
     while (1)
     {
-        // Os_Start();
     }
 }
 
