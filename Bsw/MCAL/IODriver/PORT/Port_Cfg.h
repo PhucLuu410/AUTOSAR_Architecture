@@ -24,7 +24,7 @@
 #define PORT_C 2
 #define PORT_D 3
 
-#define NUMBER_OF_CHANNEL 8
+#define NUMBER_OF_CHANNEL 10
 
 extern const Port_ConfigType Port_Configuration[];
 

@@ -23,27 +23,26 @@
 #include "Std_Types.h"
 
 #define CAN_SERSOR_DATA_LENGTH 3
-
-#define SENSOR_0 0
-#define SENSOR_1 1
-#define SENSOR_2 2
+#define LIN_SERSOR_DATA_LENGTH 3
 
 #define SENSOR_0_ID 0x127
 #define SENSOR_1_ID 0x123
 #define SENSOR_2_ID 0x321
 
+#define SENSOR_4_ID 0x12
+#define SENSOR_5_ID 0x34
+#define SENSOR_6_ID 0x56
+
 #define SENSOR_USING_CAN 3
-#define SENSOR_USING_LIN 2
+#define SENSOR_USING_LIN 3
 
 #define SENSOR_0 0
 #define SENSOR_1 1
 #define SENSOR_2 2
 #define SENSOR_3 3
-#define SENSOR_4 4
-
-#define SENSOR_0_ID 0x127
-#define SENSOR_1_ID 0x123
-#define SENSOR_2_ID 0x321
+#define SENSOR_4 0
+#define SENSOR_5 1
+#define SENSOR_6 2
 
 typedef uint16 PduIdType;
 typedef uint16 PduLengthType;

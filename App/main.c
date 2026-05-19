@@ -17,35 +17,26 @@
 #include "PduR.h"
 #include "PduR_Cfg.h"
 #include "Com.h"
+#include "Lin.h"
+#include "Lin_Cfg.h"
 #include "Rte.h"
 #include "Os.h"
 
-Robot_Control_PDU_Type RobotControlData = {
-    .SteeringAngle = 2,
-    .Speed = 2,
-    .Mode = 2,
-    .BrakeForce = 2,
-    .Reserved = 2,
-    .AliveCounter = 2,
-    .Checksum = 2};
-
-Can_ControllerStateType ControllerMode;
-PduInfoType CanIfRxDataSave[2] = {0};
 void delay(volatile uint32_t t)
 {
     while (t--)
         ;
 }
 
-void SysTick_Init_8MHz(void)
-{
-    SysTick->CTRL = 0;
-    SysTick->LOAD = 7999;
-    SysTick->VAL = 0;
-    CoreDebug->DEMCR |= (1 << 24);
-    DWT->CYCCNT = 0;
-    DWT->CTRL |= (1 << 0);
-}
+// void SysTick_Init_8MHz(void)
+// {
+//     SysTick->CTRL = 0;
+//     SysTick->LOAD = 7999;
+//     SysTick->VAL = 0;
+//     CoreDebug->DEMCR |= (1 << 24);
+//     DWT->CYCCNT = 0;
+//     DWT->CTRL |= (1 << 0);
+// }
 
 int main(void)
 {
@@ -53,19 +44,24 @@ int main(void)
     Mcu_Init(&Mcu_Configuration[0]);
     Mcu_InitClock(Mcu_Configuration[0].ClockConfig->ClockSrc);
     Port_Init(Port_Configuration);
-
-    SysTick_Init_8MHz();
-
     Can_Init(&CanConfig[0]);
+    Lin_Init(&Lin_Config[LIN_CHANNEL_1]);
     Can_DisableControllerInterrupts(CAN_1);
     Can_SetBaudrate(CAN_1, 0);
     CanIf_Init(&CanIfConfig);
     CanIf_SetControllerMode(CAN_1, CAN_CS_STARTED);
     PduR_Init(&PduR_PBConfig);
-    Os_Init();
-    Os_Start();
+    // SysTick_Init_8MHz();
+    // Os_Init();
+    // Os_Start();
     while (1)
     {
+        Lin_SendFrame(LIN_CHANNEL_1, &LinTxPduInfo[SENSOR_4]);
+        delay(1000000);
+        Lin_SendFrame(LIN_CHANNEL_1, &LinTxPduInfo[SENSOR_5]);
+        delay(1000000);
+        Lin_SendFrame(LIN_CHANNEL_1, &LinTxPduInfo[SENSOR_6]);
+        delay(1000000);
     }
 }
 
