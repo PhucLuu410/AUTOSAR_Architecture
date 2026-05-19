@@ -12,7 +12,9 @@ void Lin_Init(const Lin_ConfigType *Config)
     Lin_Driver[Config->LinChannel->LinChannel]->CR1 = ((Config->LinHardware->LinRx << 2) | (Config->LinHardware->LinTx << 3) | (Config->LinHardware->LinUartEn << 13));
     Lin_Driver[Config->LinChannel->LinChannel]->CR2 = ((Config->LinHardware->LinEn << 14) | (Config->LinChannel->LinBreakDetect << 6));
     Lin_Driver[Config->LinChannel->LinChannel]->BRR = 8000000 / Config->LinChannel->LinBaud;
-
+    uint32 dummy_sr = USART1->SR;
+    uint32 dummy_dr = USART1->DR;
+    USART1->SR &= ~(1 << 6);
     Lin_Driver[Config->LinChannel->LinChannel]->CR1 |= (1 << 6);
     Lin_Driver[Config->LinChannel->LinChannel]->CR1 |= (1 << 5);
     Lin_Driver[Config->LinChannel->LinChannel]->CR2 |= (1 << 6);
@@ -68,33 +70,31 @@ Std_ReturnType Lin_SendFrame(uint8 Channel, const Lin_PduType *PduInfoPtr)
     return E_OK;
 }
 
-Std_ReturnType Lin_Wakeup(uint8 Channel)
+Std_ReturnType Lin_WakeupInternal(uint8 Channel)
 {
-    if (Channel > NUMBER_OF_LIN_CHANNEL)
+    if (Channel >= NUMBER_OF_LIN_CHANNEL)
     {
         return E_NOT_OK;
     }
-    Lin_Driver[Channel]->CR1 |= (1 << 7);
     Lin_Driver[Channel]->CR1 |= (1 << 6);
     Lin_Driver[Channel]->CR1 |= (1 << 5);
-    Lin_Driver[Channel]->CR2 |= (1 << 6);
     return E_OK;
 }
 
-Std_ReturnType Lin_GoToSleep(uint8 Channel)
+Std_ReturnType Lin_GoToSleepInternal(uint8 Channel)
 {
-    if (Channel > NUMBER_OF_LIN_CHANNEL)
+    if (Channel >= NUMBER_OF_LIN_CHANNEL)
     {
         return E_NOT_OK;
     }
-    Lin_Driver[Channel]->CR1 &= ~(1 << 7);
     Lin_Driver[Channel]->CR1 &= ~(1 << 6);
     Lin_Driver[Channel]->CR1 &= ~(1 << 5);
-    Lin_Driver[Channel]->CR2 &= ~(1 << 6);
     return E_OK;
 }
 
 void USART1_IRQHandler(void)
 {
-    Lin_Driver[LIN_CHANNEL_1]->SR = 0;
+    uint32 dummy = Lin_Driver[Lin_Local_Config->LinChannel->LinChannel]->SR;
+    dummy = Lin_Driver[Lin_Local_Config->LinChannel->LinChannel]->DR;
+    Lin_Driver[Lin_Local_Config->LinChannel->LinChannel]->SR = 0;
 }
