@@ -36,8 +36,9 @@ TASK(Task_3ms)
     {
         if (TaskList[0].ReadyFlag == 1)
         {
-            TaskList[0].ReadyFlag = 0;
             Can_MainFunction_Read();
+            TaskList[0].ReadyFlag = 0;
+            SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
         }
     }
 }
@@ -48,16 +49,9 @@ TASK(Task_5ms)
     {
         if (TaskList[1].ReadyFlag == 1)
         {
-            // ---- BẮT ĐẦU VÙNG BẢO VỆ ----
-            uint32_t primask = __get_PRIMASK();
-            __disable_irq(); // Khóa ngắt, cấm Task 2 chen ngang
-
-            Rte_Write_RobotControl(&RobotControlData1); // Ghi dữ liệu Task 1 an toàn
-
-            __set_PRIMASK(primask); // Mở ngắt lại
-            // ---- KẾT THÚC VÙNG BẢO VỆ ----
-
+            Rte_Write_RobotControl(&RobotControlData1); // ID 127
             TaskList[1].ReadyFlag = 0;
+            SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
         }
     }
 }
@@ -68,16 +62,9 @@ TASK(Task_10ms)
     {
         if (TaskList[2].ReadyFlag == 1)
         {
-            // ---- BẮT ĐẦU VÙNG BẢO VỆ ----
-            uint32_t primask = __get_PRIMASK();
-            __disable_irq(); // Khóa ngắt, cấm Task 1 chen ngang
-
-            Rte_Write_RobotSafety(&RobotSafetyData2); // Ghi dữ liệu Task 2 an toàn
-
-            __set_PRIMASK(primask); // Mở ngắt lại
-            // ---- KẾT THÚC VÙNG BẢO VỆ ----
-
+            Rte_Write_RobotSafety(&RobotSafetyData2); // ID 123
             TaskList[2].ReadyFlag = 0;
+            SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
         }
     }
 }
@@ -105,21 +92,21 @@ uint32 *PrepareTaskStack(uint32 *stack_pointer, void (*pTask)(void))
     stack_pointer--;
     *stack_pointer = 0x00000000; // R0
     stack_pointer--;
-    *stack_pointer = 0x11111111;
+    *stack_pointer = 0x11111111; // R11
     stack_pointer--;
-    *stack_pointer = 0x10101010;
+    *stack_pointer = 0x10101010; // R10
     stack_pointer--;
-    *stack_pointer = 0x09090909;
+    *stack_pointer = 0x09090909; // R9
     stack_pointer--;
-    *stack_pointer = 0x08080808;
+    *stack_pointer = 0x08080808; // R8
     stack_pointer--;
-    *stack_pointer = 0x07070707;
+    *stack_pointer = 0x07070707; // R7
     stack_pointer--;
-    *stack_pointer = 0x06060606;
+    *stack_pointer = 0x06060606; // R6
     stack_pointer--;
-    *stack_pointer = 0x05050505;
+    *stack_pointer = 0x05050505; // R5
     stack_pointer--;
-    *stack_pointer = 0x04040404;
+    *stack_pointer = 0x04040404; // R4
 
     return stack_pointer;
 }
@@ -127,24 +114,21 @@ uint32 *PrepareTaskStack(uint32 *stack_pointer, void (*pTask)(void))
 void SysTick_Handler(void)
 {
     system_tick++;
-
     if ((system_tick % 3) == 0)
     {
         TaskList[0].ReadyFlag = 1;
     }
 
-    else if ((system_tick % 5) == 0)
+    if ((system_tick % 5) == 0)
     {
         TaskList[1].ReadyFlag = 1;
     }
 
-    else if ((system_tick % 10) == 0)
+    if ((system_tick % 10) == 0)
     {
         TaskList[2].ReadyFlag = 1;
     }
     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-    __DSB();
-    __ISB();
 }
 void Os_Init(void)
 {
@@ -176,11 +160,13 @@ void SVC_Handler(void)
 void Os_Scheduler(void)
 {
     TaskList[current_task_index].OsStackPointer = current_psp;
-
-    current_task_index++;
-    if (current_task_index >= 3)
+    for (int i = 0; i < 3; i++)
     {
-        current_task_index = 0;
+        if (TaskList[i].ReadyFlag == 1)
+        {
+            current_task_index = i;
+            break;
+        }
     }
     current_psp = TaskList[current_task_index].OsStackPointer;
 }

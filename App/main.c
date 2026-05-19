@@ -28,15 +28,15 @@ void delay(volatile uint32_t t)
         ;
 }
 
-// void SysTick_Init_8MHz(void)
-// {
-//     SysTick->CTRL = 0;
-//     SysTick->LOAD = 7999;
-//     SysTick->VAL = 0;
-//     CoreDebug->DEMCR |= (1 << 24);
-//     DWT->CYCCNT = 0;
-//     DWT->CTRL |= (1 << 0);
-// }
+void SysTick_Init_8MHz(void)
+{
+    SysTick->CTRL = 0;
+    SysTick->LOAD = 7999;
+    SysTick->VAL = 0;
+    CoreDebug->DEMCR |= (1 << 24);
+    DWT->CYCCNT = 0;
+    DWT->CTRL |= (1 << 0);
+}
 
 int main(void)
 {
@@ -51,17 +51,17 @@ int main(void)
     CanIf_Init(&CanIfConfig);
     CanIf_SetControllerMode(CAN_1, CAN_CS_STARTED);
     PduR_Init(&PduR_PBConfig);
-    // SysTick_Init_8MHz();
-    // Os_Init();
-    // Os_Start();
+    SysTick_Init_8MHz();
+    Os_Init();
+    Os_Start();
     while (1)
     {
-        Lin_SendFrame(LIN_CHANNEL_1, &LinTxPduInfo[SENSOR_4]);
-        delay(1000000);
-        Lin_SendFrame(LIN_CHANNEL_1, &LinTxPduInfo[SENSOR_5]);
-        delay(1000000);
-        Lin_SendFrame(LIN_CHANNEL_1, &LinTxPduInfo[SENSOR_6]);
-        delay(1000000);
+        // Lin_SendFrame(LIN_CHANNEL_1, &LinTxPduInfo[SENSOR_4]);
+        // delay(1000000);
+        // Lin_SendFrame(LIN_CHANNEL_1, &LinTxPduInfo[SENSOR_5]);
+        // delay(1000000);
+        // Lin_SendFrame(LIN_CHANNEL_1, &LinTxPduInfo[SENSOR_6]);
+        // delay(1000000);
     }
 }
 
