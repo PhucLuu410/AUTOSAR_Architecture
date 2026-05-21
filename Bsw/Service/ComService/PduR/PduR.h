@@ -15,7 +15,8 @@ typedef struct
 } PduR_TxRoutingPathType;
 typedef struct
 {
-    PduIdType RxPduId;
+    PduIdType GlobalPduId;
+    PduIdType LocalPduId;
     void (*Rx_Func)(PduIdType PduId, const PduInfoType *PduInfoPtr);
 } PduR_RxRoutingPathType;
 

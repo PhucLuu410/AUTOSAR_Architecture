@@ -31,4 +31,5 @@
 
 extern Lin_ConfigType Lin_Config[NUMBER_OF_LIN_CHANNEL];
 
+
 #endif

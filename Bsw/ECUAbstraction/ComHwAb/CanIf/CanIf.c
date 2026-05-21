@@ -70,18 +70,13 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoType)
     return E_NOT_OK;
 }
 
-void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfPtr)
+void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfoPtr)
 {
     for (int i = 0; i < SIZE_OF_CAN_IF_TABLE; i++)
     {
-        if (Mailbox->CanId == CanIfGlobalConfigPtr->RxTableConfig[i].CanId)
+        if (Mailbox->CanId == CanIfGlobalConfigPtr->RxTableConfig[i].CanIf_CanId)
         {
-            for (int j = 0; j < PduInfPtr->SduLength; j++)
-            {
-                CanIfGlobalConfigPtr->RxTableConfig[i].data[j] = PduInfPtr->SduDataPtr[j];
-            }
-            CanIfGlobalConfigPtr->RxTableConfig[i].Length = PduInfPtr->SduLength;
-            PduR_RxIndication(CanIfGlobalConfigPtr->RxTableConfig[i].RxPduId, PduInfPtr);
+            PduR_RxIndication(CanIfGlobalConfigPtr->RxTableConfig[i].CanIf_LocalId, PduInfoPtr);
             break;
         }
     }
@@ -89,5 +84,14 @@ void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfPtr)
 
 Std_ReturnType CanIf_ReadRxPduData(PduIdType CanIfRxPduId, PduInfoType *PduInfoPtr)
 {
-    return 0;
+    for (int i = 0; i < SIZE_OF_CAN_IF_TABLE; i++)
+    {
+        if (CanIfGlobalConfigPtr->RxTableConfig[i].CanIf_LocalId == CanIfRxPduId)
+        {
+            PduInfoPtr->SduLength = CanIfGlobalConfigPtr->RxTableConfig[i].Length;
+            PduInfoPtr->SduDataPtr = CanIfGlobalConfigPtr->RxTableConfig[i].data;
+            return E_OK;
+        }
+    }
+    return E_NOT_OK;
 }

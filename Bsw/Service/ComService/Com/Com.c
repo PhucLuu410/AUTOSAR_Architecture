@@ -19,7 +19,7 @@ Std_ReturnType Com_SendSignal(PduIdType PduId)
 
 void Com_RxIndication(PduIdType PduId, const PduInfoType *PduInfoPtr)
 {
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < NUMBER_OF_COM_RX_SIGNAL; i++)
     {
         if (PduId == ComRxSignalConfig[i].GlobalPduId)
         {

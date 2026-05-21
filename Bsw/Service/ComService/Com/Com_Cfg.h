@@ -3,7 +3,6 @@
 
 #include "Com.h"
 
-#define NUMBER_OF_COM_TX_SIGNAL 3
 typedef struct
 {
     PduIdType GlobalPduId;
