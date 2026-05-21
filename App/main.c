@@ -19,8 +19,14 @@
 #include "Com.h"
 #include "Lin.h"
 #include "Lin_Cfg.h"
+#include "LinIf.h"
+#include "LinIf_Cfg.h"
 #include "Rte.h"
 #include "Os.h"
+
+PduInfoType LinTx = {
+    .SduDataPtr = (uint8 *)"abc",
+    .SduLength = 3};
 
 void delay(volatile uint32_t t)
 {
@@ -49,19 +55,18 @@ int main(void)
     Can_DisableControllerInterrupts(CAN_1);
     Can_SetBaudrate(CAN_1, 0);
     CanIf_Init(&CanIfConfig);
+    // LinIf_Init(&LinIfConfig);
     CanIf_SetControllerMode(CAN_1, CAN_CS_STARTED);
     PduR_Init(&PduR_PBConfig);
-    SysTick_Init_8MHz();
-    Os_Init();
-    Os_Start();
+    // SysTick_Init_8MHz();
+    // Os_Init();
+    // Os_Start();
     while (1)
     {
-        // Lin_SendFrame(LIN_CHANNEL_1, &LinTxPduInfo[SENSOR_4]);
-        // delay(1000000);
-        // Lin_SendFrame(LIN_CHANNEL_1, &LinTxPduInfo[SENSOR_5]);
-        // delay(1000000);
-        // Lin_SendFrame(LIN_CHANNEL_1, &LinTxPduInfo[SENSOR_6]);
-        // delay(1000000);
+        Com_SendSignal(0);
+        delay(1000000);
+        Com_SendSignal(1);
+        delay(1000000);
     }
 }
 

@@ -9,7 +9,8 @@ typedef uint16 PduR_RoutingPathGroupIdType;
 
 typedef struct
 {
-    PduIdType TxPduId;
+    PduIdType GlobalPduId;
+    PduIdType LocalPduId;
     Std_ReturnType (*Transmit_Func)(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
 } PduR_TxRoutingPathType;
 typedef struct

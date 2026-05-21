@@ -3,9 +3,13 @@
 
 #include "CanIf.h"
 
+#define SIZE_OF_CAN_IF_TABLE 3
+
 extern CanIf_ConfigType CanIfConfig;
 
 extern Can_PduType CanTxPduInfo[];
+
+extern CanIf_PduTableConfig CanIf_PduTable[SIZE_OF_CAN_IF_TABLE];
 
 extern CanIfPduRxTableType CanIfRxTable[];
 

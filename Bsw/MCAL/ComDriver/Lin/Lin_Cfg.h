@@ -30,5 +30,5 @@
 #define LIN_BREAK_DETECT_DISABLE 1
 
 extern Lin_ConfigType Lin_Config[NUMBER_OF_LIN_CHANNEL];
-extern Lin_PduType LinTxPduInfo[SENSOR_USING_LIN];
+
 #endif

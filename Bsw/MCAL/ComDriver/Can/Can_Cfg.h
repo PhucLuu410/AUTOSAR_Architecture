@@ -92,6 +92,8 @@
 #define CAN_MAILBOX_1 1
 #define CAN_MAILBOX_2 2
 
+#define SIZE_OF_CAN_DRIVER_TABLE 3
+
 extern const Can_ConfigType CanConfig[];
 extern CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER];
 extern Can_ControllerStateType Can_ControllerState;

@@ -41,40 +41,38 @@ Std_ReturnType CanIf_GetControllerErrorState(uint8 ControllerId, Can_ErrorStateT
     return Can_GetControllerErrorState(ControllerId, ErrorStatePtr);
 }
 
-void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId, Can_IdType CanId)
-{
-    for (int i = 0; i < CAN_SERSOR_DATA_LENGTH; i++)
-    {
-        if (CanIfTxSduId == CanIfGlobalConfigPtr->TxTableConfig[i].TxPduId)
-        {
-            CanIfGlobalConfigPtr->TxTableConfig[i].TxPduTable->id = CanId;
-            break;
-        }
-    }
-}
+// void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId, Can_IdType CanId)
+// {
+//     for (int i = 0; i < CAN_SERSOR_DATA_LENGTH; i++)
+//     {
+//         if (CanIfTxSduId == CanIfGlobalConfigPtr->TxTableConfig[i].CanIf_LocalId)
+//         {
+//             CanIfGlobalConfigPtr->TxTableConfig[i].TxPduTable->id = CanId;
+//             break;
+//         }
+//     }
+// }
 
 Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoType)
 {
-    static uint8 MailBox_Round_Robin = 0;
-    for (int i = 0; i < CAN_SERSOR_DATA_LENGTH; i++)
+    for (int i = 0; i < SIZE_OF_CAN_IF_TABLE; i++)
     {
-        if (TxPduId == CanIfGlobalConfigPtr->TxTableConfig[i].TxPduId)
+        if (CanIfGlobalConfigPtr->TxTableConfig[i].CanIf_LocalId == TxPduId)
         {
-            for (int j = 0; j < PduInfoType->SduLength; j++)
-            {
-                CanIfGlobalConfigPtr->TxTableConfig[i].TxPduTable->sdu[j] = PduInfoType->SduDataPtr[j];
-            }
-            CanIfGlobalConfigPtr->TxTableConfig[i].TxPduTable->length = PduInfoType->SduLength;
-            break;
+            Can_PduType CanPdu;
+            CanPdu.swPduHandle = CanIfGlobalConfigPtr->TxTableConfig[i].CanChannel;
+            CanPdu.id = CanIfGlobalConfigPtr->TxTableConfig[i].CanIf_CanId;
+            CanPdu.length = PduInfoType->SduLength;
+            CanPdu.sdu = PduInfoType->SduDataPtr;
+            return Can_Write(CanPdu.swPduHandle, &CanPdu);
         }
     }
-    MailBox_Round_Robin = (MailBox_Round_Robin + 1) % 3;
-    return Can_Write(MailBox_Round_Robin, &CanTxPduInfo[TxPduId]);
+    return E_NOT_OK;
 }
 
 void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfPtr)
 {
-    for (int i = 0; i < CAN_SERSOR_DATA_LENGTH; i++)
+    for (int i = 0; i < SIZE_OF_CAN_IF_TABLE; i++)
     {
         if (Mailbox->CanId == CanIfGlobalConfigPtr->RxTableConfig[i].CanId)
         {

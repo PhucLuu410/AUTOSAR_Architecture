@@ -2,7 +2,7 @@
 #include "PduR.h"
 #include "Com.h"
 
-PduR_RxRoutingPathType PduR_RxRouteTable[] = {
+PduR_RxRoutingPathType PduR_RxRouteTable[4] = {
     [0] = {.RxPduId = 0,
            .Rx_Func = Com_RxIndication},
     [1] = {.RxPduId = 1,
@@ -12,12 +12,15 @@ PduR_RxRoutingPathType PduR_RxRouteTable[] = {
     [3] = {.RxPduId = 3,
            .Rx_Func = Com_RxIndication}};
 
-PduR_TxRoutingPathType PduR_TxRouteTable[] = {
-    [0] = {.TxPduId = 0,
+PduR_TxRoutingPathType PduR_TxRouteTable[3] = {
+    [0] = {.GlobalPduId = 0,
+           .LocalPduId = 0,
+           .Transmit_Func = LinIf_Transmit},
+    [1] = {.GlobalPduId = 1,
+           .LocalPduId = 0,
            .Transmit_Func = CanIf_Transmit},
-    [1] = {.TxPduId = 1,
-           .Transmit_Func = CanIf_Transmit},
-    [2] = {.TxPduId = 2,
+    [2] = {.GlobalPduId = 2,
+           .LocalPduId = 1,
            .Transmit_Func = CanIf_Transmit}};
 
 PduR_PBConfigType PduR_PBConfig = {

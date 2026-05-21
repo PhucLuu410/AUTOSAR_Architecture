@@ -16,14 +16,15 @@ typedef struct
 
 typedef struct
 {
-    PduIdType TxPduId;
-    Can_PduType *TxPduTable;
-} CanIfPduTxTableType;
+    uint8 CanChannel;
+    uint8 CanIf_LocalId;
+    uint16 CanIf_CanId;
+} CanIf_PduTableConfig;
 
 typedef struct
 {
     CanIfPduRxTableType *RxTableConfig;
-    CanIfPduTxTableType *TxTableConfig;
+    CanIf_PduTableConfig *TxTableConfig;
 } CanIf_ConfigType;
 
 typedef enum

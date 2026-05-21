@@ -49,6 +49,7 @@ Std_ReturnType Lin_SendFrame(uint8 Channel, const Lin_PduType *PduInfoPtr)
     Lin_Driver[Channel]->CR1 |= (1 << 0);
     while (Lin_Driver[Channel]->CR1 & (1 << 0))
         ;
+
     Lin_Driver[Channel]->DR = 0x55;
     while (!(Lin_Driver[Channel]->SR & (1 << 7)))
         ;

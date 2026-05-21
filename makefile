@@ -14,6 +14,7 @@ IPATH = -I. \
 		-I./Bsw/Mcal/ComDriver/Lin \
 		-I./Bsw/EcuAbstraction/IoHwAb \
 		-I./Bsw/EcuAbstraction/ComHwAb/CanIf \
+		-I./Bsw/EcuAbstraction/ComHwAb/LinIf \
 		-I./Bsw/Service/ComService/PduR \
 		-I./Bsw/Service/ComService/Com \
 		-I./Bsw/Service/SystemService/Os \
@@ -40,6 +41,8 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb_Cfg.c \
 		Bsw/EcuAbstraction/ComHwAb/CanIf/CanIf.c \
 		Bsw/EcuAbstraction/ComHwAb/CanIf/CanIf_Cfg.c \
+		Bsw/EcuAbstraction/ComHwAb/LinIf/LinIf.c \
+		Bsw/EcuAbstraction/ComHwAb/LinIf/LinIf_Cfg.c \
 		Bsw/Service/ComService/PduR/PduR.c \
 		Bsw/Service/ComService/PduR/PduR_Cfg.c \
 		Bsw/Service/ComService/Com/Com.c \
