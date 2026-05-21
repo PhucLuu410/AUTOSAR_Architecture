@@ -74,6 +74,8 @@ Task_ConfigType TaskList[] = {
     {.OsStackPointer = &OS_TASK_1[127], .pTask = Task_5ms, .interval = 5, .timer = &system_tick, .ReadyFlag = 0},
     {.OsStackPointer = &OS_TASK_2[127], .pTask = Task_10ms, .interval = 10, .timer = &system_tick, .ReadyFlag = 0}};
 
+Task_ConfigType *TaskListWithPriority[] = {&TaskList[0], &TaskList[1], &TaskList[2]};
+
 uint32 *PrepareTaskStack(uint32 *stack_pointer, void (*pTask)(void))
 {
     *stack_pointer = 0x01000000; // xPSR
@@ -135,6 +137,8 @@ void Os_Init(void)
     TaskList[0].OsStackPointer = PrepareTaskStack(&OS_TASK_0[127], Task_3ms);
     TaskList[1].OsStackPointer = PrepareTaskStack(&OS_TASK_1[127], Task_5ms);
     TaskList[2].OsStackPointer = PrepareTaskStack(&OS_TASK_2[127], Task_10ms);
+
+    uint32 a = TaskListWithPriority[0]->interval;
 }
 void Os_Start(void)
 {
