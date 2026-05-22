@@ -15,12 +15,26 @@ void PduR_Init(const PduR_PBConfigType *ConfigPtr)
 
 void PduR_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 {
-    PduR_ConfigPtr->RxRoutingTable[RxPduId].Rx_Func(RxPduId, PduInfoPtr);
+    for (int i = 0; i < NUMBER_OF_COM_RX_SIGNAL; i++)
+    {
+        if (PduR_ConfigPtr->RxRoutingTable[i].LocalPduId == RxPduId)
+        {
+            PduR_ConfigPtr->RxRoutingTable[i].Rx_Func(PduR_ConfigPtr->RxRoutingTable[i].GlobalPduId, PduInfoPtr);
+            break;
+        }
+    }
 }
 
 Std_ReturnType PduR_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 {
-    return PduR_ConfigPtr->TxRoutingTable[TxPduId].Transmit_Func(TxPduId, PduInfoPtr);
+    for (int i = 0; i < NUMBER_OF_COM_TX_SIGNAL; i++)
+    {
+        if (PduR_ConfigPtr->TxRoutingTable[i].GlobalPduId == TxPduId)
+        {
+            return PduR_ConfigPtr->TxRoutingTable[i].Transmit_Func(PduR_ConfigPtr->TxRoutingTable[i].LocalPduId, PduInfoPtr);
+        }
+    }
+    return E_NOT_OK;
 }
 
 void PduR_CanIfTxConfirmation(PduIdType TxPduId, Std_ReturnType result)

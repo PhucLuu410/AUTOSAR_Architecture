@@ -23,7 +23,7 @@ Std_ReturnType Rte_Write_RobotControl(Robot_Control_PDU_Type *AppData)
         crc ^= pBuffer[i];
     }
     pBuffer[7] = crc;
-    return Com_SendSignal(SENSOR_0);
+    return Com_SendSignal(0);
 }
 
 Std_ReturnType Rte_Write_RobotSafety(Robot_Safety_PDU_Type *AppData)
@@ -49,5 +49,5 @@ Std_ReturnType Rte_Write_RobotSafety(Robot_Safety_PDU_Type *AppData)
         crc ^= pBuffer[i];
     }
     pBuffer[7] = crc;
-    return Com_SendSignal(SENSOR_1);
+    return Com_SendSignal(0);
 }

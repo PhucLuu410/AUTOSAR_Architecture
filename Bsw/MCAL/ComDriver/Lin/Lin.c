@@ -12,10 +12,7 @@ void Lin_Init(const Lin_ConfigType *Config)
     Lin_Driver[Config->LinChannel->LinChannel]->CR1 = ((Config->LinHardware->LinRx << 2) | (Config->LinHardware->LinTx << 3) | (Config->LinHardware->LinUartEn << 13));
     Lin_Driver[Config->LinChannel->LinChannel]->CR2 = ((Config->LinHardware->LinEn << 14) | (Config->LinChannel->LinBreakDetect << 6));
     Lin_Driver[Config->LinChannel->LinChannel]->BRR = 8000000 / Config->LinChannel->LinBaud;
-    uint32 dummy_sr = USART1->SR;
-    uint32 dummy_dr = USART1->DR;
-    USART1->SR &= ~(1 << 6);
-    Lin_Driver[Config->LinChannel->LinChannel]->CR1 |= (1 << 6);
+    // Lin_Driver[Config->LinChannel->LinChannel]->CR1 |= (1 << 6);
     Lin_Driver[Config->LinChannel->LinChannel]->CR1 |= (1 << 5);
     Lin_Driver[Config->LinChannel->LinChannel]->CR2 |= (1 << 6);
     if (Config->LinChannel->LinChannel == LIN_CHANNEL_1)
@@ -49,6 +46,7 @@ Std_ReturnType Lin_SendFrame(uint8 Channel, const Lin_PduType *PduInfoPtr)
     Lin_Driver[Channel]->CR1 |= (1 << 0);
     while (Lin_Driver[Channel]->CR1 & (1 << 0))
         ;
+
     Lin_Driver[Channel]->DR = 0x55;
     while (!(Lin_Driver[Channel]->SR & (1 << 7)))
         ;
@@ -94,7 +92,28 @@ Std_ReturnType Lin_GoToSleepInternal(uint8 Channel)
 
 void USART1_IRQHandler(void)
 {
-    uint32 dummy = Lin_Driver[Lin_Local_Config->LinChannel->LinChannel]->SR;
-    dummy = Lin_Driver[Lin_Local_Config->LinChannel->LinChannel]->DR;
-    Lin_Driver[Lin_Local_Config->LinChannel->LinChannel]->SR = 0;
+    static uint8 lin_buffer[11];
+    static uint8 lin_idx = 0;
+    if (USART1->SR & USART_SR_LBD)
+    {
+        USART1->SR &= ~USART_SR_LBD;
+    }
+
+    if (USART1->SR & USART_SR_RXNE)
+    {
+        uint8 data_byte = (uint8)(USART1->DR);
+        if (lin_idx < sizeof(lin_buffer))
+        {
+            lin_buffer[lin_idx] = data_byte;
+            lin_idx++;
+        }
+        if (lin_idx >= sizeof(lin_buffer))
+        {
+            lin_idx = 0;
+        }
+    }
+
+    uint32_t temp = USART1->SR;
+    (void)temp;
+    USART1->DR = 0;
 }

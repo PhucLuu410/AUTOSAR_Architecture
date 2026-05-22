@@ -5,8 +5,12 @@
 #include "CanIf.h"
 #include "CanIf_Cfg.h"
 #include "Can_Cfg.h"
+#include "LinIf.h"
 
-extern PduR_RxRoutingPathType PduR_RxRouteTable[];
-extern PduR_TxRoutingPathType PduR_TxRouteTable[];
+#define NUMBER_OF_COM_TX_SIGNAL 3
+#define NUMBER_OF_COM_RX_SIGNAL 4
+
+extern PduR_RxRoutingPathType PduR_RxRouteTable[NUMBER_OF_COM_RX_SIGNAL];
+extern PduR_TxRoutingPathType PduR_TxRouteTable[NUMBER_OF_COM_TX_SIGNAL];
 extern PduR_PBConfigType PduR_PBConfig;
 #endif

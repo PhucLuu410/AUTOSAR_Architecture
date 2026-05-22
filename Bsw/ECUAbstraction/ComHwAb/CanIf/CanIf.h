@@ -8,22 +8,23 @@
 
 typedef struct
 {
-    PduIdType RxPduId;
-    Can_IdType CanId;
+    uint8 CanIf_LocalId;
+    uint16 CanIf_CanId;
     uint8 Length;
     uint8 *data;
-} CanIfPduRxTableType;
+} CanIf_PduRxTableConfig;
 
 typedef struct
 {
-    PduIdType TxPduId;
-    Can_PduType *TxPduTable;
-} CanIfPduTxTableType;
+    uint8 CanChannel;
+    uint8 CanIf_LocalId;
+    uint16 CanIf_CanId;
+} CanIf_PduTxTableConfig;
 
 typedef struct
 {
-    CanIfPduRxTableType *RxTableConfig;
-    CanIfPduTxTableType *TxTableConfig;
+    CanIf_PduRxTableConfig *RxTableConfig;
+    CanIf_PduTxTableConfig *TxTableConfig;
 } CanIf_ConfigType;
 
 typedef enum

@@ -137,8 +137,6 @@ void Os_Init(void)
     TaskList[0].OsStackPointer = PrepareTaskStack(&OS_TASK_0[127], Task_3ms);
     TaskList[1].OsStackPointer = PrepareTaskStack(&OS_TASK_1[127], Task_5ms);
     TaskList[2].OsStackPointer = PrepareTaskStack(&OS_TASK_2[127], Task_10ms);
-
-    uint32 a = TaskListWithPriority[0]->interval;
 }
 void Os_Start(void)
 {
