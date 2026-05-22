@@ -63,8 +63,7 @@ int main(void)
     // Os_Start();
     while (1)
     {
-
-    }
+        }
 }
 
 void HardFault_Handler(void)
