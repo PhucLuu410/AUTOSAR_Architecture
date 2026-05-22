@@ -36,7 +36,7 @@ TASK(Task_3ms)
     {
         if (TaskList[0].ReadyFlag == 1)
         {
-            Can_MainFunction_Read();
+            // Can_MainFunction_Read();
             TaskList[0].ReadyFlag = 0;
             SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
         }
@@ -49,7 +49,7 @@ TASK(Task_5ms)
     {
         if (TaskList[1].ReadyFlag == 1)
         {
-            Rte_Write_RobotControl(&RobotControlData1); // ID 127
+            // Rte_Write_RobotControl(&RobotControlData1); // ID 127
             TaskList[1].ReadyFlag = 0;
             SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
         }
@@ -62,7 +62,7 @@ TASK(Task_10ms)
     {
         if (TaskList[2].ReadyFlag == 1)
         {
-            Rte_Write_RobotSafety(&RobotSafetyData2); // ID 123
+            // Rte_Write_RobotSafety(&RobotSafetyData2); // ID 123
             TaskList[2].ReadyFlag = 0;
             SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
         }
@@ -70,11 +70,11 @@ TASK(Task_10ms)
 }
 
 Task_ConfigType TaskList[] = {
-    {.OsStackPointer = &OS_TASK_0[127], .pTask = Task_3ms, .interval = 3, .timer = &system_tick, .ReadyFlag = 0},
-    {.OsStackPointer = &OS_TASK_1[127], .pTask = Task_5ms, .interval = 5, .timer = &system_tick, .ReadyFlag = 0},
-    {.OsStackPointer = &OS_TASK_2[127], .pTask = Task_10ms, .interval = 10, .timer = &system_tick, .ReadyFlag = 0}};
+    {.OsStackPointer = &OS_TASK_0[127], .pTask = Task_3ms, .interval = 3, .timer = &system_tick, .ReadyFlag = 0, .Priority = 2},
+    {.OsStackPointer = &OS_TASK_1[127], .pTask = Task_5ms, .interval = 5, .timer = &system_tick, .ReadyFlag = 0, .Priority = 0},
+    {.OsStackPointer = &OS_TASK_2[127], .pTask = Task_10ms, .interval = 10, .timer = &system_tick, .ReadyFlag = 0, .Priority = 1}};
 
-Task_ConfigType *TaskListWithPriority[] = {&TaskList[0], &TaskList[1], &TaskList[2]};
+Task_ConfigType *TaskListWithPriority[] = {NULL_PTR, NULL_PTR, NULL_PTR};
 
 uint32 *PrepareTaskStack(uint32 *stack_pointer, void (*pTask)(void))
 {
@@ -116,17 +116,17 @@ uint32 *PrepareTaskStack(uint32 *stack_pointer, void (*pTask)(void))
 void SysTick_Handler(void)
 {
     system_tick++;
-    if ((system_tick % 3) == 0)
+    if ((system_tick % 3) == TaskList[0].interval)
     {
         TaskList[0].ReadyFlag = 1;
     }
 
-    if ((system_tick % 5) == 0)
+    if ((system_tick % 5) == TaskList[1].interval)
     {
         TaskList[1].ReadyFlag = 1;
     }
 
-    if ((system_tick % 10) == 0)
+    if ((system_tick % 10) == TaskList[2].interval)
     {
         TaskList[2].ReadyFlag = 1;
     }
@@ -140,7 +140,7 @@ void Os_Init(void)
 }
 void Os_Start(void)
 {
-    current_psp = TaskList[0].OsStackPointer;
+    current_psp = TaskListWithPriority[0]->OsStackPointer;
     SysTick->CTRL = 0x07;
     __asm volatile("SVC #0");
 }
@@ -161,27 +161,30 @@ void SVC_Handler(void)
 
 void Os_Scheduler(void)
 {
-    TaskList[current_task_index].OsStackPointer = current_psp;
+    TaskListWithPriority[current_task_index]->OsStackPointer = current_psp;
     for (int i = 0; i < 3; i++)
     {
-        if (TaskList[i].ReadyFlag == 1)
+        if (TaskListWithPriority[i]->ReadyFlag == 1)
         {
             current_task_index = i;
             break;
         }
     }
-    current_psp = TaskList[current_task_index].OsStackPointer;
+    current_psp = TaskListWithPriority[current_task_index]->OsStackPointer;
 }
 
 __attribute__((naked)) void PendSV_Handler(void)
 {
+
     __asm__ __volatile__(
         "MRS     R0, PSP                 \n"
         "STMDB   R0!, {R4-R11}          \n"
         "LDR     R1, =current_psp       \n"
         "STR     R0, [R1]               \n"
         "PUSH    {LR}                   \n"
+        "CPSID   I                      \n"
         "BL      Os_Scheduler           \n"
+        "CPSIE   I                      \n"
         "POP     {LR}                   \n"
         "LDR     R1, =current_psp       \n"
         "LDR     R0, [R1]               \n"

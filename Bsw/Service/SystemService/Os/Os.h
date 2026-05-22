@@ -9,6 +9,7 @@ typedef struct
     uint32 interval;
     uint32 *timer;
     volatile uint8 ReadyFlag;
+    uint8 Priority;
 } Task_ConfigType;
 
 extern Task_ConfigType TaskList[];

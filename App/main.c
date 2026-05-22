@@ -58,12 +58,11 @@ int main(void)
     // LinIf_Init(&LinIfConfig);
     CanIf_SetControllerMode(CAN_1, CAN_CS_STARTED);
     PduR_Init(&PduR_PBConfig);
-    // SysTick_Init_8MHz();
-    // Os_Init();
-    // Os_Start();
+    SysTick_Init_8MHz();
+    Os_Init();
+    Os_Start();
     while (1)
     {
-
     }
 }
 
