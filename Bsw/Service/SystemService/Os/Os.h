@@ -1,7 +1,8 @@
 #include "Rte.h"
 
 #define TASK(FunctionName) __attribute__((naked)) void FunctionName(void)
-
+#define SIZE_OF_TASK_STACK 128
+#define NUMBER_OF_TASKS 3
 typedef struct
 {
     uint32 *OsStackPointer;

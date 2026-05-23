@@ -70,11 +70,11 @@ TASK(Task_10ms)
 }
 
 Task_ConfigType TaskList[] = {
-    {.OsStackPointer = &OS_TASK_0[127], .pTask = Task_3ms, .interval = 3, .timer = &system_tick, .ReadyFlag = 0, .Priority = 2},
-    {.OsStackPointer = &OS_TASK_1[127], .pTask = Task_5ms, .interval = 5, .timer = &system_tick, .ReadyFlag = 0, .Priority = 0},
-    {.OsStackPointer = &OS_TASK_2[127], .pTask = Task_10ms, .interval = 10, .timer = &system_tick, .ReadyFlag = 0, .Priority = 1}};
+    {.OsStackPointer = &OS_TASK_0[SIZE_OF_TASK_STACK - 1], .pTask = Task_3ms, .interval = 3, .timer = &system_tick, .ReadyFlag = 0, .Priority = 0},
+    {.OsStackPointer = &OS_TASK_1[SIZE_OF_TASK_STACK - 1], .pTask = Task_5ms, .interval = 5, .timer = &system_tick, .ReadyFlag = 0, .Priority = 2},
+    {.OsStackPointer = &OS_TASK_2[SIZE_OF_TASK_STACK - 1], .pTask = Task_10ms, .interval = 10, .timer = &system_tick, .ReadyFlag = 0, .Priority = 1}};
 
-Task_ConfigType *TaskListWithPriority[] = {NULL_PTR, NULL_PTR, NULL_PTR};
+Task_ConfigType *TaskListWithPriority[] = {&TaskList[0], &TaskList[1], &TaskList[2]};
 
 uint32 *PrepareTaskStack(uint32 *stack_pointer, void (*pTask)(void))
 {
@@ -116,17 +116,17 @@ uint32 *PrepareTaskStack(uint32 *stack_pointer, void (*pTask)(void))
 void SysTick_Handler(void)
 {
     system_tick++;
-    if ((system_tick % 3) == TaskList[0].interval)
+    if ((system_tick % TaskList[0].interval) == 0)
     {
         TaskList[0].ReadyFlag = 1;
     }
 
-    if ((system_tick % 5) == TaskList[1].interval)
+    if ((system_tick % TaskList[1].interval) == 0)
     {
         TaskList[1].ReadyFlag = 1;
     }
 
-    if ((system_tick % 10) == TaskList[2].interval)
+    if ((system_tick % TaskList[2].interval) == 0)
     {
         TaskList[2].ReadyFlag = 1;
     }
@@ -134,9 +134,21 @@ void SysTick_Handler(void)
 }
 void Os_Init(void)
 {
-    TaskList[0].OsStackPointer = PrepareTaskStack(&OS_TASK_0[127], Task_3ms);
-    TaskList[1].OsStackPointer = PrepareTaskStack(&OS_TASK_1[127], Task_5ms);
-    TaskList[2].OsStackPointer = PrepareTaskStack(&OS_TASK_2[127], Task_10ms);
+    TaskList[0].OsStackPointer = PrepareTaskStack(&OS_TASK_0[SIZE_OF_TASK_STACK - 1], Task_3ms);
+    TaskList[1].OsStackPointer = PrepareTaskStack(&OS_TASK_1[SIZE_OF_TASK_STACK - 1], Task_5ms);
+    TaskList[2].OsStackPointer = PrepareTaskStack(&OS_TASK_2[SIZE_OF_TASK_STACK - 1], Task_10ms);
+    for (int i = 0; i < NUMBER_OF_TASKS; i++)
+    {
+        for (int j = i + 1; j < NUMBER_OF_TASKS; j++)
+        {
+            if (TaskListWithPriority[j]->Priority < TaskListWithPriority[i]->Priority)
+            {
+                Task_ConfigType *temp = TaskListWithPriority[i];
+                TaskListWithPriority[i] = TaskListWithPriority[j];
+                TaskListWithPriority[j] = temp;
+            }
+        }
+    }
 }
 void Os_Start(void)
 {
@@ -162,7 +174,7 @@ void SVC_Handler(void)
 void Os_Scheduler(void)
 {
     TaskListWithPriority[current_task_index]->OsStackPointer = current_psp;
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < NUMBER_OF_TASKS; i++)
     {
         if (TaskListWithPriority[i]->ReadyFlag == 1)
         {
