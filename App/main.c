@@ -42,6 +42,7 @@ void SysTick_Init_8MHz(void)
     CoreDebug->DEMCR |= (1 << 24);
     DWT->CYCCNT = 0;
     DWT->CTRL |= (1 << 0);
+    NVIC_SetPriority(PendSV_IRQn, 0xFF);
 }
 
 int main(void)

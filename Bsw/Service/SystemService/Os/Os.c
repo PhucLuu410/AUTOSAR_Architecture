@@ -3,13 +3,43 @@
 uint32 OS_TASK_0[128];
 uint32 OS_TASK_1[128];
 uint32 OS_TASK_2[128];
-
 uint32 count1;
-
 uint32 system_tick = 0;
 uint32 current_task_index = 0;
 uint32 *current_psp;
+uint8 MutexLock = 0;
+uint32 a = 0;
+uint8 b = 0;
 
+uint8 Mutex_Lock(void)
+{
+    __disable_irq();
+    if (MutexLock == 0)
+    {
+        MutexLock = 1;
+        __enable_irq();
+        return 1;
+    }
+    __enable_irq();
+    return 0;
+}
+
+void Mutex_Unlock(void)
+{
+    __disable_irq();
+    if (MutexLock == 1)
+    {
+        MutexLock = 0;
+    }
+    __enable_irq();
+}
+
+void Os_ChangeState(Task_ConfigType *task, TaskState new_state)
+{
+    __disable_irq();
+    task->State = new_state;
+    __enable_irq();
+}
 volatile uint32_t *address_pointed;
 
 Robot_Control_PDU_Type RobotControlData1 = {
@@ -34,10 +64,12 @@ TASK(Task_3ms)
 {
     while (1)
     {
-        if (TaskList[0].ReadyFlag == 1)
+        if (TaskList[0].State == TASK_READY)
         {
-            // Can_MainFunction_Read();
-            TaskList[0].ReadyFlag = 0;
+            Os_ChangeState(&TaskList[0], TASK_RUNNING);
+            for (int i = 0; i < 100; i++)
+                ;
+            Os_ChangeState(&TaskList[0], TASK_SUSPENDED);
             SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
         }
     }
@@ -47,10 +79,12 @@ TASK(Task_5ms)
 {
     while (1)
     {
-        if (TaskList[1].ReadyFlag == 1)
+        if (TaskList[1].State == TASK_READY)
         {
-            // Rte_Write_RobotControl(&RobotControlData1); // ID 127
-            TaskList[1].ReadyFlag = 0;
+            Os_ChangeState(&TaskList[1], TASK_RUNNING);
+            for (int i = 0; i < 100; i++)
+                ;
+            Os_ChangeState(&TaskList[1], TASK_SUSPENDED);
             SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
         }
     }
@@ -60,19 +94,35 @@ TASK(Task_10ms)
 {
     while (1)
     {
-        if (TaskList[2].ReadyFlag == 1)
+        if (TaskList[2].State == TASK_READY)
         {
-            // Rte_Write_RobotSafety(&RobotSafetyData2); // ID 123
-            TaskList[2].ReadyFlag = 0;
+            Os_ChangeState(&TaskList[2], TASK_RUNNING);
+            for (int i = 0; i < 100; i++)
+                ;
+            Os_ChangeState(&TaskList[2], TASK_SUSPENDED);
             SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
         }
     }
 }
 
-Task_ConfigType TaskList[] = {
-    {.OsStackPointer = &OS_TASK_0[SIZE_OF_TASK_STACK - 1], .pTask = Task_3ms, .interval = 3, .timer = &system_tick, .ReadyFlag = 0, .Priority = 0},
-    {.OsStackPointer = &OS_TASK_1[SIZE_OF_TASK_STACK - 1], .pTask = Task_5ms, .interval = 5, .timer = &system_tick, .ReadyFlag = 0, .Priority = 2},
-    {.OsStackPointer = &OS_TASK_2[SIZE_OF_TASK_STACK - 1], .pTask = Task_10ms, .interval = 10, .timer = &system_tick, .ReadyFlag = 0, .Priority = 1}};
+Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &OS_TASK_0[SIZE_OF_TASK_STACK - 1],
+                                     .pTask = Task_3ms,
+                                     .interval = 3,
+                                     .timer = &system_tick,
+                                     .Priority = 2,
+                                     .State = TASK_SUSPENDED},
+                              [1] = {.OsStackPointer = &OS_TASK_1[SIZE_OF_TASK_STACK - 1],
+                                     .pTask = Task_5ms,
+                                     .interval = 5,
+                                     .timer = &system_tick,
+                                     .Priority = 0,
+                                     .State = TASK_SUSPENDED},
+                              [2] = {.OsStackPointer = &OS_TASK_2[SIZE_OF_TASK_STACK - 1],
+                                     .pTask = Task_10ms,
+                                     .interval = 10,
+                                     .timer = &system_tick,
+                                     .Priority = 1,
+                                     .State = TASK_SUSPENDED}};
 
 Task_ConfigType *TaskListWithPriority[] = {&TaskList[0], &TaskList[1], &TaskList[2]};
 
@@ -118,17 +168,17 @@ void SysTick_Handler(void)
     system_tick++;
     if ((system_tick % TaskList[0].interval) == 0)
     {
-        TaskList[0].ReadyFlag = 1;
+        Os_ChangeState(&TaskList[0], TASK_READY);
     }
 
     if ((system_tick % TaskList[1].interval) == 0)
     {
-        TaskList[1].ReadyFlag = 1;
+        Os_ChangeState(&TaskList[1], TASK_READY);
     }
 
     if ((system_tick % TaskList[2].interval) == 0)
     {
-        TaskList[2].ReadyFlag = 1;
+        Os_ChangeState(&TaskList[2], TASK_READY);
     }
     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 }
@@ -176,7 +226,7 @@ void Os_Scheduler(void)
     TaskListWithPriority[current_task_index]->OsStackPointer = current_psp;
     for (int i = 0; i < NUMBER_OF_TASKS; i++)
     {
-        if (TaskListWithPriority[i]->ReadyFlag == 1)
+        if (TaskListWithPriority[i]->State == TASK_READY)
         {
             current_task_index = i;
             break;
@@ -187,7 +237,6 @@ void Os_Scheduler(void)
 
 __attribute__((naked)) void PendSV_Handler(void)
 {
-
     __asm__ __volatile__(
         "MRS     R0, PSP                 \n"
         "STMDB   R0!, {R4-R11}          \n"
