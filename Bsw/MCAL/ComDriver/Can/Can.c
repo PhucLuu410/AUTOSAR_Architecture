@@ -3,6 +3,7 @@
 #include "CanIf.h"
 
 static uint8 PduIdRecentSent = 0;
+
 void Can_Init(const Can_ConfigType *ConfigPtr)
 {
     GPIOA->ODR |= (1 << 11);
@@ -33,13 +34,13 @@ void Can_Init(const Can_ConfigType *ConfigPtr)
         }
     }
     Can_Controllers[ConfigPtr->CanControllerId]->FMR &= ~(1 << 0);
-    Can_ControllerState = CAN_CS_STARTED;
+    Can_ControllerState[ConfigPtr->CanControllerId] = CAN_CS_STARTED;
 }
 
 void Can_DeInit(void)
 {
     Can_Controllers[CAN_1]->MCR = 0x00010002;
-    Can_ControllerState = CAN_CS_UNINIT;
+    Can_ControllerState[CAN_1] = CAN_CS_UNINIT;
 }
 
 Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
@@ -73,14 +74,14 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
         Can_Controllers[Controller]->MCR |= (1 << 0);
         while (!(Can_Controllers[Controller]->MSR & (1 << 0)))
             ;
-        Can_ControllerState = CAN_CS_STOPPED;
+        Can_ControllerState[Controller] = CAN_CS_STOPPED;
         break;
     case CAN_CS_SLEEP:
         Can_Controllers[Controller]->MCR &= ~(1 << 0);
         Can_Controllers[Controller]->MCR |= (1 << 1);
         while (!(Can_Controllers[Controller]->MSR & (1 << 1)))
             ;
-        Can_ControllerState = CAN_CS_SLEEP;
+        Can_ControllerState[Controller] = CAN_CS_SLEEP;
         break;
     default:
         return E_NOT_OK;
@@ -139,7 +140,7 @@ Std_ReturnType Can_GetControllerMode(uint8 Controller, Can_ControllerStateType *
     {
         return E_NOT_OK;
     }
-    *ControllerModePtr = Can_ControllerState;
+    *ControllerModePtr = Can_ControllerState[Controller];
     return E_OK;
 }
 
