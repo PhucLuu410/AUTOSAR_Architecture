@@ -3,14 +3,11 @@
 uint32 OS_TASK_0[SIZE_OF_TASK_STACK];
 uint32 OS_TASK_1[SIZE_OF_TASK_STACK];
 uint32 OS_TASK_2[SIZE_OF_TASK_STACK];
-uint32 OS_IDLE_STACK[SIZE_OF_TASK_STACK];
-uint32 count1;
+uint32 OS_TASK_IDLE[SIZE_OF_TASK_STACK];
 uint32 system_tick = 0;
 uint32 current_task_index = 3;
 uint32 *current_psp;
 uint8 MutexLock = 0;
-uint32 a = 0;
-uint8 b = 0;
 
 uint8 Mutex_Lock(void)
 {
@@ -37,7 +34,6 @@ void Mutex_Unlock(void)
 
 TASK(Task_3ms)
 {
-    // POP LAN THU 2 BI LOI
     if (TaskList[0].State == TASK_READY)
     {
         TaskList[0].State = TASK_RUNNING;
@@ -85,26 +81,27 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &OS_TASK_0[SIZE_OF_TASK_S
                                      .timer = &system_tick,
                                      .Priority = 0,
                                      .State = TASK_SUSPENDED},
+
                               [1] = {.OsStackPointer = &OS_TASK_1[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_5ms,
                                      .interval = 5,
                                      .timer = &system_tick,
                                      .Priority = 1,
                                      .State = TASK_SUSPENDED},
+
                               [2] = {.OsStackPointer = &OS_TASK_2[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_13ms,
                                      .interval = 13,
                                      .timer = &system_tick,
                                      .Priority = 2,
                                      .State = TASK_SUSPENDED},
-                              [3] = {.OsStackPointer = &OS_IDLE_STACK[SIZE_OF_TASK_STACK - 1],
+
+                              [3] = {.OsStackPointer = &OS_TASK_IDLE[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_Idle,
                                      .interval = 1,
                                      .timer = &system_tick,
                                      .Priority = 255,
                                      .State = TASK_READY}};
-
-Task_ConfigType *TaskListWithPriority[] = {&TaskList[0], &TaskList[1], &TaskList[2], &TaskList[3]};
 
 uint32 *PrepareTaskStack(uint32 *stack_pointer, void (*pTask)(void))
 {
@@ -167,25 +164,25 @@ void Os_Init(void)
     TaskList[0].OsStackPointer = PrepareTaskStack(&OS_TASK_0[SIZE_OF_TASK_STACK - 1], Task_3ms);
     TaskList[1].OsStackPointer = PrepareTaskStack(&OS_TASK_1[SIZE_OF_TASK_STACK - 1], Task_5ms);
     TaskList[2].OsStackPointer = PrepareTaskStack(&OS_TASK_2[SIZE_OF_TASK_STACK - 1], Task_13ms);
-    TaskList[3].OsStackPointer = PrepareTaskStack(&OS_IDLE_STACK[SIZE_OF_TASK_STACK - 1], Task_Idle);
+    TaskList[3].OsStackPointer = PrepareTaskStack(&OS_TASK_IDLE[SIZE_OF_TASK_STACK - 1], Task_Idle);
 
     for (int i = 0; i < NUMBER_OF_TASKS; i++)
 
     {
         for (int j = i + 1; j < NUMBER_OF_TASKS; j++)
         {
-            if (TaskListWithPriority[j]->Priority < TaskListWithPriority[i]->Priority)
+            if (TaskList[j].Priority < TaskList[i].Priority)
             {
-                Task_ConfigType *temp = TaskListWithPriority[i];
-                TaskListWithPriority[i] = TaskListWithPriority[j];
-                TaskListWithPriority[j] = temp;
+                Task_ConfigType temp = TaskList[i];
+                TaskList[i] = TaskList[j];
+                TaskList[j] = temp;
             }
         }
     }
 }
 void Os_Start(void)
 {
-    current_psp = TaskListWithPriority[3]->OsStackPointer;
+    current_psp = TaskList[NUMBER_OF_TASKS - 1].OsStackPointer;
     SysTick->CTRL = 0x07;
     __asm volatile("SVC #0");
 }
@@ -208,16 +205,26 @@ void SVC_Handler(void)
 
 void Os_Scheduler(void)
 {
-    TaskListWithPriority[current_task_index]->OsStackPointer = current_psp;
-    for (int i = 0; i < NUMBER_OF_TASKS; i++)
+    if (TaskList[0].State == TASK_READY)
     {
-        if (TaskListWithPriority[i]->State == TASK_READY)
-        {
-            current_task_index = i;
-            break;
-        }
+        current_psp = PrepareTaskStack(&OS_TASK_0[SIZE_OF_TASK_STACK - 1], Task_3ms);
+        return;
     }
-    current_psp = TaskListWithPriority[current_task_index]->OsStackPointer;
+    if (TaskList[1].State == TASK_READY)
+    {
+        current_psp = PrepareTaskStack(&OS_TASK_1[SIZE_OF_TASK_STACK - 1], Task_5ms);
+        return;
+    }
+    if (TaskList[2].State == TASK_READY)
+    {
+        current_psp = PrepareTaskStack(&OS_TASK_2[SIZE_OF_TASK_STACK - 1], Task_13ms);
+        return;
+    }
+    if (TaskList[3].State == TASK_READY)
+    {
+        current_psp = PrepareTaskStack(&OS_TASK_IDLE[SIZE_OF_TASK_STACK - 1], Task_Idle);
+        return;
+    }
 }
 
 void PendSV_Handler(void)
