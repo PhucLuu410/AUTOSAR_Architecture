@@ -49,7 +49,6 @@ typedef struct
 
 void Can_Init(const Can_ConfigType *ConfigPtr);
 void Can_DeInit(void);
-
 Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID);
 Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType Transition);
 void Can_DisableControllerInterrupts(uint8 Controller);

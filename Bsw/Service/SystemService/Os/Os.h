@@ -2,7 +2,7 @@
 
 #define TASK(FunctionName) __attribute__((naked)) void FunctionName(void)
 #define SIZE_OF_TASK_STACK 128
-#define NUMBER_OF_TASKS 3
+#define NUMBER_OF_TASKS 4
 
 typedef enum
 {

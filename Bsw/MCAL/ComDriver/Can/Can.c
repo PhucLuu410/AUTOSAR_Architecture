@@ -54,7 +54,7 @@ Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
                                        (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanTseg1 << 16) |
                                        (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanTseg2 << 20) |
                                        (CanConfig[Controller].CanBaudrateConfig[BaudRateConfigID].CanSjw << 24);
-
+    // Loopback check
     // CAN1->BTR |= (1 << 30);
     // CAN1->BTR |= (1 << 31);
     return E_OK;
