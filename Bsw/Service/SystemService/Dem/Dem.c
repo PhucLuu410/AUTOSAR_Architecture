@@ -1,6 +1,6 @@
 #include "Dem.h"
 
-static Dem_EventStatusRamType Dem_EventRamTable[NUMBER_OF_DEM_EVENTS];
+// static Dem_EventStatusRamType Dem_EventRamTable[NUMBER_OF_DEM_EVENTS];
 
 // void Dem_Init(void)
 // {

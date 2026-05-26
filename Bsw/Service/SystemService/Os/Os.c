@@ -1,16 +1,14 @@
 #include "OS.h"
 
-uint32 OS_TASK_0[SIZE_OF_TASK_STACK];
-uint32 OS_TASK_1[SIZE_OF_TASK_STACK];
-uint32 OS_TASK_2[SIZE_OF_TASK_STACK];
-uint32 OS_IDLE_STACK[SIZE_OF_TASK_STACK];
-uint32 count1;
-uint32 system_tick = 0;
-uint32 current_task_index = 3;
-uint32 *current_psp;
+uint32 Os_Task_0[SIZE_OF_TASK_STACK];
+uint32 Os_Task_1[SIZE_OF_TASK_STACK];
+uint32 Os_Task_2[SIZE_OF_TASK_STACK];
+uint32 Os_Task_3[SIZE_OF_TASK_STACK];
+
+uint32 Os_System_Tick = 0;
+uint32 Os_Current_Task = 0;
+uint32 *Os_Current_Psp = NULL_PTR;
 uint8 MutexLock = 0;
-uint32 a = 0;
-uint8 b = 0;
 
 uint8 Mutex_Lock(void)
 {
@@ -34,77 +32,6 @@ void Mutex_Unlock(void)
     }
     __enable_irq();
 }
-
-TASK(Task_3ms)
-{
-    // POP LAN THU 2 BI LOI
-    if (TaskList[0].State == TASK_READY)
-    {
-        TaskList[0].State = TASK_RUNNING;
-        for (int i = 0; i < 100; i++)
-            ;
-        TaskList[0].State = TASK_SUSPENDED;
-    }
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-}
-
-TASK(Task_5ms)
-{
-    if (TaskList[1].State == TASK_READY)
-    {
-        TaskList[1].State = TASK_RUNNING;
-        for (int i = 0; i < 100; i++)
-            ;
-        TaskList[1].State = TASK_SUSPENDED;
-    }
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-}
-
-TASK(Task_13ms)
-{
-    if (TaskList[2].State == TASK_READY)
-    {
-        TaskList[2].State = TASK_RUNNING;
-        for (int i = 0; i < 100; i++)
-            ;
-        TaskList[2].State = TASK_SUSPENDED;
-    }
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-}
-
-TASK(Task_Idle)
-{
-    while (1)
-    {
-    }
-}
-
-Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &OS_TASK_0[SIZE_OF_TASK_STACK - 1],
-                                     .pTask = Task_3ms,
-                                     .interval = 3,
-                                     .timer = &system_tick,
-                                     .Priority = 0,
-                                     .State = TASK_SUSPENDED},
-                              [1] = {.OsStackPointer = &OS_TASK_1[SIZE_OF_TASK_STACK - 1],
-                                     .pTask = Task_5ms,
-                                     .interval = 5,
-                                     .timer = &system_tick,
-                                     .Priority = 1,
-                                     .State = TASK_SUSPENDED},
-                              [2] = {.OsStackPointer = &OS_TASK_2[SIZE_OF_TASK_STACK - 1],
-                                     .pTask = Task_13ms,
-                                     .interval = 13,
-                                     .timer = &system_tick,
-                                     .Priority = 2,
-                                     .State = TASK_SUSPENDED},
-                              [3] = {.OsStackPointer = &OS_IDLE_STACK[SIZE_OF_TASK_STACK - 1],
-                                     .pTask = Task_Idle,
-                                     .interval = 1,
-                                     .timer = &system_tick,
-                                     .Priority = 255,
-                                     .State = TASK_READY}};
-
-Task_ConfigType *TaskListWithPriority[] = {&TaskList[0], &TaskList[1], &TaskList[2], &TaskList[3]};
 
 uint32 *PrepareTaskStack(uint32 *stack_pointer, void (*pTask)(void))
 {
@@ -143,49 +70,106 @@ uint32 *PrepareTaskStack(uint32 *stack_pointer, void (*pTask)(void))
     return stack_pointer;
 }
 
+void TerminateTask(void)
+{
+    __disable_irq();
+    TaskList[Os_Current_Task].State = TASK_SUSPENDED;
+    __enable_irq();
+    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+}
+
+TASK(Task_0)
+{
+    TerminateTask();
+}
+
+TASK(Task_1)
+{
+    TerminateTask();
+}
+
+TASK(Task_2)
+{
+    TerminateTask();
+}
+
+TASK(Task_Idle)
+{
+    while (1)
+    {
+    }
+}
+
+Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_STACK - 1],
+                                     .pTask = Task_0,
+                                     .interval = 3,
+                                     .timer = &Os_System_Tick,
+                                     .Priority = 0,
+                                     .State = TASK_SUSPENDED},
+
+                              [1] = {.OsStackPointer = &Os_Task_1[SIZE_OF_TASK_STACK - 1],
+                                     .pTask = Task_1,
+                                     .interval = 5,
+                                     .timer = &Os_System_Tick,
+                                     .Priority = 1,
+                                     .State = TASK_SUSPENDED},
+
+                              [2] = {.OsStackPointer = &Os_Task_2[SIZE_OF_TASK_STACK - 1],
+                                     .pTask = Task_2,
+                                     .interval = 20,
+                                     .timer = &Os_System_Tick,
+                                     .Priority = 2,
+                                     .State = TASK_SUSPENDED},
+
+                              [3] = {.OsStackPointer = &Os_Task_3[SIZE_OF_TASK_STACK - 1],
+                                     .pTask = Task_Idle,
+                                     .interval = 1,
+                                     .timer = &Os_System_Tick,
+                                     .Priority = 255,
+                                     .State = TASK_READY}};
+
 void SysTick_Handler(void)
 {
-    system_tick++;
-    if ((system_tick % TaskList[0].interval) == 0)
+    Os_System_Tick++;
+
+    if ((Os_System_Tick % TaskList[0].interval) == 0 && TaskList[0].State == TASK_SUSPENDED)
     {
+        TaskList[0].OsStackPointer = PrepareTaskStack(&Os_Task_0[SIZE_OF_TASK_STACK - 1], TaskList[0].pTask);
         TaskList[0].State = TASK_READY;
     }
 
-    if ((system_tick % TaskList[1].interval) == 0)
+    if ((Os_System_Tick % TaskList[1].interval) == 0 && TaskList[1].State == TASK_SUSPENDED)
     {
+        TaskList[1].OsStackPointer = PrepareTaskStack(&Os_Task_1[SIZE_OF_TASK_STACK - 1], TaskList[1].pTask);
         TaskList[1].State = TASK_READY;
     }
 
-    if ((system_tick % TaskList[2].interval) == 0)
+    if ((Os_System_Tick % TaskList[2].interval) == 0 && TaskList[2].State == TASK_SUSPENDED)
     {
+        TaskList[2].OsStackPointer = PrepareTaskStack(&Os_Task_2[SIZE_OF_TASK_STACK - 1], TaskList[2].pTask);
         TaskList[2].State = TASK_READY;
     }
+
     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 }
 void Os_Init(void)
 {
-    TaskList[0].OsStackPointer = PrepareTaskStack(&OS_TASK_0[SIZE_OF_TASK_STACK - 1], Task_3ms);
-    TaskList[1].OsStackPointer = PrepareTaskStack(&OS_TASK_1[SIZE_OF_TASK_STACK - 1], Task_5ms);
-    TaskList[2].OsStackPointer = PrepareTaskStack(&OS_TASK_2[SIZE_OF_TASK_STACK - 1], Task_13ms);
-    TaskList[3].OsStackPointer = PrepareTaskStack(&OS_IDLE_STACK[SIZE_OF_TASK_STACK - 1], Task_Idle);
-
-    for (int i = 0; i < NUMBER_OF_TASKS; i++)
-
-    {
-        for (int j = i + 1; j < NUMBER_OF_TASKS; j++)
-        {
-            if (TaskListWithPriority[j]->Priority < TaskListWithPriority[i]->Priority)
-            {
-                Task_ConfigType *temp = TaskListWithPriority[i];
-                TaskListWithPriority[i] = TaskListWithPriority[j];
-                TaskListWithPriority[j] = temp;
-            }
-        }
-    }
+    TaskList[0].OsStackPointer = PrepareTaskStack(&Os_Task_0[SIZE_OF_TASK_STACK - 1], Task_0);
+    TaskList[1].OsStackPointer = PrepareTaskStack(&Os_Task_1[SIZE_OF_TASK_STACK - 1], Task_1);
+    TaskList[2].OsStackPointer = PrepareTaskStack(&Os_Task_2[SIZE_OF_TASK_STACK - 1], Task_2);
+    TaskList[3].OsStackPointer = PrepareTaskStack(&Os_Task_3[SIZE_OF_TASK_STACK - 1], Task_Idle);
 }
 void Os_Start(void)
 {
-    current_psp = TaskListWithPriority[3]->OsStackPointer;
+    for (int i = 0; i < NUMBER_OF_TASKS; i++)
+    {
+        if (TaskList[i].State == TASK_READY)
+        {
+            Os_Current_Task = i;
+            Os_Current_Psp = TaskList[i].OsStackPointer;
+            break;
+        }
+    }
     SysTick->CTRL = 0x07;
     __asm volatile("SVC #0");
 }
@@ -193,31 +177,46 @@ void Os_Start(void)
 __attribute__((naked)) void SVC_Handler(void)
 {
     __asm__ __volatile__(
-        "LDR     R2, [%0]             \n"
+        "LDR     R2, = Os_Current_Psp   \n"
+        "LDR     R2, [R2]               \n"
         "LDMIA   R2!, {R4-R11}        \n"
         "MSR     PSP, R2              \n"
         "MOV     R0, #2               \n"
         "MSR     CONTROL, R0          \n"
         "ISB                          \n"
         "LDR     LR, =0xFFFFFFFD      \n"
-        "BX      LR                   \n"
-        :
-        : "r"(&current_psp)
-        : "r0", "r2", "memory");
+        "BX      LR                   \n");
 }
 
 void Os_Scheduler(void)
 {
-    TaskListWithPriority[current_task_index]->OsStackPointer = current_psp;
-    for (int i = 0; i < NUMBER_OF_TASKS; i++)
+
+    Os_Current_Task = 3;
+    Os_Current_Psp = TaskList[3].OsStackPointer;
+
+    if (TaskList[0].State == TASK_READY || TaskList[0].State == TASK_RUNNING)
     {
-        if (TaskListWithPriority[i]->State == TASK_READY)
-        {
-            current_task_index = i;
-            break;
-        }
+        TaskList[0].State = TASK_RUNNING;
+        Os_Current_Task = 0;
+        Os_Current_Psp = TaskList[0].OsStackPointer;
+        return;
     }
-    current_psp = TaskListWithPriority[current_task_index]->OsStackPointer;
+
+    if (TaskList[1].State == TASK_READY || TaskList[1].State == TASK_RUNNING)
+    {
+        TaskList[1].State = TASK_RUNNING;
+        Os_Current_Task = 1;
+        Os_Current_Psp = TaskList[1].OsStackPointer;
+        return;
+    }
+
+    if (TaskList[2].State == TASK_READY || TaskList[2].State == TASK_RUNNING)
+    {
+        TaskList[2].State = TASK_RUNNING;
+        Os_Current_Task = 2;
+        Os_Current_Psp = TaskList[2].OsStackPointer;
+        return;
+    }
 }
 
 __attribute__((naked)) void PendSV_Handler(void)
@@ -225,14 +224,14 @@ __attribute__((naked)) void PendSV_Handler(void)
     __asm__ __volatile__(
         "MRS     R0, PSP                 \n"
         "STMDB   R0!, {R4-R11}          \n"
-        "LDR     R1, =current_psp       \n"
+        "LDR     R1, =Os_Current_Psp       \n"
         "STR     R0, [R1]               \n"
         "PUSH    {LR}                   \n"
         "CPSID   I                      \n"
         "BL      Os_Scheduler           \n"
         "CPSIE   I                      \n"
         "POP     {LR}                   \n"
-        "LDR     R1, =current_psp       \n"
+        "LDR     R1, =Os_Current_Psp       \n"
         "LDR     R0, [R1]               \n"
         "LDMIA   R0!, {R4-R11}          \n"
         "MSR     PSP, R0                \n"

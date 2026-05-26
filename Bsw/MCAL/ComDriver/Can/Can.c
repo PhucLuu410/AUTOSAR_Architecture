@@ -63,11 +63,30 @@ Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
         return E_NOT_OK;
     }
     Can_Controllers[Controller]->MCR &= ~(1 << 1);
+
+    CanRetry = 0xFFFF;
     while (Can_Controllers[Controller]->MSR & (1 << 1))
-        ;
+    {
+        CanRetry--;
+        if (CanRetry == 0)
+        {
+            Det_ReportError(0, 0, 0, 1);
+            return E_NOT_OK;
+        }
+    };
+
     Can_Controllers[Controller]->MCR |= (1 << 0);
+    CanRetry = 0xFFFF;
     while (!(Can_Controllers[Controller]->MSR & (1 << 0)))
-        ;
+    {
+        CanRetry--;
+        if (CanRetry == 0)
+        {
+            Det_ReportError(0, 0, 0, 1);
+            return E_NOT_OK;
+        }
+    };
+
     Can_Controllers[Controller]->BTR = (LocalCanConfig->CanBaudrateConfig[BaudRateConfigID].CanBaudratePrescaler << 0) |
                                        (LocalCanConfig->CanBaudrateConfig[BaudRateConfigID].CanTseg1 << 16) |
                                        (LocalCanConfig->CanBaudrateConfig[BaudRateConfigID].CanTseg2 << 20) |
@@ -285,52 +304,6 @@ Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)
     return E_OK;
 }
 
-void Can_MainFunction_Read(void)
-{
-    Can_HwType CanMailBox;
-    PduInfoType CanRxPdu;
-    uint32_t temp_data[2];
-
-    CanMailBox.ControllerId = CAN_1;
-
-    if ((Can_Controllers[CAN_1]->RF0R & 0x03) != 0)
-    {
-        if (Can_Controllers[CAN_1]->sFIFOMailBox[0].RIR & (1 << 2))
-        {
-            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[0].RIR >> 3;
-        }
-        else
-        {
-            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[0].RIR >> 21;
-        }
-        CanMailBox.Hoh = 0;
-        CanRxPdu.SduLength = Can_Controllers[CAN_1]->sFIFOMailBox[0].RDTR & 0x0F;
-        CanRxPdu.SduDataPtr = (uint8_t *)temp_data;
-        temp_data[0] = Can_Controllers[CAN_1]->sFIFOMailBox[0].RDLR;
-        temp_data[1] = Can_Controllers[CAN_1]->sFIFOMailBox[0].RDHR;
-        CanIf_RxIndication(&CanMailBox, &CanRxPdu);
-        Can_Controllers[CAN_1]->RF0R |= (1 << 5);
-    }
-    if ((Can_Controllers[CAN_1]->RF1R & 0x03) != 0)
-    {
-        if (Can_Controllers[CAN_1]->sFIFOMailBox[1].RIR & (1 << 2))
-        {
-            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[1].RIR >> 3;
-        }
-        else
-        {
-            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[1].RIR >> 21;
-        }
-        CanMailBox.Hoh = 1;
-        CanRxPdu.SduLength = Can_Controllers[CAN_1]->sFIFOMailBox[1].RDTR & 0x0F;
-        CanRxPdu.SduDataPtr = (uint8_t *)temp_data;
-        temp_data[0] = Can_Controllers[CAN_1]->sFIFOMailBox[1].RDLR;
-        temp_data[1] = Can_Controllers[CAN_1]->sFIFOMailBox[1].RDHR;
-        CanIf_RxIndication(&CanMailBox, &CanRxPdu);
-        Can_Controllers[CAN_1]->RF1R |= (1 << 5);
-    }
-}
-
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
     Can_HwType CanMailBox;
@@ -381,4 +354,8 @@ void USB_HP_CAN1_TX_IRQHandler(void)
 {
     CAN1->TSR = 0x01010101;
     CanIf_TxConfirmation(PduIdRecentSent);
+}
+
+void Can_MainFunction_Read(void)
+{
 }
