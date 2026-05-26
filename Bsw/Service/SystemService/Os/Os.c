@@ -9,7 +9,7 @@ uint32 Os_System_Tick = 0;
 uint32 Os_Current_Task = 0;
 uint32 *Os_Current_Psp = NULL_PTR;
 uint8 MutexLock = 0;
-
+uint32 a = 0;
 uint8 Mutex_Lock(void)
 {
     __disable_irq();
@@ -85,11 +85,16 @@ TASK(Task_0)
 
 TASK(Task_1)
 {
+    Com_SendSignal(1);
     TerminateTask();
 }
 
 TASK(Task_2)
 {
+    for (int i = 0; i < 1000000; i++)
+    {
+        a++;
+    }
     TerminateTask();
 }
 
