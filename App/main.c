@@ -24,9 +24,7 @@
 #include "Rte.h"
 #include "Os.h"
 
-PduInfoType LinTx = {
-    .SduDataPtr = (uint8 *)"abc",
-    .SduLength = 3};
+Can_ControllerStateType Can_State;
 
 void delay(volatile uint32_t t)
 {
@@ -50,24 +48,29 @@ int main(void)
 
     Mcu_Init(&Mcu_Configuration[0]);
     Mcu_InitClock(Mcu_Configuration[0].ClockConfig->ClockSrc);
+
     Port_Init(Port_Configuration);
+
     Can_Init(&CanConfig[0]);
-    Lin_Init(&Lin_Config[LIN_CHANNEL_1]);
     Can_DisableControllerInterrupts(CAN_1);
     Can_SetBaudrate(CAN_1, 0);
+    Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
+
     CanIf_Init(&CanIfConfig);
-    // LinIf_Init(&LinIfConfig);
     CanIf_SetControllerMode(CAN_1, CAN_CS_STARTED);
+
+    Lin_Init(&Lin_Config[LIN_CHANNEL_1]);
+
+    // LinIf_Init(&LinIfConfig);
+
     PduR_Init(&PduR_PBConfig);
-    // SysTick_Init_8MHz();
-    // Os_Init();
-    // Os_Start();
+
+    SysTick_Init_8MHz();
+    Os_Init();
+    Os_Start();
+
     while (1)
     {
-        Com_SendSignal(0);
-        delay(100000);
-        Com_SendSignal(1);
-        delay(100000);
     }
 }
 

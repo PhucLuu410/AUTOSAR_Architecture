@@ -190,7 +190,7 @@ void Os_Start(void)
     __asm volatile("SVC #0");
 }
 
-void SVC_Handler(void)
+__attribute__((naked)) void SVC_Handler(void)
 {
     __asm__ __volatile__(
         "LDR     R2, [%0]             \n"
@@ -220,7 +220,7 @@ void Os_Scheduler(void)
     current_psp = TaskListWithPriority[current_task_index]->OsStackPointer;
 }
 
-void PendSV_Handler(void)
+__attribute__((naked)) void PendSV_Handler(void)
 {
     __asm__ __volatile__(
         "MRS     R0, PSP                 \n"

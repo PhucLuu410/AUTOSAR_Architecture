@@ -19,6 +19,7 @@ IPATH = -I. \
 		-I./Bsw/Service/ComService/Com \
 		-I./Bsw/Service/SystemService/Os \
 		-I./Bsw/Service/SystemService/Dem \
+		-I./Bsw/Service/SystemService/Det \
 		-I./Rte
 
 SRC = 	./System/Startup/startup.c \
@@ -50,6 +51,7 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Service/SystemService/Os/Os.c \
 		Bsw/Service/SystemService/Dem/Dem.c \
 		Bsw/Service/SystemService/Dem/Dem_Cfg.c \
+		Bsw/Service/SystemService/Det/Det.c \
 		Rte/Rte.c \
 
 		
