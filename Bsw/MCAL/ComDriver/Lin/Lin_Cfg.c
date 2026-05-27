@@ -12,7 +12,7 @@ Lin_HardwareConfig Lin_HardwareConfigs[NUMBER_OF_LIN_CHANNEL] = {[LIN_CHANNEL_1]
 
 Lin_ChannelConfig Lin_ChannelConfigs[NUMBER_OF_LIN_CHANNEL] = {[0] = {.LinChannel = LIN_CHANNEL_1,
                                                                       .LinBreakDetect = LIN_BREAK_DETECT_ENABLE,
-                                                                      .LinBaud = 9600,
+                                                                      .LinBaud = 115200,
                                                                       .LinIsr = LIN_INTERRUPT_ENABLE,
                                                                       .LinMasterSlave = LIN_MASTER}};
 

@@ -2,6 +2,9 @@
 #include "Lin_Cfg.h"
 #include "LinIf.h"
 #include "stm32f103xb.h"
+#include "Det.h"
+
+uint32 count12 = 0;
 
 USART_TypeDef *Lin_Driver[NUMBER_OF_LIN_CHANNEL] = {USART1, USART2};
 
@@ -48,14 +51,12 @@ Std_ReturnType Lin_SendFrame(uint8 Channel, const Lin_PduType *PduInfoPtr)
     Lin_Driver[Channel]->CR1 |= (1 << 0);
     while (Lin_Driver[Channel]->CR1 & (1 << 0))
         ;
-
     Lin_Driver[Channel]->DR = 0x55;
     while (!(Lin_Driver[Channel]->SR & (1 << 7)))
         ;
     Lin_Driver[Channel]->DR = PduInfoPtr->Pid;
     while (!(Lin_Driver[Channel]->SR & (1 << 7)))
         ;
-
     for (int i = 0; i < PduInfoPtr->Dl; i++)
     {
         Lin_Driver[Channel]->DR = PduInfoPtr->SduDataPtr[i];

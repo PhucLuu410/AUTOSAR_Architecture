@@ -19,10 +19,10 @@ PduR_RxRoutingPathType PduR_RxRouteTable[4] = {
 PduR_TxRoutingPathType PduR_TxRouteTable[3] = {
     [0] = {.GlobalPduId = 0,
            .LocalPduId = 0,
-           .Transmit_Func = LinIf_Transmit},
+           .Transmit_Func = CanIf_Transmit},
     [1] = {.GlobalPduId = 1,
            .LocalPduId = 0,
-           .Transmit_Func = CanIf_Transmit},
+           .Transmit_Func = LinIf_Transmit},
     [2] = {.GlobalPduId = 2,
            .LocalPduId = 1,
            .Transmit_Func = CanIf_Transmit}};

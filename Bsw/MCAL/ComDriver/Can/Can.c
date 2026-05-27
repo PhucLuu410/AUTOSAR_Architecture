@@ -3,7 +3,8 @@
 #include "CanIf.h"
 #include "Det.h"
 
-static uint8 PduIdRecentSent = 0;
+static uint8 CanPduIdRecentSent = 0;
+static uint8 CanMailboxRecentSend = 0;
 Can_ControllerStateType Can_ControllerState[CAN_MAX_CONTROLLER] = {[0] = CAN_CS_UNINIT};
 static const Can_ConfigType *LocalCanConfig = NULL_PTR;
 uint32 CanRetry = 0;
@@ -101,6 +102,7 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
 {
     switch (Transition)
     {
+
     case CAN_CS_STARTED:
         Can_Controllers[Controller]->MCR &= ~(1 << 0);
         CanRetry = 0xFFFF;
@@ -113,13 +115,22 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
                 return E_NOT_OK;
             }
         };
+
+        Can_Controllers[Controller]->MCR &= ~(1 << 1);
+        CanRetry = 0xFFFF;
+        while ((Can_Controllers[Controller]->MSR & (1 << 1)))
+        {
+            CanRetry--;
+            if (CanRetry == 0)
+            {
+                Det_ReportError(0, 0, 0, 1);
+                return E_NOT_OK;
+            }
+        };
         Can_ControllerState[Controller] = CAN_CS_STARTED;
         break;
+
     case CAN_CS_STOPPED:
-        if (Can_ControllerState[Controller] != CAN_CS_UNINIT)
-        {
-            return E_NOT_OK;
-        }
         Can_Controllers[Controller]->MCR |= (1 << 0);
         CanRetry = 0xFFFF;
         while (!(Can_Controllers[Controller]->MSR & (1 << 0)))
@@ -133,11 +144,8 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
         }
         Can_ControllerState[Controller] = CAN_CS_STOPPED;
         break;
+
     case CAN_CS_SLEEP:
-        if (Can_ControllerState[Controller] != CAN_CS_UNINIT)
-        {
-            return E_NOT_OK;
-        }
         Can_Controllers[Controller]->MCR &= ~(1 << 0);
         Can_Controllers[Controller]->MCR |= (1 << 1);
         CanRetry = 0xFFFF;
@@ -270,11 +278,12 @@ Std_ReturnType Can_SetCanPnFrameDataMask(uint8 Controller, uint8 *DataMaskArrayP
 
 Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)
 {
+    CanPduIdRecentSent = PduInfo->swPduHandle;
+    CanMailboxRecentSend = Hth;
     if ((Can_Controllers[CAN_1]->TSR & (0x7 << 24)) == 0)
     {
         return CAN_BUSY;
     }
-    PduIdRecentSent = PduInfo->swPduHandle;
     if (!(Can_Controllers[CAN_1]->TSR & (1 << (26 + Hth))))
     {
         return CAN_BUSY;
@@ -353,9 +362,84 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 void USB_HP_CAN1_TX_IRQHandler(void)
 {
     CAN1->TSR = 0x01010101;
-    CanIf_TxConfirmation(PduIdRecentSent);
 }
 
 void Can_MainFunction_Read(void)
+{
+    Can_HwType CanMailBox;
+    PduInfoType CanRxPdu;
+    uint32_t temp_data[2];
+
+    CanMailBox.ControllerId = CAN_1;
+
+    if ((Can_Controllers[CAN_1]->RF0R & 0x03) != 0)
+    {
+        if (Can_Controllers[CAN_1]->sFIFOMailBox[0].RIR & (1 << 2))
+        {
+            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[0].RIR >> 3;
+        }
+        else
+        {
+            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[0].RIR >> 21;
+        }
+        CanMailBox.Hoh = 0;
+        CanRxPdu.SduLength = Can_Controllers[CAN_1]->sFIFOMailBox[0].RDTR & 0x0F;
+        CanRxPdu.SduDataPtr = (uint8_t *)temp_data;
+        temp_data[0] = Can_Controllers[CAN_1]->sFIFOMailBox[0].RDLR;
+        temp_data[1] = Can_Controllers[CAN_1]->sFIFOMailBox[0].RDHR;
+        CanIf_RxIndication(&CanMailBox, &CanRxPdu);
+        Can_Controllers[CAN_1]->RF0R |= (1 << 5);
+    }
+    if ((Can_Controllers[CAN_1]->RF1R & 0x03) != 0)
+    {
+        if (Can_Controllers[CAN_1]->sFIFOMailBox[1].RIR & (1 << 2))
+        {
+            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[1].RIR >> 3;
+        }
+        else
+        {
+            CanMailBox.CanId = Can_Controllers[CAN_1]->sFIFOMailBox[1].RIR >> 21;
+        }
+        CanMailBox.Hoh = 1;
+        CanRxPdu.SduLength = Can_Controllers[CAN_1]->sFIFOMailBox[1].RDTR & 0x0F;
+        CanRxPdu.SduDataPtr = (uint8_t *)temp_data;
+        temp_data[0] = Can_Controllers[CAN_1]->sFIFOMailBox[1].RDLR;
+        temp_data[1] = Can_Controllers[CAN_1]->sFIFOMailBox[1].RDHR;
+        CanIf_RxIndication(&CanMailBox, &CanRxPdu);
+        Can_Controllers[CAN_1]->RF1R |= (1 << 5);
+    }
+}
+
+void Can_MainFunction_Write(void)
+{
+    if (CanMailboxRecentSend == 0)
+    {
+        if (Can_Controllers[CAN_1]->TSR & (1 << 1))
+            CanIf_TxConfirmation(CanPduIdRecentSent);
+        return;
+    }
+    else if (CanMailboxRecentSend == 1)
+    {
+        if (Can_Controllers[CAN_1]->TSR & (1 << 9))
+            CanIf_TxConfirmation(CanPduIdRecentSent);
+        return;
+    }
+    else if (CanMailboxRecentSend == 3)
+    {
+        if (Can_Controllers[CAN_1]->TSR & (1 << 17))
+            CanIf_TxConfirmation(CanPduIdRecentSent);
+        return;
+    }
+}
+
+void Can_MainFunction_BusOff(void)
+{
+}
+
+void Can_MainFunction_Wakeup(void)
+{
+}
+
+void Can_MainFunction_Mode(void)
 {
 }
