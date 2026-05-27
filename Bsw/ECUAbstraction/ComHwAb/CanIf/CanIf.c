@@ -32,7 +32,7 @@ Std_ReturnType CanIf_GetControllerMode(uint8 ControllerId, Can_ControllerStateTy
     {
         return E_NOT_OK;
     }
-    *ControllerModePtr = Can_ControllerState;
+    *ControllerModePtr = Can_ControllerState[ControllerId];
     return E_OK;
 }
 
