@@ -1,4 +1,5 @@
 #include "OS.h"
+#include "stm32f103xb.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];

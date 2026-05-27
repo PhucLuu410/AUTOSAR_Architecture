@@ -23,6 +23,7 @@
 #include "LinIf_Cfg.h"
 #include "Rte.h"
 #include "Os.h"
+#include "stm32f103xb.h"
 
 Can_ControllerStateType Can_State;
 
@@ -51,13 +52,13 @@ int main(void)
 
     Port_Init(Port_Configuration);
 
-    Can_Init(&CanConfig[0]);
-    Can_DisableControllerInterrupts(CAN_1);
-    Can_SetBaudrate(CAN_1, 0);
-    Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
+    // Can_Init(&CanConfig[0]);
+    // Can_DisableControllerInterrupts(CAN_1);
+    // Can_SetBaudrate(CAN_1, 0);
+    // Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
 
     CanIf_Init(&CanIfConfig);
-    CanIf_SetControllerMode(CAN_1, CAN_CS_STARTED);
+    CanIf_SetControllerMode(0, CAN_CS_STARTED);
 
     Lin_Init(&Lin_Config[LIN_CHANNEL_1]);
 

@@ -11,9 +11,9 @@ typedef uint16 Can_HwHandleType;
 
 typedef struct
 {
-    PduIdType id;
+    PduIdType swPduHandle;
     uint8 length;
-    Can_IdType canId;
+    Can_IdType id;
     uint8 *sdu;
 } Can_PduType;
 
@@ -59,8 +59,5 @@ typedef struct
     uint32 nanoseconds;
     uint32 seconds;
 } Can_TimeStampType;
-
-void Can_Init(const Can_ConfigType *Config);
-
 
 #endif
