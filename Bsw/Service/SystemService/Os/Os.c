@@ -1,4 +1,5 @@
 #include "OS.h"
+#include "Lin.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];
@@ -10,6 +11,14 @@ uint32 Os_Current_Task = 0;
 uint32 *Os_Current_Psp = NULL_PTR;
 uint8 MutexLock = 0;
 uint32 a = 0;
+
+Lin_PduType Pdu = {
+    .Pid = 0x12,
+    .Dl = 3,
+    .CsModel = 0,
+    .Response = 0,
+    .SduDataPtr = (uint8[]){0x11, 0x22, 0x33}};
+
 uint8 Mutex_Lock(void)
 {
     __disable_irq();
@@ -85,16 +94,12 @@ TASK(Task_0)
 
 TASK(Task_1)
 {
-    Com_SendSignal(1);
+    Can_MainFunction_Read();
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    for (int i = 0; i < 1000000; i++)
-    {
-        a++;
-    }
     TerminateTask();
 }
 
@@ -121,7 +126,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 
                               [2] = {.OsStackPointer = &Os_Task_2[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_2,
-                                     .interval = 20,
+                                     .interval = 50,
                                      .timer = &Os_System_Tick,
                                      .Priority = 2,
                                      .State = TASK_SUSPENDED},
@@ -136,7 +141,6 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 void SysTick_Handler(void)
 {
     Os_System_Tick++;
-
     if ((Os_System_Tick % TaskList[0].interval) == 0 && TaskList[0].State == TASK_SUSPENDED)
     {
         TaskList[0].OsStackPointer = PrepareTaskStack(&Os_Task_0[SIZE_OF_TASK_STACK - 1], TaskList[0].pTask);
@@ -195,7 +199,6 @@ __attribute__((naked)) void SVC_Handler(void)
 
 void Os_Scheduler(void)
 {
-
     Os_Current_Task = 3;
     Os_Current_Psp = TaskList[3].OsStackPointer;
 

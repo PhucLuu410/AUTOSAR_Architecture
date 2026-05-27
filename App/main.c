@@ -57,7 +57,6 @@ int main(void)
     Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
 
     CanIf_Init(&CanIfConfig);
-    CanIf_SetControllerMode(CAN_1, CAN_CS_STARTED);
 
     Lin_Init(&Lin_Config[LIN_CHANNEL_1]);
 
