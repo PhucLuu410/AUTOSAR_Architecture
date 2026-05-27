@@ -1,13 +1,21 @@
-#ifndef __CAN_GENERAL_TYPES_H
-#define __CAN_GENERAL_TYPES_H
+#ifndef CAN_GENERALTYPES_H
+#define CAN_GENERALTYPES_H
 
 #include "ComStack_Types.h"
+#include "Std_Types.h"
 
 #define CAN_BUSY 0x02
 
 typedef uint32 Can_IdType;
 typedef uint16 Can_HwHandleType;
-typedef uint32 Can_TimeStampType;
+
+typedef struct
+{
+    PduIdType id;
+    uint8 length;
+    Can_IdType canId;
+    uint8 *sdu;
+} Can_PduType;
 
 typedef struct
 {
@@ -15,14 +23,6 @@ typedef struct
     Can_HwHandleType Hoh;
     uint8 ControllerId;
 } Can_HwType;
-
-typedef struct
-{
-    PduIdType swPduHandle;
-    uint8 length;
-    Can_IdType id;
-    uint8 *sdu;
-} Can_PduType;
 
 typedef enum
 {
@@ -33,25 +33,34 @@ typedef enum
 
 typedef enum
 {
-    CAN_CS_UNINIT,
-    CAN_CS_STARTED,
-    CAN_CS_STOPPED,
-    CAN_CS_SLEEP
+    CAN_CS_UNINIT = 0x00,
+    CAN_CS_STOPPED = 0x01,
+    CAN_CS_STARTED = 0x02,
+    CAN_CS_SLEEP = 0x03
 } Can_ControllerStateType;
 
 typedef enum
 {
-    CAN_ERROR_BIT_MONITORING1,
-    CAN_ERROR_BIT_MONITORING2,
-    CAN_ERROR_BIT,
-    CAN_ERROR_CHECK_ACK_FAILED,
-    CAN_ERROR_ACK_DELIMITER,
-    CAN_ERROR_ARBITRATION_LOST,
-    CAN_ERROR_OVERLOAD,
-    CAN_ERROR_CHECK_FORM_FAILED,
-    CAN_ERROR_CHECK_STUFFING_FAILED,
-    CAN_ERROR_CHECK_CRC_FAILED,
-    CAN_ERROR_BUS_LOCK,
+    CAN_ERROR_BIT_MONITORING1 = 0x01,
+    CAN_ERROR_BIT_MONITORING0 = 0x02,
+    CAN_ERROR_BIT = 0x03,
+    CAN_ERROR_CHECK_ACK_FAILED = 0x04,
+    CAN_ERROR_ACK_DELIMITER = 0x05,
+    CAN_ERROR_ARBITRATION_LOST = 0x06,
+    CAN_ERROR_OVERLOAD = 0x07,
+    CAN_ERROR_CHECK_FORM_FAILED = 0x08,
+    CAN_ERROR_CHECK_STUFFING_FAILED = 0x09,
+    CAN_ERROR_CHECK_CRC_FAILED = 0x0A,
+    CAN_ERROR_BUS_LOCK = 0x0B
 } Can_ErrorType;
 
-#endif /* CAN_GENERAL_TYPES_H */
+typedef struct
+{
+    uint32 nanoseconds;
+    uint32 seconds;
+} Can_TimeStampType;
+
+void Can_Init(const Can_ConfigType *Config);
+
+
+#endif
