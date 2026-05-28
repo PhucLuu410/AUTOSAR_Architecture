@@ -3,8 +3,6 @@
 
 #include "PduR.h"
 #include "CanIf.h"
-#include "CanIf_Cfg.h"
-#include "Can_Cfg.h"
 #include "LinIf.h"
 
 #define NUMBER_OF_COM_TX_SIGNAL 3

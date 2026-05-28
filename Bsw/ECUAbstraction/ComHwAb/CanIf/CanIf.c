@@ -5,7 +5,6 @@
 #include "PduR.h"
 
 static const CanIf_ConfigType *CanIfGlobalConfigPtr = NULL_PTR;
-Can_ControllerStateType Can_ControllerState[3];
 
 void CanIf_Init(const CanIf_ConfigType *ConfigPtr)
 {
@@ -22,10 +21,10 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
     PduR_CanIfTxConfirmation(CanTxPduId, E_OK);
 }
 
-Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId, Can_ControllerStateType ControllerMode)
-{
-    return Can_SetControllerMode(ControllerId, ControllerMode);
-}
+// Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId, Can_ControllerStateType ControllerMode)
+// {
+//     return Can_SetControllerMode(ControllerId, ControllerMode);
+// }
 
 Std_ReturnType CanIf_GetControllerMode(uint8 ControllerId, Can_ControllerStateType *ControllerModePtr)
 {
