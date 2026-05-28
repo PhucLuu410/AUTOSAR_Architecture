@@ -2,22 +2,30 @@
 #include "Can.h"
 #include "Can_GeneralTypes.h"
 
+Can_Baudrate CanBaudrate[NUMBER_OF_CAN_CONTROLLERS] = {
+    {
+        .Brp = 8,
+        .Baudrate = 100000,
+        .Clock = 8000000,
+    },
+};
+
 Can_Isr CanIsrUsed[] = {
     {
-        .CanSleepIsr = FALSE,
-        .CanWakeupIsr = FALSE,
-        .ErrorIsr = FALSE,
-        .LastErrorCodeIsr = FALSE,
-        .BusOffIsr = FALSE,
-        .ErrorPassiveIsr = FALSE,
-        .ErrorWarningIsr = FALSE,
-        .Fifo1OverrunIsr = FALSE,
-        .Fifo1OFullIsr = FALSE,
-        .Fifo1MessagePendingIsr = FALSE,
-        .Fifo0OverrunIsr = FALSE,
-        .Fifo0OFullIsr = FALSE,
-        .Fifo0MessagePendingIsr = FALSE,
-        .TransmitMailboxEmptyIsr = FALSE,
+        .CanSleepIsr = TRUE,
+        .CanWakeupIsr = TRUE,
+        .ErrorIsr = TRUE,
+        .LastErrorCodeIsr = TRUE,
+        .BusOffIsr = TRUE,
+        .ErrorPassiveIsr = TRUE,
+        .ErrorWarningIsr = TRUE,
+        .Fifo1OverrunIsr = TRUE,
+        .Fifo1OFullIsr = TRUE,
+        .Fifo1MessagePendingIsr = TRUE,
+        .Fifo0OverrunIsr = TRUE,
+        .Fifo0OFullIsr = TRUE,
+        .Fifo0MessagePendingIsr = TRUE,
+        .TransmitMailboxEmptyIsr = TRUE,
     },
     {
         .CanSleepIsr = TRUE,
@@ -56,6 +64,7 @@ Can_HwUnit CanHwUnit[NUMBER_OF_CAN_HW_UNITS] = {
 };
 
 Can_ConfigType CanConfig = {
+    .CanBaudrate = &CanBaudrate[0],
     .CanHwUnit = &CanHwUnit[0],
     .CanController = &CanController[0],
     .CanIsr = &CanIsrUsed[0]};

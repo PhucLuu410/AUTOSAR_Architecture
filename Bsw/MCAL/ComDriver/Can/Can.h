@@ -13,8 +13,9 @@
 // } Can_Filter;
 typedef struct
 {
+    uint32 Brp;
     uint32 Baudrate;
-    float32 Percent;
+    uint32 Clock;
 } Can_Baudrate;
 
 typedef struct

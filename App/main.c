@@ -51,12 +51,9 @@ int main(void)
     Port_Init(Port_Configuration);
 
     Can_Init(&CanConfig);
-    Can_SetControllerMode(CAN_1_CONTROLLER, CAN_CS_SLEEP);
-    Can_SetControllerMode(CAN_1_CONTROLLER, CAN_CS_STOPPED);
-    Can_SetControllerMode(CAN_1_CONTROLLER, CAN_CS_STARTED);
     Can_EnableControllerInterrupts(CAN_1_CONTROLLER);
-    // Can_SetBaudrate(CAN_1, 0);
-    // Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
+    Can_SetBaudrate(CAN_1_CONTROLLER, 0);
+    Can_SetControllerMode(CAN_1_CONTROLLER, CAN_CS_STARTED);
 
     CanIf_Init(&CanIfConfig);
     // CanIf_SetControllerMode(0, CAN_CS_STARTED);
@@ -71,8 +68,8 @@ int main(void)
     // Os_Start();
     while (1)
     {
-        Com_SendSignal(1);
-        delay(10000);
+        // Com_SendSignal(1);
+        // delay(10000);
     }
 }
 

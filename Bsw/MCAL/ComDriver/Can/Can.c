@@ -175,8 +175,21 @@ Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
     {
         return E_NOT_OK;
     }
-    
-    return 0;
+    uint32 Ts1 = 0;
+    uint32 Ts2 = 0;
+    uint32 Total_TQ = LocalConfig->CanBaudrate->Clock / (LocalConfig->CanBaudrate->Baudrate * LocalConfig->CanBaudrate->Brp);
+    Ts2 = ((Total_TQ * 3) + 5) / 10;
+
+    if (Total_TQ > (1 + Ts2))
+    {
+        Ts1 = Total_TQ - 1 - Ts2;
+    }
+    else
+    {
+        return E_NOT_OK;
+    }
+    Can_Hardware[Controller]->BTR = ((Ts2 - 1) << 20) | ((Ts1 - 1) << 16) | (LocalConfig->CanBaudrate->Brp - 1);
+    return E_OK;
 }
 Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)
 {
