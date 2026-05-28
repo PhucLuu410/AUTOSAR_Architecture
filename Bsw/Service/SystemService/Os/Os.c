@@ -94,7 +94,7 @@ TASK(Task_0)
 
 TASK(Task_1)
 {
-    // Can_MainFunction_Read();
+    Can_MainFunction_Read();
     TerminateTask();
 }
 

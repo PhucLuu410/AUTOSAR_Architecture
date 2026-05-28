@@ -16,6 +16,11 @@ void Can_Init(const Can_ConfigType *ConfigPtr)
         Det_ReportError(0, 0, 0, 1);
         return;
     }
+    if (Can_ControllerState != CAN_CS_UNINIT)
+    {
+        // Can_ErrorTypeRecent = CAN_E_TRANSITION;
+        return;
+    }
     LocalCanConfig = ConfigPtr;
     Can_Controllers[LocalCanConfig->CanControllerId]->MCR = 0x00010002;
     Can_Controllers[LocalCanConfig->CanControllerId]->MCR |= LocalCanConfig->CanHohHandler->CanDebugMode << 16;
@@ -128,6 +133,7 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
             }
         };
         Can_ControllerState[Controller] = CAN_CS_STARTED;
+        // CanIf_ControllerModeIndication(Controller, CAN_CS_STARTED);
         break;
 
     case CAN_CS_STOPPED:
@@ -143,6 +149,7 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
             }
         }
         Can_ControllerState[Controller] = CAN_CS_STOPPED;
+        // CanIf_ControllerModeIndication(Controller, CAN_CS_STOPPED);
         break;
 
     case CAN_CS_SLEEP:
@@ -159,6 +166,7 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
             }
         }
         Can_ControllerState[Controller] = CAN_CS_SLEEP;
+        // CanIf_ControllerModeIndication(Controller, CAN_CS_SLEEP);
         break;
     default:
         Det_ReportError(0, 0, 0, 1);
