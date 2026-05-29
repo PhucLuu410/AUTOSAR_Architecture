@@ -31,6 +31,105 @@ void Can_Init(const Can_ConfigType *Config)
                                                                              LocalConfig->CanController->CanAutoRetransmission << 4 |
                                                                              LocalConfig->CanController->CanReceiveFifoLockedMode << 3 |
                                                                              LocalConfig->CanController->CanTransmitFifoPriority << 2;
+
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->FMR |= (1 << 0);
+        for (int i = 0; i < NUMBER_OF_CAN_FILTERS; i++)
+        {
+            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->FA1R &= ~(1 << i);
+            if (LocalConfig->CanFilter[i].FilterStatus == CAN_FILTER_ON)
+            {
+                if (LocalConfig->CanFilter[i].FilterScale == CAN_FILTER_SCALE_1_32)
+                {
+                    Can_Hardware[LocalConfig->CanController->CanControllerNumber]->FS1R |= (1 << i);
+                }
+                else
+                {
+                    Can_Hardware[LocalConfig->CanController->CanControllerNumber]->FS1R &= ~(1 << i);
+                }
+
+                if (LocalConfig->CanFilter[i].FilterMode == CAN_FILTER_MODE_LISTMODE)
+                {
+                    Can_Hardware[LocalConfig->CanController->CanControllerNumber]->FM1R |= (1 << i);
+                }
+                else
+                {
+                    Can_Hardware[LocalConfig->CanController->CanControllerNumber]->FM1R &= ~(1 << i);
+                }
+
+                if (LocalConfig->CanFilter[i].FilterAssignToFifo == 1)
+                {
+                    Can_Hardware[LocalConfig->CanController->CanControllerNumber]->FFA1R |= (1 << i);
+                }
+                else
+                {
+                    Can_Hardware[LocalConfig->CanController->CanControllerNumber]->FFA1R &= ~(1 << i);
+                }
+
+                if (LocalConfig->CanFilter[i].FilterScale == CAN_FILTER_SCALE_1_32)
+                {
+                    if (LocalConfig->CanFilter[i].FilterMode == CAN_FILTER_MODE_MASKMODE)
+                    {
+                        if (LocalConfig->CanFilter[i].FilterIdType == CAN_FILTER_STANDART_ID)
+                        {
+                            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFilterRegister[i].FR1 = (LocalConfig->CanFilter[i].FilterId1 << 21);
+                            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFilterRegister[i].FR2 = (LocalConfig->CanFilter[i].FilterMask1 << 21);
+                        }
+                        else
+                        {
+                            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFilterRegister[i].FR1 = (LocalConfig->CanFilter[i].FilterId1 << 3) | (1 << 2); // Kích hoạt bit IDE=1 cho Extended
+                            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFilterRegister[i].FR2 = (LocalConfig->CanFilter[i].FilterMask1 << 3) | (1 << 2);
+                        }
+                    }
+                    else
+                    {
+                        if (LocalConfig->CanFilter[i].FilterIdType == CAN_FILTER_STANDART_ID)
+                        {
+                            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFilterRegister[i].FR1 = (LocalConfig->CanFilter[i].FilterId1 << 21);
+                            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFilterRegister[i].FR2 = (LocalConfig->CanFilter[i].FilterId2 << 21);
+                        }
+                        else
+                        {
+                            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFilterRegister[i].FR1 = (LocalConfig->CanFilter[i].FilterId1 << 3) | (1 << 2);
+                            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFilterRegister[i].FR2 = (LocalConfig->CanFilter[i].FilterId2 << 3) | (1 << 2);
+                        }
+                    }
+                }
+                else
+                {
+                    if (LocalConfig->CanFilter[i].FilterIdType == CAN_FILTER_EXTENDED_ID)
+                    {
+                        // Report
+                    }
+                    else
+                    {
+                        if (LocalConfig->CanFilter[i].FilterMode == CAN_FILTER_MODE_MASKMODE)
+                        {
+                            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFilterRegister[i].FR1 = ((LocalConfig->CanFilter[i].FilterId1 << 5) & 0xFFFF) |
+                                                                                                                    ((LocalConfig->CanFilter[i].FilterMask1 << 21));
+
+                            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFilterRegister[i].FR2 = ((LocalConfig->CanFilter[i].FilterId2 << 5) & 0xFFFF) |
+                                                                                                                    ((LocalConfig->CanFilter[i].FilterMask2 << 21));
+                        }
+                        else
+                        {
+                            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFilterRegister[i].FR1 = ((LocalConfig->CanFilter[i].FilterId1 << 5) & 0xFFFF) |
+                                                                                                                    ((LocalConfig->CanFilter[i].FilterId2 << 21));
+
+                            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFilterRegister[i].FR2 = ((LocalConfig->CanFilter[i].FilterId3 << 5) & 0xFFFF) |
+                                                                                                                    ((LocalConfig->CanFilter[i].FilterId4 << 21));
+                        }
+                    }
+                }
+
+                Can_Hardware[LocalConfig->CanController->CanControllerNumber]->FA1R |= (1 << i);
+            }
+            else
+            {
+                Can_Hardware[LocalConfig->CanController->CanControllerNumber]->FA1R &= ~(1 << i);
+            }
+        }
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->FMR &= ~(1 << 0);
+
         Can_Hardware[LocalConfig->CanController->CanControllerNumber]->MCR |= (1 << 0);
         Can_StateMachine[LocalConfig->CanController->CanControllerNumber] = CAN_READY;
         Can_ControllerState[LocalConfig->CanController->CanControllerNumber] = CAN_CS_STOPPED;
@@ -112,9 +211,9 @@ Std_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
         }
         else
         {
-            Can_Hardware[Controller]->MCR &= ~(2 << 0);
+            Can_Hardware[Controller]->MCR &= ~(1 << 1);
             Error = 0xFF;
-            while (Can_Hardware[Controller]->MSR & (2 << 0))
+            while (Can_Hardware[Controller]->MSR & (1 << 1))
             {
                 Error--;
                 if (Error == 0)
@@ -188,7 +287,7 @@ Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
     {
         return E_NOT_OK;
     }
-    Can_Hardware[Controller]->BTR = ((Ts2 - 1) << 20) | ((Ts1 - 1) << 16) | (LocalConfig->CanBaudrate->Brp - 1);
+    Can_Hardware[Controller]->BTR = ((Ts2 - 2) << 20) | ((Ts1) << 16) | (LocalConfig->CanBaudrate->Brp - 1);
     return E_OK;
 }
 Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)

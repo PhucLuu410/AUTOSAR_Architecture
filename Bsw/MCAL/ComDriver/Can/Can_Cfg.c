@@ -3,38 +3,20 @@
 #include "Can_GeneralTypes.h"
 
 Can_Filter CanFilter[NUMBER_OF_CAN_FILTERS] = {
-    [0] = {.FilterNumber = 0,
-           .FilterScale = 0,
-           .FilterMode = 0,
-           .FilterId1 = 0,
-           .FilterId2 = 0,
-           .FilterMaskId1 = 0,
-           .FilterMaskId2 = 0,
-           .FilterAssignToFifo = 0},
-    [1] = {.FilterNumber = 1,
-           .FilterScale = 0,
-           .FilterMode = 0,
-           .FilterId1 = 0,
-           .FilterId2 = 0,
-           .FilterMaskId1 = 0,
-           .FilterMaskId2 = 0,
-           .FilterAssignToFifo = 0},
-    [2] = {.FilterNumber = 2,
-           .FilterScale = 0,
-           .FilterMode = 0,
-           .FilterId1 = 0,
-           .FilterId2 = 0,
-           .FilterMaskId1 = 0,
-           .FilterMaskId2 = 0,
-           .FilterAssignToFifo = 0},
-    [3] = {.FilterNumber = 3,
-           .FilterScale = 0,
-           .FilterMode = 0,
-           .FilterId1 = 0,
-           .FilterId2 = 0,
-           .FilterMaskId1 = 0,
-           .FilterMaskId2 = 0,
-           .FilterAssignToFifo = 0}};
+    [0] = {
+        .FilterStatus = CAN_FILTER_ON,
+        .FilterIdType = CAN_FILTER_STANDART_ID,
+        .FilterMode = CAN_FILTER_MODE_LISTMODE,
+        .FilterScale = CAN_FILTER_SCALE_2_16,
+        .FilterId1 = 0x123,
+        .FilterId2 = 0x127,
+        .FilterId3 = 0x7FF,
+        .FilterId4 = 0x7FF,
+        .FilterMask1 = 0x7FF,
+        .FilterMask2 = 0x7FF,
+        .FilterAssignToFifo = 0,
+    },
+};
 
 Can_Baudrate CanBaudrate[NUMBER_OF_CAN_CONTROLLERS] = {
     {
@@ -98,8 +80,8 @@ Can_HwUnit CanHwUnit[NUMBER_OF_CAN_HW_UNITS] = {
 };
 
 Can_ConfigType CanConfig = {
-    .CanBaudrate = &CanBaudrate[0],
     .CanFilter = &CanFilter[0],
+    .CanBaudrate = &CanBaudrate[0],
     .CanHwUnit = &CanHwUnit[0],
     .CanController = &CanController[0],
     .CanIsr = &CanIsrUsed[0]};

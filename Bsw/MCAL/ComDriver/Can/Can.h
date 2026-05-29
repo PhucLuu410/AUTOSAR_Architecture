@@ -9,13 +9,16 @@
 
 typedef struct
 {
-    uint32 FilterNumber;
-    boolean FilterScale;
+    boolean FilterStatus;
+    boolean FilterIdType;
     boolean FilterMode;
+    boolean FilterScale;
     uint32 FilterId1;
     uint32 FilterId2;
-    uint32 FilterMaskId1;
-    uint32 FilterMaskId2;
+    uint32 FilterId3;
+    uint32 FilterId4;
+    uint32 FilterMask1;
+    uint32 FilterMask2;
     uint8 FilterAssignToFifo;
 } Can_Filter;
 
