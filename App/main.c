@@ -31,16 +31,17 @@ void delay(volatile uint32_t t)
         ;
 }
 
-// void SysTick_Init_8MHz(void)
-// {
-//     SysTick->CTRL = 0;
-//     SysTick->LOAD = 7999;
-//     SysTick->VAL = 0;
-//     CoreDebug->DEMCR |= (1 << 24);
-//     DWT->CYCCNT = 0;
-//     DWT->CTRL |= (1 << 0);
-//     NVIC_SetPriority(PendSV_IRQn, 0xFF);
-// }
+void SysTick_Init_8MHz(void)
+{
+    SysTick->CTRL = 0;
+    SysTick->LOAD = 7999;
+    SysTick->VAL = 0;
+    CoreDebug->DEMCR |= (1 << 24);
+    DWT->CYCCNT = 0;
+    DWT->CTRL |= (1 << 0);
+    NVIC_SetPriority(SysTick_IRQn, 0xF0);
+    NVIC_SetPriority(PendSV_IRQn, 0xFF);
+}
 
 int main(void)
 {
@@ -51,7 +52,7 @@ int main(void)
     Port_Init(Port_Configuration);
 
     Can_Init(&CanConfig);
-    Can_EnableControllerInterrupts(CAN_1_CONTROLLER);
+    Can_DisableControllerInterrupts(CAN_1_CONTROLLER);
     Can_SetBaudrate(CAN_1_CONTROLLER, 0);
     Can_SetControllerMode(CAN_1_CONTROLLER, CAN_CS_STARTED);
 
@@ -63,13 +64,11 @@ int main(void)
     // LinIf_Init(&LinIfConfig);
 
     PduR_Init(&PduR_PBConfig);
-    // SysTick_Init_8MHz();
-    // Os_Init();
-    // Os_Start();
+    SysTick_Init_8MHz();
+    Os_Init();
+    Os_Start();
     while (1)
     {
-        Com_SendSignal(0);
-        delay(1000);
     }
 }
 
