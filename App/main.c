@@ -52,7 +52,7 @@ int main(void)
     Port_Init(Port_Configuration);
 
     Can_Init(&CanConfig);
-    Can_DisableControllerInterrupts(CAN_1_CONTROLLER);
+    Can_EnableControllerInterrupts(CAN_1_CONTROLLER);
     Can_SetBaudrate(CAN_1_CONTROLLER, 0);
     Can_SetControllerMode(CAN_1_CONTROLLER, CAN_CS_STARTED);
 

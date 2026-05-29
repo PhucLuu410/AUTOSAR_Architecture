@@ -387,6 +387,67 @@ void Can_MainFunction_Write(void)
     }
 }
 
+void Can_MainFunction_Read(void)
+{
+    uint8 RxBuffer[8];
+    if ((Can_Hardware[LocalConfig->CanController->CanControllerNumber]->RF0R & 0x03) > 0)
+    {
+        Can_HwType HwType;
+        PduInfoType PduInfo;
+
+        HwType.Hoh = 0;
+        HwType.ControllerId = 0;
+        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RIR & (1 << 2))
+        {
+            HwType.CanId = (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RIR >> 3) & 0x1FFFFFFF;
+        }
+        else
+        {
+            HwType.CanId = (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RIR >> 21) & 0x7FF;
+        }
+        PduInfo.SduLength = (uint8)(Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RDTR & 0x0F);
+        PduInfo.SduDataPtr = RxBuffer;
+        uint32 data_low = Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RDLR;
+        uint32 data_high = Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RDHR;
+
+        for (int i = 0; i < PduInfo.SduLength; i++)
+        {
+            PduInfo.SduDataPtr[i] = (i < 4) ? (uint8)((data_low >> (8 * i)) & 0xFF)
+                                            : (uint8)((data_high >> (8 * (i - 4))) & 0xFF);
+        }
+
+        CanIf_RxIndication(&HwType, &PduInfo);
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->RF0R |= (1 << 5);
+    }
+
+    if ((Can_Hardware[LocalConfig->CanController->CanControllerNumber]->RF1R & 0x03) > 0)
+    {
+        Can_HwType HwType;
+        PduInfoType PduInfo;
+        HwType.Hoh = 1;
+        HwType.ControllerId = 0;
+        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RIR & (1 << 2))
+        {
+            HwType.CanId = (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RIR >> 3) & 0x1FFFFFFF;
+        }
+        else
+        {
+            HwType.CanId = (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RIR >> 21) & 0x7FF;
+        }
+        PduInfo.SduLength = (uint8)(Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RDTR & 0x0F);
+        PduInfo.SduDataPtr = RxBuffer;
+        uint32 data_low = Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RDLR;
+        uint32 data_high = Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RDHR;
+        for (int i = 0; i < PduInfo.SduLength; i++)
+        {
+            PduInfo.SduDataPtr[i] = (i < 4) ? (uint8)((data_low >> (8 * i)) & 0xFF)
+                                            : (uint8)((data_high >> (8 * (i - 4))) & 0xFF);
+        }
+        CanIf_RxIndication(&HwType, &PduInfo);
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->RF1R |= (1 << 5);
+    }
+}
+
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
 

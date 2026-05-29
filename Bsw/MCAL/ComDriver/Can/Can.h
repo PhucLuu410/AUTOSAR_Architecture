@@ -82,5 +82,10 @@ void Can_DisableControllerInterrupts(uint8 Controller);
 void Can_EnableControllerInterrupts(uint8 Controller);
 Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID);
 Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo);
+void Can_MainFunction_Wakeup(void);
+void Can_MainFunction_BusOff(void);
+void Can_MainFunction_Write(void);
+void Can_MainFunction_Mode(void);
+void Can_MainFunction_Read(void);
 
 #endif

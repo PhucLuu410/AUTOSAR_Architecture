@@ -89,21 +89,19 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    Com_SendSignal(0);
+    Can_MainFunction_Read();
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-    Com_SendSignal(2);
+
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    __disable_irq();
-    Com_SendSignal(1);
-    __enable_irq();
+
     TerminateTask();
 }
 
