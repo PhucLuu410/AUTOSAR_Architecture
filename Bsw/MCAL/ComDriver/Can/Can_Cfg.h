@@ -44,7 +44,12 @@
 #define CAN_TRANSMIT_FIFO_PRIORITY_BY_ID 0
 #define CAN_TRANSMIT_FIFO_PRIORITY_BY_ORDER 1
 
+#define CAN_DRIVER_HOH 5
+#define SENSOR_0 0
+#define SENSOR_1 1
+#define SENSOR_2 2
+
 extern Can_ControllerStateType Can_ControllerState[NUMBER_OF_CAN_CONTROLLERS];
 extern Can_ConfigType CanConfig;
-
+extern uint32 Can_SwPduHandle[CAN_DRIVER_HOH][10];
 #endif

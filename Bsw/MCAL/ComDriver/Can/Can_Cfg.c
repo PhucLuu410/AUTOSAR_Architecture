@@ -20,33 +20,37 @@ Can_Filter CanFilter[NUMBER_OF_CAN_FILTERS] = {
 
 Can_Baudrate CanBaudrate[NUMBER_OF_CAN_CONTROLLERS] = {
     {
-        .Brp = 8,
-        .Baudrate = 100000,
+        .BaudRate = 100000,
         .Clock = 8000000,
+        .PropSeg = 1,
+        .Seg1 = 7,
+        .Seg2 = 2,
+        .SyncJumpWidth = 1,
+        .Brp = 8,
     },
 };
 
 Can_Isr CanIsrUsed[] = {
     {
-        .CanSleepIsr = TRUE,
-        .CanWakeupIsr = TRUE,
-        .ErrorIsr = TRUE,
-        .LastErrorCodeIsr = TRUE,
-        .BusOffIsr = TRUE,
-        .ErrorPassiveIsr = TRUE,
-        .ErrorWarningIsr = TRUE,
-        .Fifo1OverrunIsr = TRUE,
-        .Fifo1OFullIsr = TRUE,
+        .CanSleepIsr = FALSE,
+        .CanWakeupIsr = FALSE,
+        .ErrorIsr = FALSE,
+        .LastErrorCodeIsr = FALSE,
+        .BusOffIsr = FALSE,
+        .ErrorPassiveIsr = FALSE,
+        .ErrorWarningIsr = FALSE,
+        .Fifo1OverrunIsr = FALSE,
+        .Fifo1OFullIsr = FALSE,
         .Fifo1MessagePendingIsr = TRUE,
-        .Fifo0OverrunIsr = TRUE,
-        .Fifo0OFullIsr = TRUE,
+        .Fifo0OverrunIsr = FALSE,
+        .Fifo0OFullIsr = FALSE,
         .Fifo0MessagePendingIsr = TRUE,
         .TransmitMailboxEmptyIsr = TRUE,
     },
     {
-        .CanSleepIsr = TRUE,
-        .CanWakeupIsr = TRUE,
-        .ErrorIsr = TRUE,
+        .CanSleepIsr = FALSE,
+        .CanWakeupIsr = FALSE,
+        .ErrorIsr = FALSE,
         .LastErrorCodeIsr = FALSE,
         .BusOffIsr = FALSE,
         .ErrorPassiveIsr = FALSE,
@@ -57,7 +61,7 @@ Can_Isr CanIsrUsed[] = {
         .Fifo0OverrunIsr = FALSE,
         .Fifo0OFullIsr = FALSE,
         .Fifo0MessagePendingIsr = FALSE,
-        .TransmitMailboxEmptyIsr = TRUE,
+        .TransmitMailboxEmptyIsr = FALSE,
     }};
 
 Can_Controller CanController[NUMBER_OF_CAN_CONTROLLERS] = {
@@ -85,3 +89,5 @@ Can_ConfigType CanConfig = {
     .CanHwUnit = &CanHwUnit[0],
     .CanController = &CanController[0],
     .CanIsr = &CanIsrUsed[0]};
+
+uint32 Can_SwPduHandle[CAN_DRIVER_HOH][10] = {0};

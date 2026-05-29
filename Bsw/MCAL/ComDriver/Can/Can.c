@@ -10,6 +10,7 @@ static const Can_ConfigType *LocalConfig = NULL_PTR;
 static uint8 Can_StateMachine[NUMBER_OF_CAN_CONTROLLERS] = {CAN_UNINIT};
 static CAN_TypeDef *Can_Hardware[NUMBER_OF_CAN_HW_UNITS] = {CAN1};
 Can_ControllerStateType Can_ControllerState[NUMBER_OF_CAN_CONTROLLERS] = {CAN_CS_UNINIT};
+static PduIdType Can_TxPduIds[CAN_DRIVER_HOH] = {0};
 
 // CALL BY EcuM module
 void Can_Init(const Can_ConfigType *Config)
@@ -274,25 +275,66 @@ Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
     {
         return E_NOT_OK;
     }
-    uint32 Ts1 = 0;
-    uint32 Ts2 = 0;
-    uint32 Total_TQ = LocalConfig->CanBaudrate->Clock / (LocalConfig->CanBaudrate->Baudrate * LocalConfig->CanBaudrate->Brp);
-    Ts2 = ((Total_TQ * 3) + 5) / 10;
-
-    if (Total_TQ > (1 + Ts2))
-    {
-        Ts1 = Total_TQ - 1 - Ts2;
-    }
-    else
+    uint8 Tq = 1 + LocalConfig->CanBaudrate[Controller].Seg1 + LocalConfig->CanBaudrate[Controller].Seg2;
+    uint32 Baudrate = LocalConfig->CanBaudrate[Controller].Clock / (Tq * LocalConfig->CanBaudrate[Controller].Brp);
+    if (Baudrate != LocalConfig->CanBaudrate[Controller].BaudRate)
     {
         return E_NOT_OK;
     }
-    Can_Hardware[Controller]->BTR = ((Ts2 - 2) << 20) | ((Ts1) << 16) | (LocalConfig->CanBaudrate->Brp - 1);
+    Can_Hardware[Controller]->BTR = ((LocalConfig->CanBaudrate[Controller].Seg1 - 1) << 16) |
+                                    ((LocalConfig->CanBaudrate[Controller].Seg2 - 1) << 20) |
+                                    (LocalConfig->CanBaudrate[Controller].SyncJumpWidth << 24) |
+                                    (LocalConfig->CanBaudrate[Controller].Brp - 1);
     return E_OK;
 }
+
 Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType *PduInfo)
 {
-    return 0;
+    if ((Hth > CAN_DRIVER_HOH) || (PduInfo == NULL_PTR))
+    {
+        return E_NOT_OK;
+    }
+
+    if (Can_ControllerState[LocalConfig->CanController->CanControllerNumber] != CAN_CS_STARTED)
+    {
+        return E_NOT_OK;
+    }
+
+    if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << (26 + Hth)))
+    {
+        if (PduInfo->id > 0x7FF)
+        {
+            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sTxMailBox[Hth].TIR = (PduInfo->id << 3) | (1 << 2);
+        }
+        else
+        {
+            Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sTxMailBox[Hth].TIR = (PduInfo->id << 21);
+        }
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sTxMailBox[Hth].TDTR = (PduInfo->length & 0x0F);
+
+        uint32 data_low = 0;
+        uint32 data_high = 0;
+
+        for (int k = 0; k < PduInfo->length; k++)
+        {
+            if (k < 4)
+            {
+                data_low |= ((uint32)PduInfo->sdu[k] << (8 * k));
+            }
+            else
+            {
+                data_high |= ((uint32)PduInfo->sdu[k] << (8 * (k - 4)));
+            }
+        }
+
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sTxMailBox[Hth].TDLR = data_low;
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sTxMailBox[Hth].TDHR = data_high;
+        Can_TxPduIds[Hth] = PduInfo->swPduHandle;
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sTxMailBox[Hth].TIR |= (1 << 0);
+
+        return E_OK;
+    }
+    return CAN_BUSY;
 }
 
 // void Can_MainFunction_Mode(void)
@@ -317,10 +359,120 @@ void Can_MainFunction_BusOff(void)
     }
 }
 
+void Can_MainFunction_Write(void)
+{
+    if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 0))
+    {
+        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 1))
+        {
+            CanIf_TxConfirmation(Can_TxPduIds[0]);
+        }
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR |= (1 << 0);
+    }
+    if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 8))
+    {
+        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 9))
+        {
+            CanIf_TxConfirmation(Can_TxPduIds[1]);
+        }
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR |= (1 << 8);
+    }
+    if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 16))
+    {
+        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 17))
+        {
+            CanIf_TxConfirmation(Can_TxPduIds[2]);
+        }
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR |= (1 << 16);
+    }
+}
+
 void USB_LP_CAN1_RX0_IRQHandler(void)
 {
+
+    uint8 RxBuffer[8];
+    if ((Can_Hardware[LocalConfig->CanController->CanControllerNumber]->RF0R & 0x03) > 0)
+    {
+        Can_HwType HwType;
+        PduInfoType PduInfo;
+
+        HwType.Hoh = 0;
+        HwType.ControllerId = 0;
+        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RIR & (1 << 2))
+        {
+            HwType.CanId = (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RIR >> 3) & 0x1FFFFFFF;
+        }
+        else
+        {
+            HwType.CanId = (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RIR >> 21) & 0x7FF;
+        }
+        PduInfo.SduLength = (uint8)(Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RDTR & 0x0F);
+        PduInfo.SduDataPtr = RxBuffer;
+        uint32 data_low = Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RDLR;
+        uint32 data_high = Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RDHR;
+
+        for (int i = 0; i < PduInfo.SduLength; i++)
+        {
+            PduInfo.SduDataPtr[i] = (i < 4) ? (uint8)((data_low >> (8 * i)) & 0xFF)
+                                            : (uint8)((data_high >> (8 * (i - 4))) & 0xFF);
+        }
+
+        CanIf_RxIndication(&HwType, &PduInfo);
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->RF0R |= (1 << 5);
+    }
+
+    if ((Can_Hardware[LocalConfig->CanController->CanControllerNumber]->RF1R & 0x03) > 0)
+    {
+        Can_HwType HwType;
+        PduInfoType PduInfo;
+        HwType.Hoh = 1;
+        HwType.ControllerId = 0;
+        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RIR & (1 << 2))
+        {
+            HwType.CanId = (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RIR >> 3) & 0x1FFFFFFF;
+        }
+        else
+        {
+            HwType.CanId = (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RIR >> 21) & 0x7FF;
+        }
+        PduInfo.SduLength = (uint8)(Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RDTR & 0x0F);
+        PduInfo.SduDataPtr = RxBuffer;
+        uint32 data_low = Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RDLR;
+        uint32 data_high = Can_Hardware[LocalConfig->CanController->CanControllerNumber]->sFIFOMailBox[0].RDHR;
+        for (int i = 0; i < PduInfo.SduLength; i++)
+        {
+            PduInfo.SduDataPtr[i] = (i < 4) ? (uint8)((data_low >> (8 * i)) & 0xFF)
+                                            : (uint8)((data_high >> (8 * (i - 4))) & 0xFF);
+        }
+        CanIf_RxIndication(&HwType, &PduInfo);
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->RF1R |= (1 << 5);
+    }
 }
 
 void USB_HP_CAN1_TX_IRQHandler(void)
 {
+    if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 0))
+    {
+        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 1))
+        {
+            CanIf_TxConfirmation(Can_TxPduIds[0]);
+        }
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR |= (1 << 0);
+    }
+    if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 8))
+    {
+        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 9))
+        {
+            CanIf_TxConfirmation(Can_TxPduIds[1]);
+        }
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR |= (1 << 8);
+    }
+    if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 16))
+    {
+        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 17))
+        {
+            CanIf_TxConfirmation(Can_TxPduIds[2]);
+        }
+        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR |= (1 << 16);
+    }
 }

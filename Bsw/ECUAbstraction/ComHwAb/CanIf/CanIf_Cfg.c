@@ -19,13 +19,13 @@ CanIf_PduRxTableConfig CanIf_RxTable[] = {
            .data = NULL_PTR}};
 
 CanIf_PduTxTableConfig CanIf_TxTable[SIZE_OF_CAN_IF_TABLE] = {
-    [0] = {.CanChannel = 0,
+    [0] = {.Hoh = 0,
            .CanIf_LocalId = 0,
            .CanIf_CanId = 0x123},
-    [1] = {.CanChannel = 1,
+    [1] = {.Hoh = 1,
            .CanIf_LocalId = 1,
            .CanIf_CanId = 0x127},
-    [2] = {.CanChannel = 2,
+    [2] = {.Hoh = 2,
            .CanIf_LocalId = 2,
            .CanIf_CanId = 0x321}};
 

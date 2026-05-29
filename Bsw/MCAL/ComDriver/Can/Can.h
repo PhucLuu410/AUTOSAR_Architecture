@@ -24,9 +24,13 @@ typedef struct
 
 typedef struct
 {
-    uint32 Brp;
-    uint32 Baudrate;
     uint32 Clock;
+    uint32 BaudRate;
+    uint32 PropSeg;
+    uint8 Seg1;
+    uint8 Seg2;
+    uint8 SyncJumpWidth;
+    uint16 Brp;
 } Can_Baudrate;
 
 typedef struct

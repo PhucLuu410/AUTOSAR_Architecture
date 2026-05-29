@@ -16,7 +16,7 @@ typedef struct
 
 typedef struct
 {
-    uint8 CanChannel;
+    uint8 Hoh;
     uint8 CanIf_LocalId;
     uint16 CanIf_CanId;
 } CanIf_PduTxTableConfig;

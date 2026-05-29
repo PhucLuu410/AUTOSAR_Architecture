@@ -86,7 +86,7 @@ TASK(Task_0)
 
 TASK(Task_1)
 {
-    Com_SendSignal(1);
+    Com_SendSignal(2);
     TerminateTask();
 }
 
