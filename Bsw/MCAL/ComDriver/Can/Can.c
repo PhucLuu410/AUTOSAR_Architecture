@@ -16,7 +16,7 @@ void Can_Init(const Can_ConfigType *ConfigPtr)
         Det_ReportError(0, 0, 0, 1);
         return;
     }
-    if (Can_ControllerState != CAN_CS_UNINIT)
+    if (Can_ControllerState[0] != CAN_CS_UNINIT)
     {
         // Can_ErrorTypeRecent = CAN_E_TRANSITION;
         return;
