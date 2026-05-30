@@ -1,5 +1,5 @@
 #include "OS.h"
-#include "Lin.h"
+#include "stm32f103xb.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];
@@ -89,17 +89,19 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
+    Com_SendSignal(0);
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-    Can_MainFunction_Read();
+    Com_SendSignal(2);
     TerminateTask();
 }
 
 TASK(Task_2)
 {
+    Com_SendSignal(1);
     TerminateTask();
 }
 
@@ -126,7 +128,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 
                               [2] = {.OsStackPointer = &Os_Task_2[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_2,
-                                     .interval = 50,
+                                     .interval = 20,
                                      .timer = &Os_System_Tick,
                                      .Priority = 2,
                                      .State = TASK_SUSPENDED},
@@ -202,28 +204,43 @@ void Os_Scheduler(void)
     Os_Current_Task = 3;
     Os_Current_Psp = TaskList[3].OsStackPointer;
 
-    if (TaskList[0].State == TASK_READY || TaskList[0].State == TASK_RUNNING)
+    if (TaskList[0].State == TASK_READY)
     {
         TaskList[0].State = TASK_RUNNING;
         Os_Current_Task = 0;
         Os_Current_Psp = TaskList[0].OsStackPointer;
         return;
     }
+    else if (TaskList[0].State == TASK_RUNNING)
+    {
+        Os_Current_Task = 0;
+        Os_Current_Psp = TaskList[0].OsStackPointer - 8;
+    }
 
-    if (TaskList[1].State == TASK_READY || TaskList[1].State == TASK_RUNNING)
+    if (TaskList[1].State == TASK_READY)
     {
         TaskList[1].State = TASK_RUNNING;
         Os_Current_Task = 1;
         Os_Current_Psp = TaskList[1].OsStackPointer;
         return;
     }
+    else if (TaskList[1].State == TASK_RUNNING)
+    {
+        Os_Current_Task = 1;
+        Os_Current_Psp = TaskList[1].OsStackPointer - 8;
+    }
 
-    if (TaskList[2].State == TASK_READY || TaskList[2].State == TASK_RUNNING)
+    if (TaskList[2].State == TASK_READY)
     {
         TaskList[2].State = TASK_RUNNING;
         Os_Current_Task = 2;
         Os_Current_Psp = TaskList[2].OsStackPointer;
         return;
+    }
+    else if (TaskList[2].State == TASK_RUNNING)
+    {
+        Os_Current_Task = 2;
+        Os_Current_Psp = TaskList[2].OsStackPointer - 8;
     }
 }
 

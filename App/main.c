@@ -23,8 +23,7 @@
 #include "LinIf_Cfg.h"
 #include "Rte.h"
 #include "Os.h"
-
-Can_ControllerStateType Can_State;
+#include "stm32f103xb.h"
 
 void delay(volatile uint32_t t)
 {
@@ -40,6 +39,7 @@ void SysTick_Init_8MHz(void)
     CoreDebug->DEMCR |= (1 << 24);
     DWT->CYCCNT = 0;
     DWT->CTRL |= (1 << 0);
+    NVIC_SetPriority(SysTick_IRQn, 0xF0);
     NVIC_SetPriority(PendSV_IRQn, 0xFF);
 }
 
@@ -51,12 +51,13 @@ int main(void)
 
     Port_Init(Port_Configuration);
 
-    Can_Init(&CanConfig[0]);
-    Can_DisableControllerInterrupts(CAN_1);
-    Can_SetBaudrate(CAN_1, 0);
-    Can_SetControllerMode(CAN_1, CAN_CS_STARTED);
+    Can_Init(&CanConfig);
+    Can_EnableControllerInterrupts(CAN_1_CONTROLLER);
+    Can_SetBaudrate(CAN_1_CONTROLLER, 0);
+    Can_SetControllerMode(CAN_1_CONTROLLER, CAN_CS_STARTED);
 
     CanIf_Init(&CanIfConfig);
+    // CanIf_SetControllerMode(0, CAN_CS_STARTED);
 
     Lin_Init(&Lin_Config[LIN_CHANNEL_1]);
 
@@ -68,10 +69,6 @@ int main(void)
     Os_Start();
     while (1)
     {
-        // Com_SendSignal(0);
-        // delay(100);
-        // Com_SendSignal(1);
-        // delay(10000);
     }
 }
 

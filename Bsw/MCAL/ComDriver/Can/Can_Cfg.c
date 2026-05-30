@@ -2,51 +2,92 @@
 #include "Can.h"
 #include "Can_GeneralTypes.h"
 
-static Can_HohHandlerConfigType CanHohHandler = {
-    .CanDebugMode = CAN_DEBUG_MODE_FREEZE,
-    .CanAutoBusOff = CAN_AUTO_BUS_OFF_OFF,
-    .CanAutoWakeUp = CAN_AUTO_WAKEUP_OFF,
-    .CanAutoRetransmission = CAN_RETRANSMISSION_ON,
-    .CanReceiveFifoLockedMode = CAN_RECEIVE_FIFO_LOCKED_MODE_OFF,
-    .CanTransmitFifoPriority = CAN_TRANSMIT_FIFO_PRIORITY_OFF};
-
-static Can_BaudrateConfigType CanBaudrateConfig[] = {
-    {.CanBaudrateId = 0,
-     .CanTseg1 = 6,
-     .CanTseg2 = 1,
-     .CanBaudratePrescaler = 7,
-     .CanSjw = 1}};
-
-static Can_FilterType CanFilterList[CAN_NUMBER_OF_FILTER] = {
-    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_0, .Id = 0x123, .Mask = 0x7FF},
-    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_1, .Id = 0x127, .Mask = 0x7FF},
-    {.Fifo = CAN_FIFO_0_MASK, .Bank = CAN_FILTER_BANK_2, .Id = 0x321, .Mask = 0x7FF},
+Can_Filter CanFilter[NUMBER_OF_CAN_FILTERS] = {
+    [0] = {
+        .FilterStatus = CAN_FILTER_ON,
+        .FilterIdType = CAN_FILTER_STANDART_ID,
+        .FilterMode = CAN_FILTER_MODE_LISTMODE,
+        .FilterScale = CAN_FILTER_SCALE_2_16,
+        .FilterId1 = 0x123,
+        .FilterId2 = 0x127,
+        .FilterId3 = 0x7FF,
+        .FilterId4 = 0x7FF,
+        .FilterMask1 = 0x7FF,
+        .FilterMask2 = 0x7FF,
+        .FilterAssignToFifo = 0,
+    },
 };
 
-const Can_ConfigType CanConfig[] = {
-    [0] = {
-        .CanControllerId = CAN_1,
-        .CanIdType = CAN_STANDARD_ID,
-        .CanIdMaskMode = CAN_ID_MASK_1_32_BIT,
-        .CanFilter = CanFilterList,
-        .CanBaudrateConfig = &CanBaudrateConfig[0],
-        .CanTrigger = CAN_SW_TRIGGER,
-        .CanHohHandler = &CanHohHandler,
-        .CanMultiplexTransmission = CAN_MULTIPLEX_OFF,
-        .CanEventDetection = CAN_EVENT_DETECT_INTERRUPT,
-        .CanInterruptEnable = ((1 << CAN_WAKEUP_INTERUPT) |
-                               (1 << CAN_ERROR_INTERUPT) |
-                               (1 << CAN_BUS_OFF_INTERUPT) |
-                               (1 << CAN_ERROR_PASSIVE_INTERUPT) |
-                               (1 << CAN_WARNING_INTERUPT) |
-                               (1 << CAN_FIFO1_OVERRUN_INTERUPT) |
-                               (1 << CAN_FIFO1_FULL_INTERNAL_INTERUPT) |
-                               (1 << CAN_FIFO1_MESSAGE_PENDING_INTERUPT) |
-                               (1 << CAN_FIFO0_OVERRUN_INTERUPT) |
-                               (1 << CAN_FIFO0_FULL_INTERNAL_INTERUPT) |
-                               (1 << CAN_FIFO0_MESSAGE_PENDING_INTERUPT) |
-                               (1 << CAN_TX_MAILBOX_EMPTY_INTERUPT)) &
-                              0xFFFF,
-        .CanTxHardwareObject = 0}};
+Can_Baudrate CanBaudrate[NUMBER_OF_CAN_CONTROLLERS] = {
+    {
+        .BaudRate = 100000,
+        .Clock = 8000000,
+        .PropSeg = 1,
+        .Seg1 = 7,
+        .Seg2 = 2,
+        .SyncJumpWidth = 1,
+        .Brp = 8,
+    },
+};
 
-CAN_TypeDef *const Can_Controllers[CAN_MAX_CONTROLLER] = {CAN1};
+Can_Isr CanIsrUsed[] = {
+    {
+        .CanSleepIsr = FALSE,
+        .CanWakeupIsr = FALSE,
+        .ErrorIsr = FALSE,
+        .LastErrorCodeIsr = FALSE,
+        .BusOffIsr = FALSE,
+        .ErrorPassiveIsr = FALSE,
+        .ErrorWarningIsr = FALSE,
+        .Fifo1OverrunIsr = FALSE,
+        .Fifo1OFullIsr = FALSE,
+        .Fifo1MessagePendingIsr = TRUE,
+        .Fifo0OverrunIsr = FALSE,
+        .Fifo0OFullIsr = FALSE,
+        .Fifo0MessagePendingIsr = TRUE,
+        .TransmitMailboxEmptyIsr = TRUE,
+    },
+    {
+        .CanSleepIsr = FALSE,
+        .CanWakeupIsr = FALSE,
+        .ErrorIsr = FALSE,
+        .LastErrorCodeIsr = FALSE,
+        .BusOffIsr = FALSE,
+        .ErrorPassiveIsr = FALSE,
+        .ErrorWarningIsr = FALSE,
+        .Fifo1OverrunIsr = FALSE,
+        .Fifo1OFullIsr = FALSE,
+        .Fifo1MessagePendingIsr = FALSE,
+        .Fifo0OverrunIsr = FALSE,
+        .Fifo0OFullIsr = FALSE,
+        .Fifo0MessagePendingIsr = FALSE,
+        .TransmitMailboxEmptyIsr = FALSE,
+    }};
+
+Can_Controller CanController[NUMBER_OF_CAN_CONTROLLERS] = {
+    {
+        .CanControllerNumber = CAN_1_CONTROLLER,
+        .CanDebugMode = CAN_DEBUG_MODE_FREEZE,
+        .CanTimerTriggerCommunicationMode = CAN_TIMER_TRIGGER_COMMUNICATION_MODE_DISABLE,
+        .CanAutoBusOffMode = CAN_AUTO_BUS_OFF_MODE_ENABLE,
+        .CanAutoWakeupMode = CAN_AUTO_WAKEUP_MODE_DISABLE,
+        .CanAutoRetransmission = CAN_AUTO_RETRANSMISSION_ENABLE,
+        .CanReceiveFifoLockedMode = CAN_RECEIVE_FIFO_LOCKED_MODE_OVERWRITE,
+        .CanTransmitFifoPriority = CAN_TRANSMIT_FIFO_PRIORITY_BY_ID,
+    },
+};
+
+Can_HwUnit CanHwUnit[NUMBER_OF_CAN_HW_UNITS] = {
+    {
+
+    },
+};
+
+Can_ConfigType CanConfig = {
+    .CanFilter = &CanFilter[0],
+    .CanBaudrate = &CanBaudrate[0],
+    .CanHwUnit = &CanHwUnit[0],
+    .CanController = &CanController[0],
+    .CanIsr = &CanIsrUsed[0]};
+
+uint32 Can_SwPduHandle[CAN_DRIVER_HOH][10] = {0};

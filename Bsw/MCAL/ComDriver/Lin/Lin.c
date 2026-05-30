@@ -32,7 +32,7 @@ void Lin_Init(const Lin_ConfigType *Config)
 
 Std_ReturnType Lin_SendFrame(uint8 Channel, const Lin_PduType *PduInfoPtr)
 {
-    uint32 Lin_Cs = 0;
+    static uint32 Lin_Cs = 0;
     if (PduInfoPtr->CsModel == LIN_ENHANCED_CS)
     {
         Lin_Cs += PduInfoPtr->Pid;

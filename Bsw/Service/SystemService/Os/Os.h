@@ -1,3 +1,6 @@
+#ifndef OS_H
+#define OS_H
+
 #include "Rte.h"
 
 #define TASK(FunctionName) __attribute__((naked)) void FunctionName(void)
@@ -25,3 +28,5 @@ typedef struct
 extern Task_ConfigType TaskList[];
 void Os_Start(void);
 void Os_Init(void);
+
+#endif

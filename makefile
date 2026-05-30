@@ -3,11 +3,12 @@ OBJCOPY = arm-none-eabi-objcopy
 CFLAGS = -mcpu=cortex-m3 -mthumb -O0 -g -Wall
 
 IPATH = -I. \
-		-I./Bsw/Mcal/IoDriver/Dio \
 		-I./System/Drivers/CMSIS \
 		-I./System/Drivers/Common \
+		-I./Bsw/Mcal/IoDriver/Dio \
 		-I./Bsw/Mcal/IoDriver/Port \
 		-I./Bsw/Mcal/IoDriver/Pwm \
+		-I./Bsw/Mcal/IoDriver/Icu \
 		-I./Bsw/Mcal/IoDriver \
 		-I./Bsw/Mcal/McuDriver/Mcu \
 		-I./Bsw/Mcal/ComDriver/Can \
@@ -30,6 +31,8 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Mcal/IoDriver/Port/Port_Cfg.c \
 		Bsw/Mcal/IoDriver/Pwm/Pwm.c \
 		Bsw/Mcal/IoDriver/Pwm/Pwm_Cfg.c \
+		Bsw/Mcal/IoDriver/Icu/Icu.c \
+		Bsw/Mcal/IoDriver/Icu/Icu_Cfg.c \
 		Bsw/Mcal/IoDriver/Adc/Adc.c \
 		Bsw/Mcal/IoDriver/Adc/Adc_Cfg.c \
 		Bsw/Mcal/McuDriver/Mcu/Mcu.c \
