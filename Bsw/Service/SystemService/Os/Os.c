@@ -143,6 +143,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 void SysTick_Handler(void)
 {
     Os_System_Tick++;
+    a = __get_PSP();
     if ((Os_System_Tick % TaskList[0].interval) == 0 && TaskList[0].State == TASK_SUSPENDED)
     {
         TaskList[0].OsStackPointer = PrepareTaskStack(&Os_Task_0[SIZE_OF_TASK_STACK - 1], TaskList[0].pTask);
@@ -152,6 +153,7 @@ void SysTick_Handler(void)
     if ((Os_System_Tick % TaskList[1].interval) == 0 && TaskList[1].State == TASK_SUSPENDED)
     {
         TaskList[1].OsStackPointer = PrepareTaskStack(&Os_Task_1[SIZE_OF_TASK_STACK - 1], TaskList[1].pTask);
+
         TaskList[1].State = TASK_READY;
     }
 
@@ -163,6 +165,7 @@ void SysTick_Handler(void)
 
     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 }
+
 void Os_Init(void)
 {
     TaskList[0].OsStackPointer = PrepareTaskStack(&Os_Task_0[SIZE_OF_TASK_STACK - 1], Task_0);
@@ -215,6 +218,7 @@ void Os_Scheduler(void)
     {
         Os_Current_Task = 0;
         Os_Current_Psp = TaskList[0].OsStackPointer - 8;
+        return;
     }
 
     if (TaskList[1].State == TASK_READY)
@@ -227,7 +231,8 @@ void Os_Scheduler(void)
     else if (TaskList[1].State == TASK_RUNNING)
     {
         Os_Current_Task = 1;
-        Os_Current_Psp = TaskList[1].OsStackPointer - 8;
+        Os_Current_Psp = TaskList[1].OsStackPointer;
+        return;
     }
 
     if (TaskList[2].State == TASK_READY)
@@ -240,26 +245,40 @@ void Os_Scheduler(void)
     else if (TaskList[2].State == TASK_RUNNING)
     {
         Os_Current_Task = 2;
-        Os_Current_Psp = TaskList[2].OsStackPointer - 8;
+        Os_Current_Psp = TaskList[2].OsStackPointer;
+        return;
     }
+}
+
+void Os_SaveContext(uint32 *psp)
+{
+    TaskList[Os_Current_Task].OsStackPointer = psp;
+}
+
+uint32 *Os_GetContext(void)
+{
+    return TaskList[Os_Current_Task].OsStackPointer;
 }
 
 __attribute__((naked)) void PendSV_Handler(void)
 {
     __asm__ __volatile__(
-        "MRS     R0, PSP                 \n"
+        "MRS     R0, PSP                \n"
         "STMDB   R0!, {R4-R11}          \n"
-        "LDR     R1, =Os_Current_Psp       \n"
-        "STR     R0, [R1]               \n"
+
         "PUSH    {LR}                   \n"
+        "BL      Os_SaveContext         \n"
+
         "CPSID   I                      \n"
         "BL      Os_Scheduler           \n"
         "CPSIE   I                      \n"
+
+        "BL      Os_GetContext          \n"
         "POP     {LR}                   \n"
-        "LDR     R1, =Os_Current_Psp       \n"
-        "LDR     R0, [R1]               \n"
+
         "LDMIA   R0!, {R4-R11}          \n"
         "MSR     PSP, R0                \n"
+
         "BX      LR                     \n"
         :
         :
