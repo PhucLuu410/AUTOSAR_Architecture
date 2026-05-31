@@ -3,9 +3,10 @@
 
 #include "PduR.h"
 #include "CanIf.h"
+#include "CanTp.h"
 #include "LinIf.h"
 
-#define NUMBER_OF_COM_TX_SIGNAL 3
+#define NUMBER_OF_COM_TX_SIGNAL 4
 #define NUMBER_OF_COM_RX_SIGNAL 4
 
 extern PduR_RxRoutingPathType PduR_RxRouteTable[NUMBER_OF_COM_RX_SIGNAL];

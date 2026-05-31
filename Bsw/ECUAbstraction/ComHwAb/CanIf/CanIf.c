@@ -18,7 +18,7 @@ void CanIf_DeInit(void)
 
 void CanIf_TxConfirmation(PduIdType CanTxPduId)
 {
-    for (int i = 0; i < SIZE_OF_CAN_IF_TABLE; i++)
+    for (int i = 0; i < SIZE_OF_CAN_IF_TX_TABLE; i++)
     {
         if (CanIfGlobalConfigPtr->TxTableConfig[i].CanIf_LocalId == CanTxPduId)
         {
@@ -63,7 +63,7 @@ Std_ReturnType CanIf_GetControllerErrorState(uint8 ControllerId, Can_ErrorStateT
 
 Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoType)
 {
-    for (int i = 0; i < SIZE_OF_CAN_IF_TABLE; i++)
+    for (int i = 0; i < SIZE_OF_CAN_IF_TX_TABLE; i++)
     {
         if (CanIfGlobalConfigPtr->TxTableConfig[i].CanIf_LocalId == TxPduId)
         {
@@ -80,7 +80,7 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoType)
 
 void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfoPtr)
 {
-    for (int i = 0; i < SIZE_OF_CAN_IF_TABLE; i++)
+    for (int i = 0; i < SIZE_OF_CAN_IF_RX_TABLE; i++)
     {
         if (Mailbox->CanId == CanIfGlobalConfigPtr->RxTableConfig[i].CanIf_CanId)
         {
@@ -92,7 +92,7 @@ void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfoPtr
 
 Std_ReturnType CanIf_ReadRxPduData(PduIdType CanIfRxPduId, PduInfoType *PduInfoPtr)
 {
-    for (int i = 0; i < SIZE_OF_CAN_IF_TABLE; i++)
+    for (int i = 0; i < SIZE_OF_CAN_IF_RX_TABLE; i++)
     {
         if (CanIfGlobalConfigPtr->RxTableConfig[i].CanIf_LocalId == CanIfRxPduId)
         {

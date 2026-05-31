@@ -1,5 +1,7 @@
 #include "OS.h"
 #include "stm32f103xb.h"
+#include "Can.h"
+#include "Lin.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];
@@ -89,19 +91,18 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    Com_SendSignal(0);
+    Can_MainFunction_Read();
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-    Com_SendSignal(2);
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    Com_SendSignal(1);
+    Lin_MainFunction_Read();
     TerminateTask();
 }
 
@@ -128,7 +129,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 
                               [2] = {.OsStackPointer = &Os_Task_2[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_2,
-                                     .interval = 20,
+                                     .interval = 10,
                                      .timer = &Os_System_Tick,
                                      .Priority = 2,
                                      .State = TASK_SUSPENDED},

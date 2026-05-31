@@ -36,5 +36,6 @@ Std_ReturnType Lin_GoToSleepInternal(uint8 Channel);
 Std_ReturnType Lin_Wakeup(uint8 Channel);
 Std_ReturnType Lin_WakeupInternal(uint8 Channel);
 Lin_StatusType Lin_GetStatus(uint8 Channel, const uint8 **Lin_SduPtr);
+void Lin_MainFunction_Read(void);
 
 #endif

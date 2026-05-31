@@ -1,21 +1,25 @@
 #include "Com_Cfg.h"
 
-static uint8 Com_TxBuffer[NUMBER_OF_COM_TX_SIGNAL][8] = {
-    {0x11, 0x22, 0x22, 0x22, 0x55, 0x66, 0x77, 0x88},
-    {0x12, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88},
-    {0x13, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88},
-};
+static uint8 Gas_Sensor_Data[8] = {0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01};
+static uint8 Pedal_Sensor_Data[8] = {0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02};
+static uint8 Door_Control_Data[8] = {0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03};
+static uint8 Diag_Error_Data_Tx[20] = {0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x80, 0x11, 0x21,
+                                       0x31, 0x41, 0x51, 0x61, 0x71, 0x81, 0x12, 0x22, 0x32, 0x42};
 
-static uint8 Com_RxBuffer[NUMBER_OF_COM_RX_SIGNAL][20] = {0};
+static uint8 Electric_Window_Data[8] = {0};
+static uint8 Steering_control_Data[8] = {0};
+static uint8 Airbag_Data[8] = {0};
+
+static uint8 Diag_Error_Data_Rx[20] = {0};
 
 ComTxSignalType ComTxSignalConfig[NUMBER_OF_COM_TX_SIGNAL] = {
-    [0] = {.GlobalPduId = 0, .DataLength = 8, .SduDataPtr = Com_TxBuffer[0]},
-    [1] = {.GlobalPduId = 1, .DataLength = 8, .SduDataPtr = Com_TxBuffer[0]},
-    [2] = {.GlobalPduId = 2, .DataLength = 8, .SduDataPtr = Com_TxBuffer[2]},
-};
+    [0] = {.GlobalPduId = 0, .DataLength = 8, .SduDataPtr = Gas_Sensor_Data},
+    [1] = {.GlobalPduId = 1, .DataLength = 8, .SduDataPtr = Pedal_Sensor_Data},
+    [2] = {.GlobalPduId = 2, .DataLength = 8, .SduDataPtr = Door_Control_Data},
+    [3] = {.GlobalPduId = 3, .DataLength = 20, .SduDataPtr = Diag_Error_Data_Tx}};
 
 ComRxSignalType ComRxSignalConfig[NUMBER_OF_COM_RX_SIGNAL] = {
-    [0] = {.GlobalPduId = 0, .DataLength = 20, .SduDataPtr = Com_RxBuffer[0]},
-    [1] = {.GlobalPduId = 1, .DataLength = 20, .SduDataPtr = Com_RxBuffer[1]},
-    [2] = {.GlobalPduId = 2, .DataLength = 20, .SduDataPtr = Com_RxBuffer[2]},
-    [3] = {.GlobalPduId = 3, .DataLength = 20, .SduDataPtr = Com_RxBuffer[3]}};
+    [0] = {.GlobalPduId = 0, .DataLength = 8, .SduDataPtr = Steering_control_Data},
+    [1] = {.GlobalPduId = 1, .DataLength = 8, .SduDataPtr = Airbag_Data},
+    [2] = {.GlobalPduId = 2, .DataLength = 8, .SduDataPtr = Electric_Window_Data},
+    [3] = {.GlobalPduId = 3, .DataLength = 20, .SduDataPtr = Diag_Error_Data_Rx}};

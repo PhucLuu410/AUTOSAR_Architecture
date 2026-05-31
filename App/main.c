@@ -69,7 +69,8 @@ int main(void)
     Os_Start();
     while (1)
     {
-
+        // Com_SendSignal(3);
+        // delay(100000);
     }
 }
 
