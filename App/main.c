@@ -69,6 +69,9 @@ int main(void)
     // Os_Start();
     while (1)
     {
+        for (int i = 0; i < 100000; i++)
+            ;
+        GPIOC->ODR ^= (1 << 13);
         // Com_SendSignal(3);
         // delay(100000);
     }
