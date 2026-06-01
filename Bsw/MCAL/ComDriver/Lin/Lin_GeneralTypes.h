@@ -1,6 +1,8 @@
 #ifndef LIN_GENERAL_TYPES_H
 #define LIN_GENERAL_TYPES_H
 
+#include "Std_Types.h"
+
 typedef uint8 Lin_FramePidType;
 typedef uint8 Lin_FrameDlType;
 

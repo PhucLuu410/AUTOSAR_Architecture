@@ -1,31 +1,28 @@
-#include "Lin.h"
 #include "Lin_Cfg.h"
-#include "LinIf.h"
+#include "Lin_GeneralTypes.h"
+#include "Lin.h"
 #include "stm32f103xb.h"
-#include "Det.h"
 
-#define LIN_UNINIT 0x00
-#define LIN_INIT 0x01
-#define LIN_CH_OPERATIONAL 0x02
-#define LIN_CH_SLEEP 0x03
-
-uint32 count12 = 0;
-uint8 data = 0;
-USART_TypeDef *Lin_Driver[NUMBER_OF_LIN_CHANNEL] = {USART1, USART2};
-uint8 Lin_Status = LIN_UNINIT;
+// Lin module khong khoi tao cac Parameter khong su dung
+// Lin module cung cap moi truong de thay doi config trong luc runtime
+// Lin module config baudrate boi bien tinh
+// Lin_ConFig type luu tren Rom va duoc khoi tao
+// Lin PID phai co checksum
+// Moi Lin PID phai co do dai nhat dinh
 
 static const Lin_ConfigType *Lin_Local_Config;
+static USART_TypeDef *Lin_Hardware[NUMBER_OF_LIN_CHANNEL] = {USART1, USART2};
 
 void Lin_Init(const Lin_ConfigType *Config)
 {
     Lin_Local_Config = Config;
-    Lin_Driver[Config->LinChannel->LinChannel]->CR1 = ((Config->LinHardware->LinRx << 2) | (Config->LinHardware->LinTx << 3) | (Config->LinHardware->LinUartEn << 13));
-    Lin_Driver[Config->LinChannel->LinChannel]->CR2 = ((Config->LinHardware->LinEn << 14) | (Config->LinChannel->LinBreakDetect << 6));
-    Lin_Driver[Config->LinChannel->LinChannel]->BRR = 8000000 / Config->LinChannel->LinBaud;
-    Lin_Driver[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 7);
-    Lin_Driver[Config->LinChannel->LinChannel]->CR1 |= (1 << 6);
-    Lin_Driver[Config->LinChannel->LinChannel]->CR1 |= (1 << 5);
-    Lin_Driver[Config->LinChannel->LinChannel]->CR2 |= (1 << 6);
+    Lin_Hardware[Config->LinChannel->LinChannel]->CR1 = ((Config->LinHardware->LinRx << 2) | (Config->LinHardware->LinTx << 3) | (Config->LinHardware->LinUartEn << 13));
+    Lin_Hardware[Config->LinChannel->LinChannel]->CR2 = ((Config->LinHardware->LinEn << 14) | (Config->LinChannel->LinBreakDetect << 6));
+    Lin_Hardware[Config->LinChannel->LinChannel]->BRR = 8000000 / Config->LinChannel->LinBaud;
+    Lin_Hardware[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 7);
+    Lin_Hardware[Config->LinChannel->LinChannel]->CR1 |= (1 << 6);
+    Lin_Hardware[Config->LinChannel->LinChannel]->CR1 |= (1 << 5);
+    Lin_Hardware[Config->LinChannel->LinChannel]->CR2 |= (1 << 6);
     if (Config->LinChannel->LinChannel == LIN_CHANNEL_1)
     {
         NVIC_EnableIRQ(USART1_IRQn);
@@ -34,102 +31,43 @@ void Lin_Init(const Lin_ConfigType *Config)
     {
         NVIC_EnableIRQ(USART2_IRQn);
     }
-    Lin_Status = LIN_INIT;
 }
 
-Std_ReturnType Lin_SendFrame(uint8 Channel, const Lin_PduType *PduInfoPtr)
-{
-    static uint32 Lin_Cs = 0;
-    if (PduInfoPtr->CsModel == LIN_ENHANCED_CS)
-    {
-        Lin_Cs += PduInfoPtr->Pid;
-    }
-    for (int i = 0; i < PduInfoPtr->Dl; i++)
-    {
-        Lin_Cs += PduInfoPtr->SduDataPtr[i];
-    }
-    while (Lin_Cs > 0xFF)
-    {
-        Lin_Cs = (Lin_Cs & 0xFF) + (Lin_Cs >> 8);
-    }
-    Lin_Cs = ~Lin_Cs;
-    Lin_Cs = (uint8)(Lin_Cs & 0xFF);
+// Lin nen set thanh Sleep va cho wake up boi external wake-up hay bien LinChannelWakeupSupport
+// LIN_CH_OPERATIONAL -> LIN_CH_SLEEP_PENDING sau khi nhan duoc lenh ngu tren bus
+// Lin-GetStatus duoc goi nen vao LIN_CH_SLEEP tru khi lenh Go to sleep chua duoc goi chi dung cho master node
+// LIN_CH_OPERATIONAL -> LIN_CH_SLEEP thong qua Lin_GotoSleep day Lin vao trang thai LIN_CH_SLEEP
+// LIN_CH_SLEEP -> LIN_CH_OPERATIONAL thong qua  Lin_Wakeup va  Lin_WakeupInternal
+// neu tu LIN_CH_SLEEP -> LIN_CH_OPERATIONAL tao wake-up Request từ 250uS den 5ms
 
-    Lin_Driver[Channel]->CR1 |= (1 << 0);
-    while (Lin_Driver[Channel]->CR1 & (1 << 0))
-        ;
-    Lin_Driver[Channel]->DR = 0x55;
-    while (!(Lin_Driver[Channel]->SR & (1 << 7)))
-        ;
-    Lin_Driver[Channel]->DR = PduInfoPtr->Pid;
-    while (!(Lin_Driver[Channel]->SR & (1 << 7)))
-        ;
-    for (int i = 0; i < PduInfoPtr->Dl; i++)
-    {
-        Lin_Driver[Channel]->DR = PduInfoPtr->SduDataPtr[i];
-        while (!(Lin_Driver[Channel]->SR & (1 << 7)))
-            ;
-    }
+// Lin Frame : Lin Header va Lin Response
+// Lin Header luon luon duoc truyen boi master va la start of frame bao gom Lin PID
+// Lin Response xuat hien sau truoc truyen boi ca 2 la Header va Response
+// Du lieu day vao buffer Can Driver gom data va check sum Lin 1.3 khong duoc su dung voi Lin 2.0 tro len
+// Lin Id 0x60 va 0x63 Dung classic checksum model
+// Lin Master Gui header kem Drc
+// Neu Drc la Tx thi Lin Response truyen sau header luon
+// Neu Drc la Rx thi Lin Response truyen sau header tu Slave
 
-    Lin_Driver[Channel]->DR = Lin_Cs;
-    while (!(Lin_Driver[Channel]->SR & (1 << 7)))
-        ;
-    return E_OK;
-}
-
-Std_ReturnType Lin_WakeupInternal(uint8 Channel)
-{
-    if (Channel >= NUMBER_OF_LIN_CHANNEL)
-    {
-        return E_NOT_OK;
-    }
-    Lin_Driver[Channel]->CR1 |= (1 << 6);
-    Lin_Driver[Channel]->CR1 |= (1 << 5);
-    return E_OK;
-}
-
-Std_ReturnType Lin_GoToSleepInternal(uint8 Channel)
-{
-    if (Channel >= NUMBER_OF_LIN_CHANNEL)
-    {
-        return E_NOT_OK;
-    }
-    Lin_Driver[Channel]->CR1 &= ~(1 << 6);
-    Lin_Driver[Channel]->CR1 &= ~(1 << 5);
-    return E_OK;
-}
-
-void USART1_IRQHandler(void)
-{
-    if (Lin_Driver[LIN_CHANNEL_1]->SR & (1 << 6))
-    {
-        Lin_Driver[LIN_CHANNEL_1]->SR &= ~(1 << 6);
-    }
-    if (Lin_Driver[LIN_CHANNEL_1]->SR & (1 << 8))
-    {
-        Lin_Driver[LIN_CHANNEL_1]->SR &= ~(1 << 8);
-        LinIf_RxIndication(LIN_CHANNEL_1, (uint8 *)&Lin_Driver[LIN_CHANNEL_1]->DR);
-    }
-    if (Lin_Driver[LIN_CHANNEL_1]->SR & (1 << 5))
-    {
-        LinIf_RxIndication(LIN_CHANNEL_1, (uint8 *)&Lin_Driver[LIN_CHANNEL_1]->DR);
-    }
-}
-
-void Lin_MainFunction_Read(void)
-{
-    if (Lin_Driver[LIN_CHANNEL_1]->SR & (1 << 6))
-    {
-        Lin_Driver[LIN_CHANNEL_1]->SR &= ~(1 << 6);
-    }
-    if (Lin_Driver[LIN_CHANNEL_1]->SR & (1 << 8))
-    {
-        Lin_Driver[LIN_CHANNEL_1]->SR &= ~(1 << 8);
-        LinIf_RxIndication(LIN_CHANNEL_1, (uint8 *)&Lin_Driver[LIN_CHANNEL_1]->DR);
-    }
-    if (Lin_Driver[LIN_CHANNEL_1]->SR & (1 << 5))
-    {
-        data = Lin_Driver[LIN_CHANNEL_1]->DR;
-        LinIf_RxIndication(LIN_CHANNEL_1, (uint8 *)&Lin_Driver[LIN_CHANNEL_1]->DR);
-    }
-}
+// Master
+// Lin_SendFrame
+// Gui Lin header gom Break Sync va PID protect
+// Lin getStatus return transmit status
+// Slave
+// co the nhan luc nao cung duoc neu o trang thai LIN_CH_OPERATIONAL
+// Khi nhan Header thi call LinIf_HeaderIndication
+// Neu gui loi thi call LinIf_LinErrorIndication voi LIN_ERR_HEADER
+// Sau khi goi LinIf_HeaderIndication return E_OK
+// Sau khi gui lai check LinIf_TxConfirmation
+// Neu trong luc truyen co loi goi LinIf_LinErrorIndication
+// Neu co loi goi dong thoi LinIf_RxIndication, LinIf_TxConfirmation or LinIf_LinErrorIndication tre nhat la den khi header tiep theo
+// Common
+// Neu khong ho tro buffer thi tao buffer
+// Nhat quan data
+// Transmit
+// Copy data len tang tren
+// Master phai giu data cho den khi return funtion
+// Slave phai giu data den khi xong transmition
+// Receive
+// De trong buffer increase
+// Du lieu phai giu nguyen khong ISR giua chung

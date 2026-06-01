@@ -29,13 +29,6 @@ typedef struct
 } Lin_ConfigType;
 
 void Lin_Init(const Lin_ConfigType *Config);
-Std_ReturnType Lin_CheckWakeup(uint8 Channel);
-Std_ReturnType Lin_SendFrame(uint8 Channel, const Lin_PduType *PduInfoPtr);
-Std_ReturnType Lin_GoToSleep(uint8 Channel);
-Std_ReturnType Lin_GoToSleepInternal(uint8 Channel);
-Std_ReturnType Lin_Wakeup(uint8 Channel);
-Std_ReturnType Lin_WakeupInternal(uint8 Channel);
-Lin_StatusType Lin_GetStatus(uint8 Channel, const uint8 **Lin_SduPtr);
 void Lin_MainFunction_Read(void);
 
 #endif

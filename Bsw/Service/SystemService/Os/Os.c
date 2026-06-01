@@ -102,7 +102,7 @@ TASK(Task_1)
 
 TASK(Task_2)
 {
-    Lin_MainFunction_Read();
+    // Lin_MainFunction_Read();
     TerminateTask();
 }
 
