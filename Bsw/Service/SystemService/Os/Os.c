@@ -89,19 +89,18 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    Can_MainFunction_Read();
+    Com_SendSignal(0);
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-
+    Com_SendSignal(2);
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-
     TerminateTask();
 }
 
@@ -121,7 +120,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 
                               [1] = {.OsStackPointer = &Os_Task_1[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_1,
-                                     .interval = 5,
+                                     .interval = 4,
                                      .timer = &Os_System_Tick,
                                      .Priority = 1,
                                      .State = TASK_SUSPENDED},
@@ -148,17 +147,29 @@ void SysTick_Handler(void)
         TaskList[0].OsStackPointer = PrepareTaskStack(&Os_Task_0[SIZE_OF_TASK_STACK - 1], TaskList[0].pTask);
         TaskList[0].State = TASK_READY;
     }
+    else if (TaskList[0].State == TASK_RUNNING)
+    {
+        TaskList[0].OsStackPointer = Os_Current_Psp;
+    }
 
     if ((Os_System_Tick % TaskList[1].interval) == 0 && TaskList[1].State == TASK_SUSPENDED)
     {
         TaskList[1].OsStackPointer = PrepareTaskStack(&Os_Task_1[SIZE_OF_TASK_STACK - 1], TaskList[1].pTask);
         TaskList[1].State = TASK_READY;
     }
+    else if (TaskList[1].State == TASK_RUNNING)
+    {
+        TaskList[1].OsStackPointer = Os_Current_Psp;
+    }
 
     if ((Os_System_Tick % TaskList[2].interval) == 0 && TaskList[2].State == TASK_SUSPENDED)
     {
         TaskList[2].OsStackPointer = PrepareTaskStack(&Os_Task_2[SIZE_OF_TASK_STACK - 1], TaskList[2].pTask);
         TaskList[2].State = TASK_READY;
+    }
+    else if (TaskList[2].State == TASK_RUNNING)
+    {
+        TaskList[2].OsStackPointer = Os_Current_Psp;
     }
 
     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
