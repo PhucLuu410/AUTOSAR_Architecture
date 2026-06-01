@@ -3,15 +3,13 @@
 #include "Lin.h"
 #include "stm32f103xb.h"
 
-// Lin module khong khoi tao cac Parameter khong su dung
-// Lin module cung cap moi truong de thay doi config trong luc runtime
-// Lin module config baudrate boi bien tinh
-// Lin_ConFig type luu tren Rom va duoc khoi tao
-// Lin PID phai co checksum
-// Moi Lin PID phai co do dai nhat dinh
+#define LIN_UNINIT 0x00
+#define LIN_INIT 0x01
 
 static const Lin_ConfigType *Lin_Local_Config;
 static USART_TypeDef *Lin_Hardware[NUMBER_OF_LIN_CHANNEL] = {USART1, USART2};
+Lin_StatusType Lin_ChannelStatus[NUMBER_OF_LIN_CHANNEL];
+static uint8 Lin_StateMachine[NUMBER_OF_LIN_CHANNEL] = {LIN_UNINIT};
 
 void Lin_Init(const Lin_ConfigType *Config)
 {
@@ -31,6 +29,113 @@ void Lin_Init(const Lin_ConfigType *Config)
     {
         NVIC_EnableIRQ(USART2_IRQn);
     }
+    Lin_StateMachine[Config->LinChannel->LinChannel] = LIN_INIT;
+    Lin_ChannelStatus[Config->LinChannel->LinChannel] = LIN_CH_SLEEP;
+}
+
+Std_ReturnType Lin_CheckWakeup(uint8 Channel)
+{
+    if (Lin_StateMachine[Channel] != LIN_INIT)
+    {
+        return E_NOT_OK;
+    }
+    if (Channel >= NUMBER_OF_LIN_CHANNEL)
+    {
+        return E_NOT_OK;
+    }
+    if (Lin_ChannelStatus[Channel] != LIN_CH_SLEEP)
+    {
+        return E_OK;
+    }
+    else
+    {
+        return E_NOT_OK;
+    }
+}
+
+Std_ReturnType Lin_SendFrame(uint8 Channel, const Lin_PduType *PduInfoPtr)
+{
+    if (Lin_StateMachine[Channel] != LIN_INIT)
+    {
+        return E_NOT_OK;
+    }
+    if (Channel >= NUMBER_OF_LIN_CHANNEL)
+    {
+        return E_NOT_OK;
+    }
+    if (Lin_ChannelStatus[Channel] != LIN_OPERATIONAL)
+    {
+        return E_NOT_OK;
+    }
+    if (PduInfoPtr == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+
+    static uint32 Lin_Cs = 0;
+    if (PduInfoPtr->CsModel == LIN_ENHANCED_CS)
+    {
+        Lin_Cs += PduInfoPtr->Pid;
+    }
+    for (int i = 0; i < PduInfoPtr->Dl; i++)
+    {
+        Lin_Cs += PduInfoPtr->SduDataPtr[i];
+    }
+    while (Lin_Cs > 0xFF)
+    {
+        Lin_Cs = (Lin_Cs & 0xFF) + (Lin_Cs >> 8);
+    }
+    Lin_Cs = ~Lin_Cs;
+    Lin_Cs = (uint8)(Lin_Cs & 0xFF);
+
+    if (Lin_Hardware[Channel]->CR1 & (1 << 0))
+    {
+        Lin_Hardware[Channel]->CR1 |= (1 << 0);
+    }
+    if (Lin_Hardware[Channel]->SR & (1 << 7))
+    {
+        Lin_Hardware[Channel]->DR = 0x55;
+    }
+    if (Lin_Hardware[Channel]->SR & (1 << 7))
+    {
+        Lin_Hardware[Channel]->DR = PduInfoPtr->Pid;
+    }
+    if (Lin_Hardware[Channel]->SR & (1 << 7))
+    {
+        Lin_Hardware[Channel]->DR = PduInfoPtr->Dl;
+    }
+    if (Lin_Hardware[Channel]->SR & (1 << 7))
+    {
+        Lin_Hardware[Channel]->DR = PduInfoPtr->CsModel;
+    }
+    if (Lin_Hardware[Channel]->SR & (1 << 7))
+    {
+        Lin_Hardware[Channel]->DR = PduInfoPtr->Response;
+    }
+    if (Lin_Hardware[Channel]->SR & (1 << 7))
+    {
+        Lin_Hardware[Channel]->DR = PduInfoPtr->Pid;
+    }
+    if (Lin_Hardware[Channel]->SR & (1 << 7))
+    {
+        Lin_Hardware[Channel]->DR = Lin_Cs;
+    }
+
+    return E_OK;
+}
+
+Std_ReturnType Lin_GoToSleep(uint8 Channel)
+{
+    if (Lin_StateMachine[Channel] != LIN_INIT)
+    {
+        return E_NOT_OK;
+    }
+    if (Channel >= NUMBER_OF_LIN_CHANNEL)
+    {
+        return E_NOT_OK;
+    }
+    Lin_ChannelStatus[Channel] = LIN_CH_SLEEP;
+    return E_OK;
 }
 
 // Lin nen set thanh Sleep va cho wake up boi external wake-up hay bien LinChannelWakeupSupport

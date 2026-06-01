@@ -27,7 +27,7 @@ Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
             LinPdu.CsModel = LIN_ENHANCED_CS;
             LinPdu.Response = LIN_FRAMERESPONSE_TX;
             LinPdu.SduDataPtr = PduInfoPtr->SduDataPtr;
-            // return Lin_SendFrame(LinIf_TxTable[i].LinChannel, &LinPdu);
+            return Lin_SendFrame(LinIf_TxTable[i].LinChannel, &LinPdu);
         }
     }
     return E_NOT_OK;
