@@ -64,11 +64,13 @@ int main(void)
     // LinIf_Init(&LinIfConfig);
 
     PduR_Init(&PduR_PBConfig);
-    SysTick_Init_8MHz();
-    Os_Init();
-    Os_Start();
+    // SysTick_Init_8MHz();
+    // Os_Init();
+    // Os_Start();
     while (1)
     {
+        // Com_SendSignal(3);
+        // delay(100000);
     }
 }
 

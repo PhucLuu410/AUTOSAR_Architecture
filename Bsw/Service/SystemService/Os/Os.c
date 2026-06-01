@@ -1,5 +1,7 @@
 #include "OS.h"
 #include "stm32f103xb.h"
+#include "Can.h"
+#include "Lin.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];
@@ -95,12 +97,12 @@ TASK(Task_0)
 
 TASK(Task_1)
 {
-    Com_SendSignal(2);
     TerminateTask();
 }
 
 TASK(Task_2)
 {
+    Lin_MainFunction_Read();
     TerminateTask();
 }
 
@@ -127,7 +129,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 
                               [2] = {.OsStackPointer = &Os_Task_2[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_2,
-                                     .interval = 20,
+                                     .interval = 10,
                                      .timer = &Os_System_Tick,
                                      .Priority = 2,
                                      .State = TASK_SUSPENDED},
@@ -142,6 +144,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 void SysTick_Handler(void)
 {
     Os_System_Tick++;
+    a = __get_PSP();
     if ((Os_System_Tick % TaskList[0].interval) == 0 && TaskList[0].State == TASK_SUSPENDED)
     {
         TaskList[0].OsStackPointer = PrepareTaskStack(&Os_Task_0[SIZE_OF_TASK_STACK - 1], TaskList[0].pTask);
@@ -155,6 +158,7 @@ void SysTick_Handler(void)
     if ((Os_System_Tick % TaskList[1].interval) == 0 && TaskList[1].State == TASK_SUSPENDED)
     {
         TaskList[1].OsStackPointer = PrepareTaskStack(&Os_Task_1[SIZE_OF_TASK_STACK - 1], TaskList[1].pTask);
+
         TaskList[1].State = TASK_READY;
     }
     else if (TaskList[1].State == TASK_RUNNING)
@@ -174,6 +178,7 @@ void SysTick_Handler(void)
 
     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 }
+
 void Os_Init(void)
 {
     TaskList[0].OsStackPointer = PrepareTaskStack(&Os_Task_0[SIZE_OF_TASK_STACK - 1], Task_0);
@@ -215,47 +220,78 @@ void Os_Scheduler(void)
     Os_Current_Task = 3;
     Os_Current_Psp = TaskList[3].OsStackPointer;
 
-    if (TaskList[0].State == TASK_READY || TaskList[0].State == TASK_RUNNING)
+    if (TaskList[0].State == TASK_READY)
     {
         TaskList[0].State = TASK_RUNNING;
         Os_Current_Task = 0;
         Os_Current_Psp = TaskList[0].OsStackPointer;
         return;
     }
+    else if (TaskList[0].State == TASK_RUNNING)
+    {
+        Os_Current_Task = 0;
+        Os_Current_Psp = TaskList[0].OsStackPointer - 8;
+        return;
+    }
 
-    if (TaskList[1].State == TASK_READY || TaskList[1].State == TASK_RUNNING)
+    if (TaskList[1].State == TASK_READY)
     {
         TaskList[1].State = TASK_RUNNING;
         Os_Current_Task = 1;
         Os_Current_Psp = TaskList[1].OsStackPointer;
         return;
     }
+    else if (TaskList[1].State == TASK_RUNNING)
+    {
+        Os_Current_Task = 1;
+        Os_Current_Psp = TaskList[1].OsStackPointer;
+        return;
+    }
 
-    if (TaskList[2].State == TASK_READY || TaskList[2].State == TASK_RUNNING)
+    if (TaskList[2].State == TASK_READY)
     {
         TaskList[2].State = TASK_RUNNING;
         Os_Current_Task = 2;
         Os_Current_Psp = TaskList[2].OsStackPointer;
         return;
     }
+    else if (TaskList[2].State == TASK_RUNNING)
+    {
+        Os_Current_Task = 2;
+        Os_Current_Psp = TaskList[2].OsStackPointer;
+        return;
+    }
+}
+
+void Os_SaveContext(uint32 *psp)
+{
+    TaskList[Os_Current_Task].OsStackPointer = psp;
+}
+
+uint32 *Os_GetContext(void)
+{
+    return TaskList[Os_Current_Task].OsStackPointer;
 }
 
 __attribute__((naked)) void PendSV_Handler(void)
 {
     __asm__ __volatile__(
-        "MRS     R0, PSP                 \n"
+        "MRS     R0, PSP                \n"
         "STMDB   R0!, {R4-R11}          \n"
-        "LDR     R1, =Os_Current_Psp       \n"
-        "STR     R0, [R1]               \n"
+
         "PUSH    {LR}                   \n"
+        "BL      Os_SaveContext         \n"
+
         "CPSID   I                      \n"
         "BL      Os_Scheduler           \n"
         "CPSIE   I                      \n"
+
+        "BL      Os_GetContext          \n"
         "POP     {LR}                   \n"
-        "LDR     R1, =Os_Current_Psp       \n"
-        "LDR     R0, [R1]               \n"
+
         "LDMIA   R0!, {R4-R11}          \n"
         "MSR     PSP, R0                \n"
+
         "BX      LR                     \n"
         :
         :

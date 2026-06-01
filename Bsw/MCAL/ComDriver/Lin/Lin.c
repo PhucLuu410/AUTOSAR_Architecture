@@ -4,9 +4,15 @@
 #include "stm32f103xb.h"
 #include "Det.h"
 
-uint32 count12 = 0;
+#define LIN_UNINIT 0x00
+#define LIN_INIT 0x01
+#define LIN_CH_OPERATIONAL 0x02
+#define LIN_CH_SLEEP 0x03
 
+uint32 count12 = 0;
+uint8 data = 0;
 USART_TypeDef *Lin_Driver[NUMBER_OF_LIN_CHANNEL] = {USART1, USART2};
+uint8 Lin_Status = LIN_UNINIT;
 
 static const Lin_ConfigType *Lin_Local_Config;
 
@@ -17,17 +23,18 @@ void Lin_Init(const Lin_ConfigType *Config)
     Lin_Driver[Config->LinChannel->LinChannel]->CR2 = ((Config->LinHardware->LinEn << 14) | (Config->LinChannel->LinBreakDetect << 6));
     Lin_Driver[Config->LinChannel->LinChannel]->BRR = 8000000 / Config->LinChannel->LinBaud;
     Lin_Driver[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 7);
-    Lin_Driver[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 6);
-    Lin_Driver[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 5);
-    Lin_Driver[Config->LinChannel->LinChannel]->CR2 &= ~(1 << 6);
+    Lin_Driver[Config->LinChannel->LinChannel]->CR1 |= (1 << 6);
+    Lin_Driver[Config->LinChannel->LinChannel]->CR1 |= (1 << 5);
+    Lin_Driver[Config->LinChannel->LinChannel]->CR2 |= (1 << 6);
     if (Config->LinChannel->LinChannel == LIN_CHANNEL_1)
     {
         NVIC_EnableIRQ(USART1_IRQn);
     }
-    else if (Config->LinChannel->LinChannel == LIN_CHANNEL_2)
+    if (Config->LinChannel->LinChannel == LIN_CHANNEL_2)
     {
         NVIC_EnableIRQ(USART2_IRQn);
     }
+    Lin_Status = LIN_INIT;
 }
 
 Std_ReturnType Lin_SendFrame(uint8 Channel, const Lin_PduType *PduInfoPtr)
@@ -105,6 +112,24 @@ void USART1_IRQHandler(void)
     }
     if (Lin_Driver[LIN_CHANNEL_1]->SR & (1 << 5))
     {
+        LinIf_RxIndication(LIN_CHANNEL_1, (uint8 *)&Lin_Driver[LIN_CHANNEL_1]->DR);
+    }
+}
+
+void Lin_MainFunction_Read(void)
+{
+    if (Lin_Driver[LIN_CHANNEL_1]->SR & (1 << 6))
+    {
+        Lin_Driver[LIN_CHANNEL_1]->SR &= ~(1 << 6);
+    }
+    if (Lin_Driver[LIN_CHANNEL_1]->SR & (1 << 8))
+    {
+        Lin_Driver[LIN_CHANNEL_1]->SR &= ~(1 << 8);
+        LinIf_RxIndication(LIN_CHANNEL_1, (uint8 *)&Lin_Driver[LIN_CHANNEL_1]->DR);
+    }
+    if (Lin_Driver[LIN_CHANNEL_1]->SR & (1 << 5))
+    {
+        data = Lin_Driver[LIN_CHANNEL_1]->DR;
         LinIf_RxIndication(LIN_CHANNEL_1, (uint8 *)&Lin_Driver[LIN_CHANNEL_1]->DR);
     }
 }

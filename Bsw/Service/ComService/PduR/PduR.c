@@ -43,5 +43,5 @@ void PduR_CanIfTxConfirmation(PduIdType TxPduId, Std_ReturnType result)
     }
     if (TxPduId == 1 && result == E_OK)
     {
-        }
+    }
 }

@@ -5,6 +5,11 @@
 #include "string.h"
 static const LinIf_ConfigType *LocalLinIfConfig;
 
+static uint8 SyncFlag = 0;
+static uint8 Index = 0;
+static uint8 CurrentLinLocalId = 0;
+static uint8 LinData[16] = {0};
+
 void LinIf_Init(const LinIf_ConfigType *ConfigPtr)
 {
     LocalLinIfConfig = ConfigPtr;
@@ -30,16 +35,26 @@ Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 
 void LinIf_RxIndication(NetworkHandleType Channel, uint8 *Lin_SduPtr)
 {
-    static uint8 SyncFlag = 0;
-    static uint8 Index = 0;
-    static uint8 CurrentLinLocalId = 0;
-    static uint8 LinData[16] = {0};
+    // static uint8 SyncFlag = 0;
+    // static uint8 Index = 0;
+    // static uint8 CurrentLinLocalId = 0;
+    // static uint8 LinData[16] = {0};
     if (*Lin_SduPtr == 0x55 && SyncFlag == 0)
     {
         SyncFlag = 1;
         Index = 0;
         return;
     }
+    else if (*Lin_SduPtr != 0x55 && SyncFlag == 0)
+    {
+        return;
+    }
+
+    if (SyncFlag != 1)
+    {
+        return;
+    }
+
     for (int i = 0; i < SIZE_OF_LIN_IF_RX_TABLE; i++)
     {
         if (LinIf_RxTable[i].LinIf_LinId == *Lin_SduPtr)
@@ -48,16 +63,38 @@ void LinIf_RxIndication(NetworkHandleType Channel, uint8 *Lin_SduPtr)
             return;
         }
     }
-    if (SyncFlag == 1 && Index <= LinIf_RxTable[CurrentLinLocalId].LinIf_DataLength)
+
+    for (int i = 0; i < SIZE_OF_LIN_IF_RX_TABLE; i++)
     {
-        LinData[Index++] = *Lin_SduPtr;
+        if (LinIf_RxTable[i].LinIf_LocalId == CurrentLinLocalId)
+        {
+            if (SyncFlag == 1 && Index < LinIf_RxTable[i].LinIf_DataLength)
+            {
+                LinData[Index] = *Lin_SduPtr;
+                Index++;
+                return;
+            }
+            else if (SyncFlag == 1 && Index >= LinIf_RxTable[i].LinIf_DataLength)
+            {
+                SyncFlag = 0;
+                PduInfoType LinDataPdu;
+                LinDataPdu.SduDataPtr = LinData;
+                LinDataPdu.SduLength = LinIf_RxTable[i].LinIf_DataLength;
+                PduR_RxIndication(CurrentLinLocalId, &LinDataPdu);
+            }
+        }
     }
-    else
-    {
-        SyncFlag = 0;
-        PduInfoType LinDataPdu;
-        LinDataPdu.SduDataPtr = LinData;
-        LinDataPdu.SduLength = LinIf_RxTable[CurrentLinLocalId].LinIf_DataLength;
-        PduR_RxIndication(CurrentLinLocalId, &LinDataPdu);
-    }
+    // if (SyncFlag == 1 && Index <= LinIf_RxTable[0].LinIf_DataLength)
+    // {
+    //     LinData[Index++] = *Lin_SduPtr;
+    // }
+    // else if (SyncFlag == 1 && Index > LinIf_RxTable[0].LinIf_DataLength)
+    // {
+    //     SyncFlag = 0;
+    //     PduInfoType LinDataPdu;
+    //     LinDataPdu.SduDataPtr = LinData;
+    //     LinDataPdu.SduLength = LinIf_RxTable[0].LinIf_DataLength;
+    //     LinDataPdu.SduLength = 8;
+    //     PduR_RxIndication(CurrentLinLocalId, &LinDataPdu);
+    // }
 }
