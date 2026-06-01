@@ -60,8 +60,9 @@ int main(void)
     // CanIf_SetControllerMode(0, CAN_CS_STARTED);
 
     Lin_Init(&Lin_Config[LIN_CHANNEL_1]);
-
+    Lin_GoToSleepInternal(LIN_CHANNEL_1);
     // LinIf_Init(&LinIfConfig);
+    Lin_WakeupInternal(LIN_CHANNEL_1);
 
     PduR_Init(&PduR_PBConfig);
     // SysTick_Init_8MHz();
@@ -69,8 +70,8 @@ int main(void)
     // Os_Start();
     while (1)
     {
-        // Com_SendSignal(3);
-        // delay(100000);
+        Com_SendSignal(2);
+        delay(10000);
     }
 }
 

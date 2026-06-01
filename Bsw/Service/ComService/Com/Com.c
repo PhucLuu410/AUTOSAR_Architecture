@@ -4,8 +4,6 @@
 uint32 count = 0;
 Std_ReturnType Com_SendSignal(PduIdType PduId)
 {
-    for (int i = 0; i < 100000; i++)
-        ;
     for (int i = 0; i < NUMBER_OF_COM_TX_SIGNAL; i++)
     {
         if (PduId == ComTxSignalConfig[i].GlobalPduId)

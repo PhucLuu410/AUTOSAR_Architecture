@@ -1,11 +1,9 @@
 #ifndef __LIN_H
 #define __LIN_H
 
-#include "ComStack_Types.h"
-// #include "Rte_Dem_Type.h"
-#include "EcuM.h"
-#include "Icu.h"
 #include "Std_Types.h"
+#include "ComStack_Types.h"
+#include "Lin_GeneralTypes.h"
 
 typedef struct
 {
@@ -38,7 +36,6 @@ Std_ReturnType Lin_GoToSleepInternal(uint8 Channel);
 Std_ReturnType Lin_Wakeup(uint8 Channel);
 Std_ReturnType Lin_WakeupInternal(uint8 Channel);
 Lin_StatusType Lin_GetStatus(uint8 Channel, const uint8 **Lin_SduPtr);
-
 void Lin_MainFunction_Read(void);
 
 #endif
