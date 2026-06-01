@@ -70,8 +70,6 @@ int main(void)
     // Os_Start();
     while (1)
     {
-        Com_SendSignal(2);
-        delay(10000);
     }
 }
 

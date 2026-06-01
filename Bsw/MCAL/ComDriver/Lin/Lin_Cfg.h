@@ -29,6 +29,19 @@
 #define LIN_BREAK_DETECT_ENABLE 0
 #define LIN_BREAK_DETECT_DISABLE 1
 
-extern Lin_ConfigType Lin_Config[NUMBER_OF_LIN_CHANNEL];
+typedef enum
+{
+    LIN_STATE_IDLE,
+    LIN_STATE_BREAK,
+    LIN_STATE_SYNC,
+    LIN_STATE_PID,
+    LIN_STATE_LENGTH,
+    LIN_STATE_CS_MODEL,
+    LIN_STATE_DRC,
+    LIN_STATE_DATA,
+    LIN_STATE_CHECKSUM
+} Lin_FrameState;
 
+extern Lin_ConfigType Lin_Config[NUMBER_OF_LIN_CHANNEL];
+extern uint8 Lin_RxBuffer[NUMBER_OF_LIN_CHANNEL][20];
 #endif
