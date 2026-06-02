@@ -3,14 +3,14 @@
 #include "Com.h"
 
 #define Gas_Sensor_Data 0
-#define Pedal_Sensor_Data 0
-#define Door_Control_Data 0
-#define Diag_Error_Data_Tx 0
+#define Pedal_Sensor_Data 1
+#define Door_Control_Data 2
+#define Diag_Error_Data_Tx 3
 
 #define Motor_Control_Data 0
-#define Pedal_Handle_Data 0
-#define Electric_Door_Data 0
-#define Diag_Error_Data_Rx 0
+#define Pedal_Handle_Data 1
+#define Electric_Door_Data 2
+#define Diag_Error_Data_Rx 3
 
 PduR_TxRoutingPathType PduR_TxRouteTable[NUMBER_OF_COM_TX_SIGNAL] = {
     [Gas_Sensor_Data] = {.GlobalPduId = 0,

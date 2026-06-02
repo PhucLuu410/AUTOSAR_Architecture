@@ -34,16 +34,5 @@
 
 extern Lin_ConfigType Lin_Config[NUMBER_OF_LIN_CHANNEL];
 
-typedef struct
-{
-    uint32 Pid;
-    uint8 Dl;
-    boolean CsModel;
-    boolean Response;
-    uint8 *SduDataPtr;
-    uint8 Crc;
-} Lin_RxPduType;
-
-extern Lin_RxPduType Lin_RxPdu[];
-// extern uint8 Lin_RxBuffer[2][8];
+extern uint8 *Lin_RxData[];
 #endif

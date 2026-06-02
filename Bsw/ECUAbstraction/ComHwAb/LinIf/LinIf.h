@@ -16,6 +16,7 @@ typedef struct
 
 typedef struct
 {
+    uint8 Lin_Channel;
     uint8 LinIf_LocalId;
     uint8 LinIf_LinId;
     uint8 LinIf_DataLength;

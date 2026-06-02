@@ -2,6 +2,7 @@
 #include "Lin_GeneralTypes.h"
 #include "Lin.h"
 #include "stm32f103xb.h"
+#include "LinIf.h"
 
 #define LIN_UNINIT 0x00
 #define LIN_INIT 0x01
@@ -24,7 +25,9 @@ void Lin_Init(const Lin_ConfigType *Config)
     Lin_Hardware[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 7);
     Lin_Hardware[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 6);
     Lin_Hardware[Config->LinChannel->LinChannel]->CR1 |= (1 << 5);
+    Lin_Hardware[Config->LinChannel->LinChannel]->CR1 |= (1 << 4);
     Lin_Hardware[Config->LinChannel->LinChannel]->CR2 |= (1 << 6);
+    Lin_Hardware[Config->LinChannel->LinChannel]->CR3 |= (1 << 0);
     if (Config->LinChannel->LinChannel == LIN_CHANNEL_1)
     {
         NVIC_EnableIRQ(USART1_IRQn);
@@ -233,7 +236,7 @@ Lin_StatusType Lin_GetStatus(uint8 Channel, const uint8 **Lin_SduPtr)
 
     __disable_irq();
 
-    *Lin_SduPtr = Lin_RxPdu[Channel].SduDataPtr;
+    *Lin_SduPtr = Lin_RxData[Channel];
 
     Lin_StatusType status = Lin_ChannelStatus[Channel];
 
@@ -278,52 +281,30 @@ void USART1_IRQHandler(void)
             {
             case 0x12:
                 CurrentPdu = Lin_ElectronicWindow;
+                Lin_RxData[CurrentPdu][index++] = Data;
                 SyncFlag = 3;
                 return;
             }
         }
-
         if (SyncFlag == 3)
         {
-            Lin_RxPdu[CurrentPdu].Dl = Data;
-            SyncFlag = 4;
-            return;
-        }
-        if (SyncFlag == 4)
-        {
-            Lin_RxPdu[CurrentPdu].CsModel = Data;
-            SyncFlag = 5;
-            return;
-        }
-        if (SyncFlag == 5)
-        {
-            Lin_RxPdu[CurrentPdu].Response = Data;
-            SyncFlag = 6;
-            return;
-        }
-        if (SyncFlag == 6)
-        {
-            Lin_RxPdu[CurrentPdu].SduDataPtr[(index++)] = Data;
-            if (index == Lin_RxPdu[CurrentPdu].Dl)
+            Lin_RxData[CurrentPdu][index++] = Data;
+            if (index >= 13)
             {
-                SyncFlag = 7;
+                LinIf_RxIndication(LIN_CHANNEL_1, Lin_RxData[CurrentPdu]);
             }
-            return;
-        }
-        if (SyncFlag == 7)
-        {
-            Lin_RxPdu[CurrentPdu].Crc = Data;
-            index = 0;
-            SyncFlag = 0;
             Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_OK;
             return;
         }
-        else
+    }
+    if (Lin_Hardware[LIN_CHANNEL_1]->SR & (1 << 4))
+    {
+        index = 0;
+        SyncFlag = 0;
+        if (Lin_ChannelStatus[LIN_CHANNEL_1] != LIN_RX_OK)
         {
-            index = 0;
-            SyncFlag = 0;
             Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_ERROR;
-            return;
         }
+        return;
     }
 }

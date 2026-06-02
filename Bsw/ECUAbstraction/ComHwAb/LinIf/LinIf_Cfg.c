@@ -9,7 +9,8 @@ LinIf_TxTableConfig LinIf_TxTable[SIZE_OF_LIN_IF_TX_TABLE] = {[0] = {.LinChannel
                                                                      .LinIf_LocalId = 0,
                                                                      .LinIf_LinId = 0x12}};
 
-LinIf_RxTableConfig LinIf_RxTable[SIZE_OF_LIN_IF_RX_TABLE] = {[0] = {.LinIf_LocalId = 2,
+LinIf_RxTableConfig LinIf_RxTable[SIZE_OF_LIN_IF_RX_TABLE] = {[0] = {.Lin_Channel = LIN_CHANNEL_1,
+                                                                     .LinIf_LocalId = 2,
                                                                      .LinIf_LinId = 0x12,
                                                                      .LinIf_DataLength = 8}};
 
