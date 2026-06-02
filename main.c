@@ -21,8 +21,6 @@
 #include "Lin_Cfg.h"
 #include "LinIf.h"
 #include "LinIf_Cfg.h"
-#include "Rte.h"
-#include "Os.h"
 #include "stm32f103xb.h"
 
 void delay(volatile uint32_t t)
@@ -65,9 +63,9 @@ int main(void)
     Lin_WakeupInternal(LIN_CHANNEL_1);
 
     PduR_Init(&PduR_PBConfig);
-    // SysTick_Init_8MHz();
-    // Os_Init();
-    // Os_Start();
+    SysTick_Init_8MHz();
+    Os_Init();
+    Os_Start();
 
     while (1)
     {

@@ -1,4 +1,4 @@
-#include "OS.h"
+#include "Os.h"
 #include "stm32f103xb.h"
 #include "Can.h"
 #include "Lin.h"
@@ -14,12 +14,15 @@ uint32 *Os_Current_Psp = NULL_PTR;
 uint8 MutexLock = 0;
 uint32 a = 0;
 
-Lin_PduType Pdu = {
-    .Pid = 0x12,
-    .Dl = 3,
-    .CsModel = 0,
-    .Response = 0,
-    .SduDataPtr = (uint8[]){0x11, 0x22, 0x33}};
+Rte_Gas_Control_Pdu_Type Gas_Control_Data = {
+    .TargetSpeed = 50,
+    .Acceleration = 10,
+    .Direction = 1,
+    .MotorTemp = 70,
+    .CurrentSense = 20,
+    .Reserved = {0},
+    .AliveCounter = 0,
+    .Checksum = 0};
 
 uint8 Mutex_Lock(void)
 {
@@ -91,18 +94,19 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    Com_SendSignal(0);
+    Rte_Write_Gas_Control(&Gas_Control_Data);
     TerminateTask();
 }
 
 TASK(Task_1)
 {
+
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    // Lin_MainFunction_Read();
+    Com_SendSignal(0);
     TerminateTask();
 }
 
