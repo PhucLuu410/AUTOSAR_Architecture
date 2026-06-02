@@ -6,27 +6,51 @@
 
 typedef struct
 {
-    uint16 SteeringAngle; // 2 byte: Góc lái
-    uint8 Speed;          // 1 byte: Tốc độ
-    uint8 Mode;           // 1 byte: Chế độ (Auto/Manual)
-    uint8 BrakeForce;     // 1 byte: Lực phanh
-    uint8 Reserved;       // 1 byte: Dự phòng
-    uint8 AliveCounter;   // 1 byte: Nhịp tim hệ thống
-    uint8 Checksum;       // 1 byte: Kiểm tra lỗi
-} Robot_Control_PDU_Type;
+    uint16 SteeringAngle;
+    uint8 Speed;
+    uint8 Mode;
+    uint8 BrakeForce;
+    uint8 Reserved;
+    uint8 AliveCounter;
+    uint8 Checksum;
+} Rte_Cruise_Control_Pdu_Type;
 
 typedef struct
 {
-    uint16 SteeringAngle; // 2 byte: Góc lái
-    uint8 Speed;          // 1 byte: Tốc độ
-    uint8 Mode;           // 1 byte: Chế độ (Auto/Manual)
-    uint8 BrakeForce;     // 1 byte: Lực phanh
-    uint8 Reserved;       // 1 byte: Dự phòng
-    uint8 AliveCounter;   // 1 byte: Nhịp tim hệ thống
-    uint8 Checksum;       // 1 byte: Kiểm tra lỗi
-} Robot_Safety_PDU_Type;
+    uint16 SteeringAngle;
+    uint8 Speed;
+    uint8 Mode;
+    uint8 BrakeForce;
+    uint8 Reserved;
+    uint8 AliveCounter;
+    uint8 Checksum;
+} Rte_Electric_Window_Control_Pdu_Type;
 
-Std_ReturnType Rte_Write_RobotControl(Robot_Control_PDU_Type *AppData);
-Std_ReturnType Rte_Write_RobotSafety(Robot_Safety_PDU_Type *AppData);
+typedef struct
+{
+    uint16 SteeringAngle;
+    uint8 Speed;
+    uint8 Mode;
+    uint8 BrakeForce;
+    uint8 Reserved;
+    uint8 AliveCounter;
+    uint8 Checksum;
+} Rte_Motor_Control_Pdu_Type;
+
+typedef struct
+{
+    uint16 SteeringAngle;
+    uint8 Speed;
+    uint8 Mode;
+    uint8 BrakeForce;
+    uint8 Reserved;
+    uint8 AliveCounter;
+    uint8 Checksum;
+} Rte_Diag_Error_Pdu_Type;
+
+Std_ReturnType Rte_Write_CruiseControl(Rte_Cruise_Control_Pdu_Type *AppData);
+Std_ReturnType Rte_Write_ElectricWindowControl(Rte_Electric_Window_Control_Pdu_Type *AppData);
+Std_ReturnType Rte_Write_MotorControl(Rte_Motor_Control_Pdu_Type *AppData);
+Std_ReturnType Rte_Write_DiagError(Rte_Diag_Error_Pdu_Type *AppData);
 
 #endif

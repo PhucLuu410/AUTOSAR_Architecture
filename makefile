@@ -21,7 +21,11 @@ IPATH = -I. \
 		-I./Bsw/Service/SystemService/Os \
 		-I./Bsw/Service/SystemService/Dem \
 		-I./Bsw/Service/SystemService/Det \
-		-I./Rte
+		-I./Rte \
+		-I./App/Swc_CruiseControl \
+		-I./App/Swc_DiagError \
+		-I./App/Swc_ElectricWindowCoControl \
+		-I./App/Swc_MotorControl \
 
 SRC = 	./System/Startup/startup.c \
 		App/main.c \
@@ -57,6 +61,10 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Service/SystemService/Dem/Dem_Cfg.c \
 		Bsw/Service/SystemService/Det/Det.c \
 		Rte/Rte.c \
+		App/Swc_CruiseControl/Swc_CruiseControl.c \
+		App/Swc_DiagError/Swc_DiagError.c \
+		App/Swc_ElectricWindowControl/Swc_ElectricWindowControl.c \
+		App/Swc_MotorControl/Swc_MotorControl.c \
 
 		
 
