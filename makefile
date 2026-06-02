@@ -28,7 +28,7 @@ IPATH = -I. \
 		-I./App/Swc_MotorControl \
 
 SRC = 	./System/Startup/startup.c \
-		App/main.c \
+		main.c \
 		Bsw/Mcal/IoDriver/Dio/Dio.c  \
 		Bsw/Mcal/IoDriver/Dio/Dio_Cfg.c \
 		Bsw/Mcal/IoDriver/Port/Port.c \
