@@ -10,7 +10,6 @@ static const Lin_ConfigType *Lin_Local_Config;
 static USART_TypeDef *Lin_Hardware[NUMBER_OF_LIN_CHANNEL] = {USART1, USART2};
 Lin_StatusType Lin_ChannelStatus[NUMBER_OF_LIN_CHANNEL];
 static uint8 Lin_StateMachine[NUMBER_OF_LIN_CHANNEL] = {LIN_UNINIT};
-uint8 Lin_RxBuffer[NUMBER_OF_LIN_CHANNEL][20] = {0};
 
 void Lin_Init(const Lin_ConfigType *Config)
 {
@@ -25,7 +24,7 @@ void Lin_Init(const Lin_ConfigType *Config)
     Lin_Hardware[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 7);
     Lin_Hardware[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 6);
     Lin_Hardware[Config->LinChannel->LinChannel]->CR1 |= (1 << 5);
-    Lin_Hardware[Config->LinChannel->LinChannel]->CR2 &= ~(1 << 6);
+    Lin_Hardware[Config->LinChannel->LinChannel]->CR2 |= (1 << 6);
     if (Config->LinChannel->LinChannel == LIN_CHANNEL_1)
     {
         NVIC_EnableIRQ(USART1_IRQn);
@@ -234,7 +233,7 @@ Lin_StatusType Lin_GetStatus(uint8 Channel, const uint8 **Lin_SduPtr)
 
     __disable_irq();
 
-    *Lin_SduPtr = Lin_RxBuffer[Channel];
+    *Lin_SduPtr = Lin_RxPdu[Channel].SduDataPtr;
 
     Lin_StatusType status = Lin_ChannelStatus[Channel];
 
@@ -245,68 +244,86 @@ Lin_StatusType Lin_GetStatus(uint8 Channel, const uint8 **Lin_SduPtr)
 
 void USART1_IRQHandler(void)
 {
-    static Lin_FrameState Lin_Frame = LIN_STATE_IDLE;
-    static uint32 Lin_DataIndex = 0;
-    static uint32 Lin_DataLength = 8;
-    volatile uint8 temp = 0;
+    if (Lin_StateMachine[LIN_CHANNEL_1] == LIN_UNINIT)
+    {
+        return;
+    }
+
+    static uint8 index = 0;
+    static uint8 SyncFlag = 0;
+    static uint8 CurrentPdu = 0;
+
+    if (Lin_Hardware[LIN_CHANNEL_1]->SR & (1 << 8))
+    {
+        Lin_Hardware[LIN_CHANNEL_1]->SR &= ~(1 << 8);
+        if (SyncFlag == 0)
+        {
+            SyncFlag = 1;
+        }
+        return;
+    }
+
     if (Lin_Hardware[LIN_CHANNEL_1]->SR & (1 << 5))
     {
-        if (Lin_Frame == LIN_STATE_IDLE)
+        volatile uint8 Data = Lin_Hardware[LIN_CHANNEL_1]->DR;
+        if (Data == 0x55)
         {
-            Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_BUSY;
+            SyncFlag = 2;
+            return;
         }
-        switch (Lin_Frame)
+
+        if (SyncFlag == 2)
         {
-        case LIN_STATE_IDLE:
-            if (Lin_Hardware[LIN_CHANNEL_1]->DR == 0x55)
+            switch (Data)
             {
-                temp = Lin_Hardware[LIN_CHANNEL_1]->DR;
-                Lin_Frame = LIN_STATE_SYNC;
+            case 0x12:
+                CurrentPdu = Lin_ElectronicWindow;
+                SyncFlag = 3;
+                return;
             }
-            break;
-        case LIN_STATE_SYNC:
-            temp = Lin_Hardware[LIN_CHANNEL_1]->DR;
-            Lin_Frame = LIN_STATE_PID;
-            break;
-        case LIN_STATE_PID:
-            Lin_RxBuffer[LIN_CHANNEL_1][Lin_DataIndex++] = Lin_Hardware[LIN_CHANNEL_1]->DR;
-            Lin_Frame = LIN_STATE_LENGTH;
-            break;
-        case LIN_STATE_LENGTH:
-            Lin_RxBuffer[LIN_CHANNEL_1][Lin_DataIndex++] = Lin_Hardware[LIN_CHANNEL_1]->DR;
-            Lin_Frame = LIN_STATE_CS_MODEL;
-            break;
-        case LIN_STATE_CS_MODEL:
-            Lin_RxBuffer[LIN_CHANNEL_1][Lin_DataIndex++] = Lin_Hardware[LIN_CHANNEL_1]->DR;
-            Lin_Frame = LIN_STATE_DRC;
-            break;
-        case LIN_STATE_DRC:
-            Lin_RxBuffer[LIN_CHANNEL_1][Lin_DataIndex++] = Lin_Hardware[LIN_CHANNEL_1]->DR;
-            Lin_Frame = LIN_STATE_DATA;
-            break;
-        case LIN_STATE_DATA:
-            Lin_RxBuffer[LIN_CHANNEL_1][Lin_DataIndex++] = Lin_Hardware[LIN_CHANNEL_1]->DR;
-            if (Lin_DataIndex >= Lin_DataLength + 4)
+        }
+
+        if (SyncFlag == 3)
+        {
+            Lin_RxPdu[CurrentPdu].Dl = Data;
+            SyncFlag = 4;
+            return;
+        }
+        if (SyncFlag == 4)
+        {
+            Lin_RxPdu[CurrentPdu].CsModel = Data;
+            SyncFlag = 5;
+            return;
+        }
+        if (SyncFlag == 5)
+        {
+            Lin_RxPdu[CurrentPdu].Response = Data;
+            SyncFlag = 6;
+            return;
+        }
+        if (SyncFlag == 6)
+        {
+            Lin_RxPdu[CurrentPdu].SduDataPtr[(index++)] = Data;
+            if (index == Lin_RxPdu[CurrentPdu].Dl)
             {
-                Lin_Frame = LIN_STATE_CHECKSUM;
+                SyncFlag = 7;
             }
-            break;
-        case LIN_STATE_CHECKSUM:
-            Lin_RxBuffer[LIN_CHANNEL_1][Lin_DataIndex - 1] = Lin_Hardware[LIN_CHANNEL_1]->DR;
-            Lin_Frame = LIN_STATE_IDLE;
-            Lin_DataIndex = 0;
+            return;
+        }
+        if (SyncFlag == 7)
+        {
+            Lin_RxPdu[CurrentPdu].Crc = Data;
+            index = 0;
+            SyncFlag = 0;
             Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_OK;
-            break;
-        default:
-            temp = Lin_Hardware[LIN_CHANNEL_1]->DR;
-            for (int i = 0; i < 20; i++)
-            {
-                Lin_RxBuffer[LIN_CHANNEL_1][i] = 0;
-            }
-            Lin_Frame = LIN_STATE_IDLE;
-            Lin_DataIndex = 0;
+            return;
+        }
+        else
+        {
+            index = 0;
+            SyncFlag = 0;
             Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_ERROR;
-            break;
+            return;
         }
     }
 }
