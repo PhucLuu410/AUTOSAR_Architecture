@@ -2,6 +2,7 @@
 #include "stm32f103xb.h"
 #include "Can.h"
 #include "Lin.h"
+#include "LinIf.h"
 #include "Swc_GasControl.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
@@ -85,18 +86,20 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    Swc_GasControl();
+    // Swc_GasControl();
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-    Com_SendSignal(0);
+    // Com_SendSignal(0);
     TerminateTask();
 }
 
 TASK(Task_2)
 {
+    // Com_SendSignal(2);
+    // LinIf_MainFunction();
     TerminateTask();
 }
 

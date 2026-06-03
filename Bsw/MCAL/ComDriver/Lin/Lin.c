@@ -109,18 +109,6 @@ Std_ReturnType Lin_SendFrame(uint8 Channel, const Lin_PduType *PduInfoPtr)
     while (!(Lin_Hardware[Channel]->SR & (1 << 7)))
         ;
 
-    Lin_Hardware[Channel]->DR = PduInfoPtr->Dl;
-    while (!(Lin_Hardware[Channel]->SR & (1 << 7)))
-        ;
-
-    Lin_Hardware[Channel]->DR = PduInfoPtr->CsModel;
-    while (!(Lin_Hardware[Channel]->SR & (1 << 7)))
-        ;
-
-    Lin_Hardware[Channel]->DR = PduInfoPtr->Response;
-    while (!(Lin_Hardware[Channel]->SR & (1 << 7)))
-        ;
-
     for (int i = 0; i < PduInfoPtr->Dl; i++)
     {
         Lin_Hardware[Channel]->DR = PduInfoPtr->SduDataPtr[i];
@@ -277,7 +265,7 @@ void USART1_IRQHandler(void)
         {
             switch (Data)
             {
-            case 0x12:
+            case 0x20:
                 CurrentPdu = Lin_ElectronicWindow;
                 Lin_RxData[CurrentPdu][index++] = Data;
                 SyncFlag = 3;
@@ -287,11 +275,10 @@ void USART1_IRQHandler(void)
         if (SyncFlag == 3)
         {
             Lin_RxData[CurrentPdu][index++] = Data;
-            if (index >= 13)
+            if (index >= 10)
             {
                 index = 0;
                 SyncFlag = 0;
-                LinIf_RxIndication(LIN_CHANNEL_1, Lin_RxData[CurrentPdu]);
             }
             Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_OK;
             return;
