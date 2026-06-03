@@ -4,4 +4,6 @@
 #include "Std_Types.h"
 #include "Rte.h"
 
+void Swc_GasControl(void);
+
 #endif

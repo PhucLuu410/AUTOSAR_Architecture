@@ -2,6 +2,7 @@
 #include "stm32f103xb.h"
 #include "Can.h"
 #include "Lin.h"
+#include "Swc_GasControl.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];
@@ -13,16 +14,6 @@ uint32 Os_Current_Task = 0;
 uint32 *Os_Current_Psp = NULL_PTR;
 uint8 MutexLock = 0;
 uint32 a = 0;
-
-Rte_Gas_Control_Pdu_Type Gas_Control_Data = {
-    .TargetSpeed = 50,
-    .Acceleration = 10,
-    .Direction = 1,
-    .MotorTemp = 70,
-    .CurrentSense = 20,
-    .Reserved = {0},
-    .AliveCounter = 0,
-    .Checksum = 0};
 
 uint8 Mutex_Lock(void)
 {
@@ -94,19 +85,18 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    Rte_Write_Gas_Control(&Gas_Control_Data);
+    Swc_GasControl();
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-
+    Com_SendSignal(0);
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    Com_SendSignal(0);
     TerminateTask();
 }
 
@@ -234,7 +224,7 @@ void Os_Scheduler(void)
     else if (TaskList[0].State == TASK_RUNNING)
     {
         Os_Current_Task = 0;
-        Os_Current_Psp = TaskList[0].OsStackPointer - 8;
+        Os_Current_Psp = TaskList[0].OsStackPointer;
         return;
     }
 
