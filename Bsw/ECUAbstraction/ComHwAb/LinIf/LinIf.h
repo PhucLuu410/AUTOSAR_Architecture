@@ -11,21 +11,16 @@ typedef uint8 LinIf_SchHandleType;
 
 typedef struct
 {
-    LinIfBusIdleTimeoutPeriod BusIdleTimeout;
-    LinIfMainFunctionPeriod MainFunctionPeriod;
-    LinIfMaxFrameCnt MaxFrameCnt;
-    LinIfScheduleChangeNextTimeBase ScheduleChangeNextTimeBase;
-    LinIfChannelRef Channel;
-    LinIfNodeType NodeType;
+    uint8 NodeType;
 } LinIfNodeType;
 
 typedef struct
 {
-    LinIfBusIdleTimeoutPeriod BusIdleTimeout;
-    LinIfMainFunctionPeriod MainFunctionPeriod;
-    LinIfMaxFrameCnt MaxFrameCnt;
-    LinIfScheduleChangeNextTimeBase ScheduleChangeNextTimeBase;
-    LinIfChannelRef Channel;
+    // LinIfBusIdleTimeoutPeriod BusIdleTimeout;
+    // LinIfMainFunctionPeriod MainFunctionPeriod;
+    // LinIfMaxFrameCnt MaxFrameCnt;
+    // LinIfScheduleChangeNextTimeBase ScheduleChangeNextTimeBase;
+    // LinIfChannelRef Channel;
     LinIfNodeType *NodeType;
 } LinIfChannelConfig;
 
