@@ -1,7 +1,8 @@
-#include "OS.h"
+#include "Os.h"
 #include "stm32f103xb.h"
 #include "Can.h"
 #include "Lin.h"
+#include "Swc_GasControl.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];
@@ -13,13 +14,6 @@ uint32 Os_Current_Task = 0;
 uint32 *Os_Current_Psp = NULL_PTR;
 uint8 MutexLock = 0;
 uint32 a = 0;
-
-Lin_PduType Pdu = {
-    .Pid = 0x12,
-    .Dl = 3,
-    .CsModel = 0,
-    .Response = 0,
-    .SduDataPtr = (uint8[]){0x11, 0x22, 0x33}};
 
 uint8 Mutex_Lock(void)
 {
@@ -91,18 +85,18 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    Com_SendSignal(0);
+    Swc_GasControl();
     TerminateTask();
 }
 
 TASK(Task_1)
 {
+    Com_SendSignal(0);
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    // Lin_MainFunction_Read();
     TerminateTask();
 }
 
@@ -230,7 +224,7 @@ void Os_Scheduler(void)
     else if (TaskList[0].State == TASK_RUNNING)
     {
         Os_Current_Task = 0;
-        Os_Current_Psp = TaskList[0].OsStackPointer - 8;
+        Os_Current_Psp = TaskList[0].OsStackPointer;
         return;
     }
 

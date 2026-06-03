@@ -1,0 +1,4 @@
+#ifndef SWC_PEDALCONTROL_H
+#define SWC_PEDALCONTROL_H
+
+#endif

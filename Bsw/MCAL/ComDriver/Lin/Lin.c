@@ -25,16 +25,18 @@ void Lin_Init(const Lin_ConfigType *Config)
     Lin_Hardware[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 7);
     Lin_Hardware[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 6);
     Lin_Hardware[Config->LinChannel->LinChannel]->CR1 |= (1 << 5);
-    Lin_Hardware[Config->LinChannel->LinChannel]->CR1 |= (1 << 4);
+    Lin_Hardware[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 4);
     Lin_Hardware[Config->LinChannel->LinChannel]->CR2 |= (1 << 6);
-    Lin_Hardware[Config->LinChannel->LinChannel]->CR3 |= (1 << 0);
+    Lin_Hardware[Config->LinChannel->LinChannel]->CR3 &= ~(1 << 0);
     if (Config->LinChannel->LinChannel == LIN_CHANNEL_1)
     {
         NVIC_EnableIRQ(USART1_IRQn);
+        NVIC_SetPriority(USART1_IRQn, 0);
     }
     if (Config->LinChannel->LinChannel == LIN_CHANNEL_2)
     {
         NVIC_EnableIRQ(USART2_IRQn);
+        NVIC_SetPriority(USART2_IRQn, 2);
     }
     Lin_StateMachine[Config->LinChannel->LinChannel] = LIN_INIT;
     Lin_ChannelStatus[Config->LinChannel->LinChannel] = LIN_CH_SLEEP;
@@ -234,13 +236,9 @@ Lin_StatusType Lin_GetStatus(uint8 Channel, const uint8 **Lin_SduPtr)
         return LIN_NOT_OK;
     }
 
-    __disable_irq();
-
     *Lin_SduPtr = Lin_RxData[Channel];
 
     Lin_StatusType status = Lin_ChannelStatus[Channel];
-
-    __enable_irq();
 
     return status;
 }
@@ -291,6 +289,8 @@ void USART1_IRQHandler(void)
             Lin_RxData[CurrentPdu][index++] = Data;
             if (index >= 13)
             {
+                index = 0;
+                SyncFlag = 0;
                 LinIf_RxIndication(LIN_CHANNEL_1, Lin_RxData[CurrentPdu]);
             }
             Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_OK;

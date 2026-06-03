@@ -49,9 +49,9 @@ typedef struct
     uint8 Checksum;
 } Rte_Diag_Error_Pdu_Type;
 
-Std_ReturnType Rte_Write_CruiseControl(Rte_Pedal_Control_Pdu_Type *AppData);
-Std_ReturnType Rte_Write_ElectricWindowControl(Rte_Electric_Door_Pdu_Type *AppData);
-Std_ReturnType Rte_Write_GasControl(Rte_Gas_Control_Pdu_Type *AppData);
-Std_ReturnType Rte_Write_DiagError(Rte_Diag_Error_Pdu_Type *AppData);
+Std_ReturnType Rte_Write_Pedal_Control(Rte_Pedal_Control_Pdu_Type *AppData);
+Std_ReturnType Rte_Write_Electric_Door_Control(Rte_Electric_Door_Pdu_Type *AppData);
+Std_ReturnType Rte_Write_Gas_Control(Rte_Gas_Control_Pdu_Type *AppData);
+Std_ReturnType Rte_Write_Diag_Error(Rte_Diag_Error_Pdu_Type *AppData);
 
 #endif

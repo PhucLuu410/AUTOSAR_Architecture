@@ -1,4 +1,0 @@
-#ifndef SWC_CRUISECONTROL_H
-#define SWC_CRUISECONTROL_H
-
-#endif
