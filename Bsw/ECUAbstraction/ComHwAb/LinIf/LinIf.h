@@ -14,7 +14,9 @@ typedef enum
     LINIF_UNCONDITIONAL,
     LINIF_EVENT_TRIGGERED,
     LINIF_SPORADIC,
-    LINIF_DIAGNOSTIC
+    LINIF_DIAGNOSTIC,
+    LINIF_MRF,
+    LINIF_SRF
 } LinIf_FrameType;
 
 typedef struct
@@ -23,11 +25,21 @@ typedef struct
     uint8 Length;
     LinIf_FrameType Type;
     PduIdType PduRef;
+    uint8 Direction;
+    uint16 SlotOffsetMs;
 } LinIf_FrameConfigType;
+
+typedef enum
+{
+    LINIF_RUN_CONTINUOUS,
+    LINIF_RUN_ONCE
+} LinIf_ScheduleModeType;
 
 typedef struct
 {
-    LinIf_FrameConfigType *Frames;
+    uint8 ScheduleId;
+    LinIf_ScheduleModeType Mode;
+    const LinIf_FrameConfigType *const Frames;
     uint8 NumFrames;
     uint32 SlotTimeMs;
 } LinIf_ScheduleTableType;
@@ -35,24 +47,30 @@ typedef struct
 typedef struct
 {
     NetworkHandleType ChannelId;
-    LinIf_ScheduleTableType *ActiveSchedule;
-    boolean TpSupported;
+    const LinIf_ScheduleTableType *const ScheduleTables;
+    uint8 NumScheduleTables;
+    boolean IsMaster;
 } LinIf_ChannelConfigType;
 
 typedef struct
 {
-    uint8 Nad;
-    uint32 P2Max;
-    uint32 P2Timing;
-    uint16 MaxBufSize;
-} LinTp_ConfigType;
+    const LinIf_ChannelConfigType *const Channels;
+    uint8 NumChannels;
+} LinIf_ConfigType;
 
 typedef struct
 {
-    const LinIf_ChannelConfigType *ChannelConfig;
-    const LinTp_ConfigType *TpConfig;
+    uint8 Nad;
+    uint32 P2Timing;
+    uint32 StMin;
+    uint16 MaxBufferSize;
+} LinTp_ChannelConfigType;
+
+typedef struct
+{
+    const LinTp_ChannelConfigType *const Channels;
     uint8 NumChannels;
-} LinIf_ConfigType;
+} LinTp_ConfigType;
 
 typedef enum
 {

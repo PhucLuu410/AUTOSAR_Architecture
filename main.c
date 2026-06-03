@@ -61,7 +61,8 @@ int main(void)
     Lin_GoToSleepInternal(LIN_CHANNEL_1);
     Lin_WakeupInternal(LIN_CHANNEL_1);
 
-    // LinIf_Init(&LinIfConfig);
+    LinIf_Init(&LinIf_Config);
+    LinTp_Init(&LinTp_Config);
 
     PduR_Init(&PduR_PBConfig);
     SysTick_Init_8MHz();
