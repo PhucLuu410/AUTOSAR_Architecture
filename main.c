@@ -41,14 +41,6 @@ void SysTick_Init_8MHz(void)
     NVIC_SetPriority(PendSV_IRQn, 0xFF);
 }
 
-// uint8 data[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
-
-// Lin_PduType Pdu1 = {.CsModel = LIN_CLASSIC_CS,
-//                     .Dl = 8,
-//                     .Pid = 0x20,
-//                     .Response = LIN_FRAMERESPONSE_TX,
-//                     .SduDataPtr = data};
-
 int main(void)
 {
 
@@ -70,17 +62,25 @@ int main(void)
     Lin_WakeupInternal(LIN_CHANNEL_1);
 
     LinIf_Init(&LinIf_Config);
+    LinIf_EnableBusMirroring(LIN_CHANNEL_1, TRUE);
     // LinTp_Init(&LinTp_Config);
 
     PduR_Init(&PduR_PBConfig);
     // SysTick_Init_8MHz();
     // Os_Init();
     // Os_Start();
-
+    // LinIf_MainFunction_SendHeader();
     while (1)
     {
-        Com_SendSignal(2);
-        delay(10000);
+        // LinIf_MainFunction_SendHeader1();
+        // delay(100000);
+        // LinIf_MainFunction_SendHeader2();
+        // delay(100000);
+        // LinIf_MainFunction_SendHeader3();
+        // delay(10);
+        // LinIf_MainFunction_SendData3();
+        // delay(100000);
+        LinIf_MainFunction_ReceiveStatus();
     }
 }
 

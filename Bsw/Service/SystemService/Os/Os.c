@@ -92,14 +92,13 @@ TASK(Task_0)
 
 TASK(Task_1)
 {
-    // Com_SendSignal(0);
+    LinIf_MainFunction_ReceiveStatus();
     TerminateTask();
 }
 
 TASK(Task_2)
 {
     // Com_SendSignal(2);
-    // LinIf_MainFunction();
     TerminateTask();
 }
 

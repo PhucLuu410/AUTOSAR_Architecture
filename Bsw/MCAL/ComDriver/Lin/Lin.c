@@ -255,10 +255,8 @@ void USART1_IRQHandler(void)
     if (Lin_Hardware[LIN_CHANNEL_1]->SR & (1 << 8))
     {
         Lin_Hardware[LIN_CHANNEL_1]->SR &= ~(1 << 8);
-        if (SyncFlag == 0)
-        {
-            SyncFlag = 1;
-        }
+        index = 0;
+        SyncFlag = 1;
         return;
     }
 
@@ -276,8 +274,15 @@ void USART1_IRQHandler(void)
             switch (Data)
             {
             case 0x20:
-                CurrentPdu = Lin_ElectronicWindow;
-                Lin_RxData[CurrentPdu][index++] = Data;
+                Lin_RxData[LIN_CHANNEL_1][index++] = Data;
+                SyncFlag = 3;
+                return;
+            case 0x21:
+                Lin_RxData[LIN_CHANNEL_1][index++] = Data;
+                SyncFlag = 3;
+                return;
+            case 0x22:
+                Lin_RxData[LIN_CHANNEL_1][index++] = Data;
                 SyncFlag = 3;
                 return;
             }
@@ -285,11 +290,6 @@ void USART1_IRQHandler(void)
         if (SyncFlag == 3)
         {
             Lin_RxData[CurrentPdu][index++] = Data;
-            if (index >= 10)
-            {
-                index = 0;
-                SyncFlag = 0;
-            }
             Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_OK;
             return;
         }

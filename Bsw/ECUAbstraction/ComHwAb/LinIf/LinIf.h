@@ -115,10 +115,9 @@ Std_ReturnType LinTp_ChangeParameter(PduIdType id, TPParameterType parameter, ui
 Std_ReturnType LinIf_EnableBusMirroring(NetworkHandleType Channel, boolean MirroringActive);
 
 // void LinIf_WakeupConfirmation(EcuM_WakeupSourceType WakeupSource);
-Std_ReturnType LinIf_HeaderIndication(NetworkHandleType Channel, Lin_PduType *PduPtr);
-void LinIf_RxIndication(NetworkHandleType Channel, uint8 *Lin_SduPtr);
-void LinIf_TxConfirmation(NetworkHandleType Channel);
-void LinIf_LinErrorIndication(NetworkHandleType Channel, Lin_SlaveErrorType ErrorStatus);
-void LinIf_MainFunction_ElectricDoor(void);
-void LinIf_MainFunction_Diag(void);
+void LinIf_MainFunction_SendHeader1(void);
+void LinIf_MainFunction_SendHeader2(void);
+void LinIf_MainFunction_SendHeader3(void);
+void LinIf_MainFunction_SendData3(void);
+void LinIf_MainFunction_ReceiveStatus(void);
 #endif
