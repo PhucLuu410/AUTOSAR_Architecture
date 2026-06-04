@@ -7,25 +7,30 @@
 
 typedef struct
 {
-    uint8 LinUartEn;
-    uint8 LinTx;
-    uint8 LinRx;
-    uint8 LinEn;
-} Lin_HardwareConfig;
+    uint32 LinChannelBaudRate;
+    uint32 LinChannelId;
+    boolean LinChannelWakeupSupport;
+    boolean LinNodeType;
+    uint32 LinClockRef;
+} LinChannel;
 
 typedef struct
 {
-    uint8 LinChannel;
-    uint8 LinBreakDetect;
-    uint32 LinBaud;
-    uint8 LinIsr;
-    uint8 LinMasterSlave;
-} Lin_ChannelConfig;
+    LinChannel *LinChannel_0;
+} LinGobalConfig;
 
 typedef struct
 {
-    const Lin_HardwareConfig *LinHardware;
-    const Lin_ChannelConfig *LinChannel;
+    boolean LinDevErrorDetect;
+    uint8 LinIndex;
+    uint32 LinTimeoutDuration;
+    boolean LinVersionInfoApi;
+} LinGeneral;
+
+typedef struct
+{
+    LinGeneral *LinGeneral_0;
+    LinGobalConfig *LinGlobalConfig_0;
 } Lin_ConfigType;
 
 void Lin_Init(const Lin_ConfigType *Config);

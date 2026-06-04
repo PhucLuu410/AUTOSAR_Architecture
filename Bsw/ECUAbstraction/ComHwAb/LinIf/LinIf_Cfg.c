@@ -1,27 +1,33 @@
 #include "LinIf.h"
+#include "LinIf_Cfg.h"
 
-const LinIf_FrameConfigType NormalFrames[] = {
-    {0x20, 8, LINIF_UNCONDITIONAL, 0, 0, 0},
-    {0x21, 20, LINIF_MRF, 1, 1, 10},
+LinIfChannel LinIfChannel1 = {
+    .LinIfChannelRef_0 = LIN_CHANNEL_1,
+    .LinIfComMNetworkHandleRef_0 = 2,
+    .LinIfNodeType_0 = LINIF_MASTER,
+    .LinIfBusIdleTimeoutPeriod_0 = 10,
+    .LinIfGotoSleepConfirmationUL_0 = GOTO_SLEEP_LIN_SM,
+    .LinIfWakeupConfirmationUL_0 = WAKEUP_LIN_SM,
+    .LinIfMainFunctionPeriod = 20,
+    .LinIfFrame_0.LinIfFrameType_0 = CONDITIONAL,
 };
 
-const LinIf_FrameConfigType DiagFrames[] = {{0x3C, 8, LINIF_MRF, 2, 0, 0}, {0x3D, 8, LINIF_SRF, 3, 1, 0}};
-
-const LinIf_ScheduleTableType MyScheduleTables[] = {
-    {0, LINIF_RUN_CONTINUOUS, NormalFrames, 2, 50},
-    {1, LINIF_RUN_ONCE, DiagFrames, 2, 50},
+LinIfGlobalConfig LinIfGlobalConfig1 = {
+    .LinIfChannel_0 = &LinIfChannel1,
 };
 
-const LinIf_ChannelConfigType MyLinChannels[] = {
-    {0, MyScheduleTables, 2, TRUE}};
-
-const LinTp_ChannelConfigType MyTpChannels[] = {
-    {0x01, 150, 10, 64}};
-
-const LinTp_ConfigType LinTp_Config = {
-    MyTpChannels, 1 // 1 TP Channel
+LinIfGeneral LinIfGeneral1 = {
+    .LinIfBusMirroringSupported = FALSE,
+    .LinIfDevErrorDetect = FALSE,
+    .LinIfMultipleDriversSupported = FALSE,
+    .LinIfMultipleTrcvDriverSupported = FALSE,
+    .LinIfNcOptionalRequestSupported = FALSE,
+    .LinIfTpSupported = TRUE,
+    .LinIfTrcvDriverSupported = FALSE,
+    .LinIfVersionInfoApi = FALSE,
 };
 
 const LinIf_ConfigType LinIf_Config = {
-    MyLinChannels, 1 // 1 Channel
+    .LinIfGlobalConfig_0 = &LinIfGlobalConfig1,
+    .LinIfGeneral_0 = &LinIfGeneral1,
 };

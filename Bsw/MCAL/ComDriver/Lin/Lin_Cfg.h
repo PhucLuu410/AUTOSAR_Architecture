@@ -32,7 +32,7 @@
 #define Lin_ElectronicWindow 0
 #define Lin_ElectricWipers 1
 
-extern Lin_ConfigType Lin_Config[NUMBER_OF_LIN_CHANNEL];
+extern Lin_ConfigType Lin_Config;
 
 extern uint8 *Lin_RxData[];
 #endif

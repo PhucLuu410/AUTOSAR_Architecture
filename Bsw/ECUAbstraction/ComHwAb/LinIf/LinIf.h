@@ -11,73 +11,91 @@ typedef uint8 LinIf_SchHandleType;
 
 typedef enum
 {
-    LINIF_UNCONDITIONAL,
-    LINIF_EVENT_TRIGGERED,
-    LINIF_SPORADIC,
-    LINIF_DIAGNOSTIC,
-    LINIF_MRF,
-    LINIF_SRF
-} LinIf_FrameType;
-
-typedef struct
-{
-    uint8 FramePid;
-    uint8 Length;
-    LinIf_FrameType Type;
-    PduIdType PduRef;
-    uint8 Direction;
-    uint16 SlotOffsetMs;
-} LinIf_FrameConfigType;
-
-typedef enum
-{
-    LINIF_RUN_CONTINUOUS,
-    LINIF_RUN_ONCE
-} LinIf_ScheduleModeType;
-
-typedef struct
-{
-    uint8 ScheduleId;
-    LinIf_ScheduleModeType Mode;
-    const LinIf_FrameConfigType *const Frames;
-    uint8 NumFrames;
-    uint32 SlotTimeMs;
-} LinIf_ScheduleTableType;
-
-typedef struct
-{
-    NetworkHandleType ChannelId;
-    const LinIf_ScheduleTableType *const ScheduleTables;
-    uint8 NumScheduleTables;
-    boolean IsMaster;
-} LinIf_ChannelConfigType;
-
-typedef struct
-{
-    const LinIf_ChannelConfigType *const Channels;
-    uint8 NumChannels;
-} LinIf_ConfigType;
-
-typedef struct
-{
-    uint8 Nad;
-    uint32 P2Timing;
-    uint32 StMin;
-    uint16 MaxBufferSize;
-} LinTp_ChannelConfigType;
-
-typedef struct
-{
-    const LinTp_ChannelConfigType *const Channels;
-    uint8 NumChannels;
-} LinTp_ConfigType;
-
-typedef enum
-{
     LINTP_APPLICATIVE_SCHEDULE,
     LINTP_DIAG_REQUEST,
     LINTP_DIAG_RESPONSE,
 } LinTp_Mode;
+
+//------------------------------------------------------------------------
+
+typedef struct
+{
+    boolean LinIfBusMirroringSupported;
+    boolean LinIfDevErrorDetect;
+    boolean LinIfMultipleDriversSupported;
+    boolean LinIfMultipleTrcvDriverSupported;
+    boolean LinIfNcOptionalRequestSupported;
+    boolean LinIfTpSupported;
+    boolean LinIfTrcvDriverSupported;
+    boolean LinIfVersionInfoApi;
+} LinIfGeneral;
+
+typedef enum
+{
+    LINIF_MASTER,
+    LINIF_SLAVE,
+} LinIfNodeType;
+
+typedef enum
+{
+    GOTO_SLEEP_CDD,
+    GOTO_SLEEP_LIN_SM,
+} LinIfGotoSleepConfirmationUL;
+
+typedef enum
+{
+    WAKEUP_CDD,
+    WAKEUP_LIN_SM,
+} LinIfWakeupConfirmationUL;
+
+typedef enum
+{
+    ASSIGN,
+    ASSIGN_FRAME_ID_RANGE,
+    ASSIGN_NAD,
+    CONDITIONAL,
+    EVENT_TRIGGERED,
+    FREE,
+    MRF,
+    SAVE_CONFIGURATION,
+    SPORADIC,
+    SRF,
+    UNASSIGN,
+    UNCONDITIONAL,
+} LinIfFrameType;
+
+typedef struct
+{
+    LinIfFrameType LinIfFrameType_0;
+} LinIfFrame;
+
+typedef struct
+{
+    uint32 LinIfChannelRef_0;
+    uint32 LinIfComMNetworkHandleRef_0;
+    LinIfNodeType LinIfNodeType_0;
+    uint8 LinIfBusIdleTimeoutPeriod_0;
+    LinIfGotoSleepConfirmationUL LinIfGotoSleepConfirmationUL_0;
+    LinIfWakeupConfirmationUL LinIfWakeupConfirmationUL_0;
+    uint32 LinIfMainFunctionPeriod;
+    LinIfFrame LinIfFrame_0;
+} LinIfChannel;
+
+typedef struct
+{
+    LinIfChannel *LinIfChannel_0;
+} LinIfGlobalConfig;
+
+typedef struct
+{
+    LinIfGlobalConfig *LinIfGlobalConfig_0;
+    LinIfGeneral *LinIfGeneral_0;
+} LinIf_ConfigType;
+
+typedef struct
+{
+
+} LinTp_ConfigType;
 
 void LinIf_Init(const LinIf_ConfigType *ConfigPtr);
 Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);

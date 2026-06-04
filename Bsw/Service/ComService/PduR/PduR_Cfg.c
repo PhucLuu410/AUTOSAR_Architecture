@@ -21,7 +21,7 @@ PduR_TxRoutingPathType PduR_TxRouteTable[NUMBER_OF_COM_TX_SIGNAL] = {
                            .Transmit_Func = CanIf_Transmit},
     [Door_Control_Data] = {.GlobalPduId = 2,
                            .LocalPduId = 0,
-                           .Transmit_Func = CanIf_Transmit},
+                           .Transmit_Func = LinIf_Transmit},
     [Diag_Error_Data_Tx] = {.GlobalPduId = 3,
                             .LocalPduId = 1,
                             .Transmit_Func = CanTp_Transmit}};

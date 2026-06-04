@@ -41,6 +41,14 @@ void SysTick_Init_8MHz(void)
     NVIC_SetPriority(PendSV_IRQn, 0xFF);
 }
 
+// uint8 data[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+
+// Lin_PduType Pdu1 = {.CsModel = LIN_CLASSIC_CS,
+//                     .Dl = 8,
+//                     .Pid = 0x20,
+//                     .Response = LIN_FRAMERESPONSE_TX,
+//                     .SduDataPtr = data};
+
 int main(void)
 {
 
@@ -57,20 +65,22 @@ int main(void)
     CanIf_Init(&CanIfConfig);
     // CanIf_SetControllerMode(0, CAN_CS_STARTED);
 
-    Lin_Init(&Lin_Config[LIN_CHANNEL_1]);
+    Lin_Init(&Lin_Config);
     Lin_GoToSleepInternal(LIN_CHANNEL_1);
     Lin_WakeupInternal(LIN_CHANNEL_1);
 
     LinIf_Init(&LinIf_Config);
-    LinTp_Init(&LinTp_Config);
+    // LinTp_Init(&LinTp_Config);
 
     PduR_Init(&PduR_PBConfig);
-    SysTick_Init_8MHz();
-    Os_Init();
-    Os_Start();
+    // SysTick_Init_8MHz();
+    // Os_Init();
+    // Os_Start();
 
     while (1)
     {
+        Com_SendSignal(2);
+        delay(10000);
     }
 }
 

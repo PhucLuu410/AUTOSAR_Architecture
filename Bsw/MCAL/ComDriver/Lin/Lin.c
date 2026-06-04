@@ -19,27 +19,32 @@ void Lin_Init(const Lin_ConfigType *Config)
         return;
     }
     Lin_Local_Config = Config;
-    Lin_Hardware[Config->LinChannel->LinChannel]->CR1 = ((Config->LinHardware->LinRx << 2) | (Config->LinHardware->LinTx << 3) | (Config->LinHardware->LinUartEn << 13));
-    Lin_Hardware[Config->LinChannel->LinChannel]->CR2 = ((Config->LinHardware->LinEn << 14) | (Config->LinChannel->LinBreakDetect << 6));
-    Lin_Hardware[Config->LinChannel->LinChannel]->BRR = 8000000 / Config->LinChannel->LinBaud;
-    Lin_Hardware[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 7);
-    Lin_Hardware[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 6);
-    Lin_Hardware[Config->LinChannel->LinChannel]->CR1 |= (1 << 5);
-    Lin_Hardware[Config->LinChannel->LinChannel]->CR1 &= ~(1 << 4);
-    Lin_Hardware[Config->LinChannel->LinChannel]->CR2 |= (1 << 6);
-    Lin_Hardware[Config->LinChannel->LinChannel]->CR3 &= ~(1 << 0);
-    if (Config->LinChannel->LinChannel == LIN_CHANNEL_1)
+    Lin_Hardware[Config->LinGlobalConfig_0->LinChannel_0->LinChannelId]->CR1 |= (1 << 2) | (1 << 3) | (1 << 13);
+    Lin_Hardware[Config->LinGlobalConfig_0->LinChannel_0->LinChannelId]->CR2 |= (1 << 14) | (1 << 6);
+    Lin_Hardware[Config->LinGlobalConfig_0->LinChannel_0->LinChannelId]->BRR = (Config->LinGlobalConfig_0->LinChannel_0->LinClockRef) / (Config->LinGlobalConfig_0->LinChannel_0->LinChannelBaudRate);
+    Lin_Hardware[Config->LinGlobalConfig_0->LinChannel_0->LinChannelId]->CR1 &= ~(1 << 6);
+    Lin_Hardware[Config->LinGlobalConfig_0->LinChannel_0->LinChannelId]->CR1 |= (1 << 5);
+    Lin_Hardware[Config->LinGlobalConfig_0->LinChannel_0->LinChannelId]->CR2 |= (1 << 6);
+    if (Config->LinGeneral_0->LinDevErrorDetect == 1)
+    {
+        Lin_Hardware[Config->LinGlobalConfig_0->LinChannel_0->LinChannelId]->CR3 |= (1 << 0);
+    }
+    else
+    {
+        Lin_Hardware[Config->LinGlobalConfig_0->LinChannel_0->LinChannelId]->CR3 &= ~(1 << 0);
+    }
+    if (Config->LinGlobalConfig_0->LinChannel_0->LinChannelId == LIN_CHANNEL_1)
     {
         NVIC_EnableIRQ(USART1_IRQn);
         NVIC_SetPriority(USART1_IRQn, 0);
     }
-    if (Config->LinChannel->LinChannel == LIN_CHANNEL_2)
+    if (Config->LinGlobalConfig_0->LinChannel_0->LinChannelId == LIN_CHANNEL_2)
     {
         NVIC_EnableIRQ(USART2_IRQn);
         NVIC_SetPriority(USART2_IRQn, 2);
     }
-    Lin_StateMachine[Config->LinChannel->LinChannel] = LIN_INIT;
-    Lin_ChannelStatus[Config->LinChannel->LinChannel] = LIN_CH_SLEEP;
+    Lin_StateMachine[Config->LinGlobalConfig_0->LinChannel_0->LinChannelId] = LIN_INIT;
+    Lin_ChannelStatus[Config->LinGlobalConfig_0->LinChannel_0->LinChannelId] = LIN_CH_SLEEP;
 }
 
 Std_ReturnType Lin_CheckWakeup(uint8 Channel)
@@ -137,11 +142,10 @@ Std_ReturnType Lin_GoToSleep(uint8 Channel)
         return E_NOT_OK;
     }
 
-    if (Lin_Local_Config->LinChannel->LinMasterSlave != LIN_MASTER)
+    if (Lin_Local_Config->LinGlobalConfig_0->LinChannel_0->LinNodeType != LIN_MASTER)
     {
         return E_NOT_OK;
     }
-
     uint8 SleepData[8] = {0};
     Lin_ChannelStatus[Channel] = LIN_BUSY;
     Lin_PduType SleepPdu;
@@ -181,7 +185,7 @@ Std_ReturnType Lin_Wakeup(uint8 Channel)
         return E_NOT_OK;
     }
 
-    if (Lin_Local_Config->LinChannel->LinMasterSlave != LIN_MASTER)
+    if (Lin_Local_Config->LinGlobalConfig_0->LinChannel_0->LinNodeType != LIN_MASTER)
     {
         return E_NOT_OK;
     }
@@ -241,6 +245,12 @@ void USART1_IRQHandler(void)
     static uint8 index = 0;
     static uint8 SyncFlag = 0;
     static uint8 CurrentPdu = 0;
+
+    if (Lin_Hardware[LIN_CHANNEL_1]->SR & (1 << 6))
+    {
+        Lin_Hardware[LIN_CHANNEL_1]->SR &= ~(1 << 6);
+        volatile uint8 temp = Lin_Hardware[LIN_CHANNEL_1]->DR;
+    }
 
     if (Lin_Hardware[LIN_CHANNEL_1]->SR & (1 << 8))
     {

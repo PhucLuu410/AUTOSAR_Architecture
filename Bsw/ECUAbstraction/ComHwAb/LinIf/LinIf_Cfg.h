@@ -1,5 +1,4 @@
 #include "LinIf.h"
-
-extern const LinTp_ConfigType LinTp_Config;
+#include "Lin_Cfg.h"
 
 extern const LinIf_ConfigType LinIf_Config;
