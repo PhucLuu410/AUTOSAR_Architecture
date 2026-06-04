@@ -27,31 +27,19 @@ void LinTp_Init(const LinTp_ConfigType *ConfigPtr)
 
 Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 {
-    if (TxPduId == 2)
+    for (int i = 0; i < sizeof(LinIfFrameConfig) / sizeof(LinIfFrameConfig[0]); i++)
     {
-        Lin_PduType PduInfo;
-        PduInfo.Pid = 0x20;
-        PduInfo.Dl = PduInfoPtr->SduLength;
-        PduInfo.CsModel = LIN_CLASSIC_CS;
-        PduInfo.Response = LIN_FRAMERESPONSE_TX;
-        PduInfo.SduDataPtr = PduInfoPtr->SduDataPtr;
-        Lin_SendFrame(LIN_CHANNEL_1, &PduInfo);
-        return E_OK;
-    }
-    else if (TxPduId == 3)
-    {
-        Lin_PduType PduInfo;
-        PduInfo.Pid = 0x21;
-        PduInfo.Dl = PduInfoPtr->SduLength;
-        PduInfo.CsModel = LIN_CLASSIC_CS;
-        PduInfo.Response = LIN_FRAMERESPONSE_TX;
-        PduInfo.SduDataPtr = PduInfoPtr->SduDataPtr;
-        Lin_SendFrame(LIN_CHANNEL_1, &PduInfo);
-        return E_OK;
-    }
-    else
-    {
-        return E_NOT_OK;
+        if (LinIfFrameConfig[i].LocalPduId == TxPduId)
+        {
+            Lin_PduType LocalPdu;
+            LocalPdu.Pid = LinIfFrameConfig[i].Pid;
+            LocalPdu.Dl = PduInfoPtr->SduLength;
+            LocalPdu.CsModel = LinIfFrameConfig[i].CsModel;
+            LocalPdu.Response = LinIfFrameConfig[i].Response;
+            LocalPdu.SduDataPtr = PduInfoPtr->SduDataPtr;
+            Lin_SendFrame(LinIfFrameConfig[i].Channel, &LocalPdu);
+            return E_OK;
+        }
     }
     return E_NOT_OK;
 }
@@ -67,6 +55,15 @@ Std_ReturnType LinIf_EnableBusMirroring(NetworkHandleType Channel, boolean Mirro
         }
     }
     return E_NOT_OK;
+}
+
+Std_ReturnType LinIf_GotoSleep(NetworkHandleType Channel)
+{
+    return Lin_GoToSleep(Channel);
+}
+Std_ReturnType LinIf_Wakeup(NetworkHandleType Channel)
+{
+    return Lin_Wakeup(Channel);
 }
 
 void LinIf_MainFunction_SendHeader1(void)

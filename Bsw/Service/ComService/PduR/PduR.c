@@ -30,7 +30,7 @@ Std_ReturnType PduR_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
     {
         if (PduR_ConfigPtr->TxRoutingTable[i].GlobalPduId == TxPduId)
         {
-            return PduR_ConfigPtr->TxRoutingTable[i].Transmit_Func(PduR_ConfigPtr->TxRoutingTable[i].GlobalPduId, PduInfoPtr);
+            return PduR_ConfigPtr->TxRoutingTable[i].Transmit_Func(PduR_ConfigPtr->TxRoutingTable[i].LocalPduId, PduInfoPtr);
         }
     }
     return E_NOT_OK;

@@ -1,6 +1,24 @@
 #include "LinIf.h"
 #include "LinIf_Cfg.h"
 
+Lin_FrameConfigType LinIfFrameConfig[2] = {
+    [0] = {
+        .Channel = LIN_CHANNEL_1,
+        .LocalPduId = 0,
+        .Pid = 0x20,
+        .CsModel = LIN_CLASSIC_CS,
+        .Response = LIN_FRAMERESPONSE_TX,
+    },
+
+    [1] = {
+        .Channel = LIN_CHANNEL_1,
+        .LocalPduId = 1,
+        .Pid = 0x21,
+        .CsModel = LIN_CLASSIC_CS,
+        .Response = LIN_FRAMERESPONSE_TX,
+    },
+};
+
 LinIfChannel LinIfChannel1 = {
     .LinIfChannelRef_0 = LIN_CHANNEL_1,
     .LinIfComMNetworkHandleRef_0 = 2,
@@ -10,6 +28,7 @@ LinIfChannel LinIfChannel1 = {
     .LinIfWakeupConfirmationUL_0 = WAKEUP_LIN_SM,
     .LinIfMainFunctionPeriod = 20,
     .LinIfFrame_0.LinIfFrameType_0 = CONDITIONAL,
+
 };
 
 LinIfGlobalConfig LinIfGlobalConfig1 = {

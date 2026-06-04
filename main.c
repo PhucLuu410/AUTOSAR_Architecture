@@ -66,21 +66,11 @@ int main(void)
     // LinTp_Init(&LinTp_Config);
 
     PduR_Init(&PduR_PBConfig);
-    // SysTick_Init_8MHz();
-    // Os_Init();
-    // Os_Start();
-    // LinIf_MainFunction_SendHeader();
+    SysTick_Init_8MHz();
+    Os_Init();
+    Os_Start();
     while (1)
     {
-        // LinIf_MainFunction_SendHeader1();
-        // delay(100000);
-        // LinIf_MainFunction_SendHeader2();
-        // delay(100000);
-        // LinIf_MainFunction_SendHeader3();
-        // delay(10);
-        // LinIf_MainFunction_SendData3();
-        // delay(100000);
-        LinIf_MainFunction_ReceiveStatus();
     }
 }
 

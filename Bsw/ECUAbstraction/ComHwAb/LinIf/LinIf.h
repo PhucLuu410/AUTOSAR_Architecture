@@ -20,6 +20,15 @@ typedef enum
 
 typedef struct
 {
+    uint8 Channel;
+    uint8 LocalPduId;
+    uint8 Pid;
+    uint8 CsModel;
+    Lin_FrameResponseType Response;
+} Lin_FrameConfigType;
+
+typedef struct
+{
     boolean LinIfBusMirroringSupported;
     boolean LinIfDevErrorDetect;
     boolean LinIfMultipleDriversSupported;
@@ -102,19 +111,13 @@ Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
 Std_ReturnType LinIf_ScheduleRequest(NetworkHandleType Channel, LinIf_SchHandleType ScheduleTableIdx);
 Std_ReturnType LinIf_GotoSleep(NetworkHandleType Channel);
 Std_ReturnType LinIf_Wakeup(NetworkHandleType Channel);
-Std_ReturnType LinIf_GetPIDTable(NetworkHandleType Channel, Lin_FramePidType *PidBuffer, uint8 *PidBufferLength);
-Std_ReturnType LinIf_SetPIDTable(NetworkHandleType Channel, Lin_FramePidType *PidBuffer, uint8 PidBufferLength);
-Std_ReturnType LinIf_GetConfiguredNAD(NetworkHandleType Channel, uint8 *Nad);
-Std_ReturnType LinIf_SetConfiguredNAD(NetworkHandleType Channel, uint8 Nad);
 
 void LinTp_Init(const LinTp_ConfigType *ConfigPtr);
 Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
 void LinTp_Shutdown(void);
 Std_ReturnType LinTp_ChangeParameter(PduIdType id, TPParameterType parameter, uint16 value);
-// Std_ReturnType LinIf_CheckWakeup(EcuM_WakeupSourceType WakeupSource);
 Std_ReturnType LinIf_EnableBusMirroring(NetworkHandleType Channel, boolean MirroringActive);
 
-// void LinIf_WakeupConfirmation(EcuM_WakeupSourceType WakeupSource);
 void LinIf_MainFunction_SendHeader1(void);
 void LinIf_MainFunction_SendHeader2(void);
 void LinIf_MainFunction_SendHeader3(void);

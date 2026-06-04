@@ -87,18 +87,18 @@ void TerminateTask(void)
 TASK(Task_0)
 {
     // Swc_GasControl();
+    LinIf_MainFunction_ReceiveStatus();
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-    LinIf_MainFunction_ReceiveStatus();
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    // Com_SendSignal(2);
+
     TerminateTask();
 }
 
@@ -118,7 +118,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 
                               [1] = {.OsStackPointer = &Os_Task_1[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_1,
-                                     .interval = 4,
+                                     .interval = 7,
                                      .timer = &Os_System_Tick,
                                      .Priority = 1,
                                      .State = TASK_SUSPENDED},

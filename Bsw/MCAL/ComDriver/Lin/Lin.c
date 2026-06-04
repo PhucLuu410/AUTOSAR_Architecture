@@ -271,21 +271,9 @@ void USART1_IRQHandler(void)
 
         if (SyncFlag == 2)
         {
-            switch (Data)
-            {
-            case 0x20:
-                Lin_RxData[LIN_CHANNEL_1][index++] = Data;
-                SyncFlag = 3;
-                return;
-            case 0x21:
-                Lin_RxData[LIN_CHANNEL_1][index++] = Data;
-                SyncFlag = 3;
-                return;
-            case 0x22:
-                Lin_RxData[LIN_CHANNEL_1][index++] = Data;
-                SyncFlag = 3;
-                return;
-            }
+            Lin_RxData[LIN_CHANNEL_1][index++] = Data;
+            SyncFlag = 3;
+            return;
         }
         if (SyncFlag == 3)
         {
