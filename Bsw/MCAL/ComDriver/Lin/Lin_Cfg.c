@@ -5,7 +5,7 @@ LinGobalConfig LinGlobalConfig_0 = {
         .LinChannelBaudRate = 115200,
         .LinChannelId = LIN_CHANNEL_1,
         .LinChannelWakeupSupport = 1,
-        .LinNodeType = LIN_MASTER,
+        .LinNodeType = LIN_SLAVE,
         .LinClockRef = 8000000,
     },
 };
@@ -21,8 +21,8 @@ Lin_ConfigType Lin_Config = {
     .LinGeneral_0 = &LinGeneral_0,
     .LinGlobalConfig_0 = &LinGlobalConfig_0};
 
-uint8 Lin_ElectronicWindowBuffer[10] = {0};
-uint8 Lin_ElectricWipersBuffer[10] = {0};
+uint8 Channel_1_Buffer[10] = {0};
+uint8 Channel_2_Buffer[10] = {0};
 
-uint8 *Lin_RxData[] = {[Lin_ElectronicWindow] = Lin_ElectronicWindowBuffer,
-                       [Lin_ElectricWipers] = Lin_ElectricWipersBuffer};
+uint8 *Lin_RxData[] = {[LIN_CHANNEL_1] = Channel_1_Buffer,
+                       [LIN_CHANNEL_2] = Channel_2_Buffer};

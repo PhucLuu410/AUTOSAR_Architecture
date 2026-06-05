@@ -86,8 +86,6 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    // Swc_GasControl();
-    LinIf_MainFunction_ReceiveStatus();
     TerminateTask();
 }
 

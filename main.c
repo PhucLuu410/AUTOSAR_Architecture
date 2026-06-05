@@ -66,9 +66,9 @@ int main(void)
     // LinTp_Init(&LinTp_Config);
 
     PduR_Init(&PduR_PBConfig);
-    SysTick_Init_8MHz();
-    Os_Init();
-    Os_Start();
+    // SysTick_Init_8MHz();
+    // Os_Init();
+    // Os_Start();
     while (1)
     {
     }
