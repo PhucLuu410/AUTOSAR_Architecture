@@ -2,5 +2,4 @@
 #include "Lin_Cfg.h"
 
 extern const LinIf_ConfigType LinIf_Config;
-
-// extern LinIfFrame LinIfFrameConfig[2];
+extern const LinTp_ConfigType LinTp_Config;

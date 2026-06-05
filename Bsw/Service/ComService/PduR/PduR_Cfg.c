@@ -23,8 +23,8 @@ PduR_TxRoutingPathType PduR_TxRouteTable[NUMBER_OF_COM_TX_SIGNAL] = {
                            .LocalPduId = 0,
                            .Transmit_Func = LinIf_Transmit},
     [Diag_Error_Data_Tx] = {.GlobalPduId = 3,
-                            .LocalPduId = 1,
-                            .Transmit_Func = CanTp_Transmit}};
+                            .LocalPduId = 0,
+                            .Transmit_Func = LinTp_Transmit}};
 
 PduR_RxRoutingPathType PduR_RxRouteTable[NUMBER_OF_COM_RX_SIGNAL] = {
     [Motor_Control_Data] = {.GlobalPduId = 0,

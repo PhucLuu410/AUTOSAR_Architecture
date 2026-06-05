@@ -32,7 +32,7 @@ typedef struct
     uint32 LinTpRxNSduId;
     uint8 LinTpRxNSduNad;
     uint8 LinTpRxNSduChannelRef;
-    uint8 LinTpRxNSduPduRef;
+    uint8 *LinTpRxNSduPduRef;
 } LinTpRxNSdu;
 
 typedef struct
@@ -43,7 +43,7 @@ typedef struct
     uint32 LinTpTxNSduId;
     uint8 LinTpTxNSduNad;
     uint8 LinTpTxNSduChannelRef;
-    uint8 LinTpTxNSduPduRef;
+    uint8 *LinTpTxNSduPduRef;
 } LinTpTxNSdu;
 
 typedef struct
@@ -73,8 +73,8 @@ typedef struct
 
 typedef struct
 {
-    LinTpGeneral LinTpGeneral_0;
-    LinTpGlobalConfig LinTpGlobalConfig_0;
+    LinTpGeneral *LinTpGeneral_0;
+    LinTpGlobalConfig *LinTpGlobalConfig_0;
 } LinTp_ConfigType;
 
 //------------------------------------------------------------------------
@@ -159,7 +159,6 @@ typedef struct
     uint32 LinIfMainFunctionPeriod;
     LinIfFrame *LinIfFrame_0;
     LinIfNodeType LinIfNodeType_0;
-
 } LinIfChannel;
 
 typedef struct
