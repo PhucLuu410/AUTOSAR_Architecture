@@ -60,6 +60,8 @@ LinTpRxNSdu LinTpRxNSduConfig[1] = {
     },
 };
 
+uint8 Buffer_ID_0x12[20] = {0};
+
 LinTpTxNSdu LinTpTxNSduConfig[1] = {
     {
         .LinTpMaxBufReq = 3,
@@ -68,7 +70,7 @@ LinTpTxNSdu LinTpTxNSduConfig[1] = {
         .LinTpTxNSduId = 0,
         .LinTpTxNSduNad = 0x12,
         .LinTpTxNSduChannelRef = LIN_CHANNEL_1,
-        .LinTpTxNSduPduRef = NULL_PTR,
+        .LinTpTxNSduPduRef = Buffer_ID_0x12,
     },
 };
 

@@ -73,6 +73,8 @@ int main(void)
     {
         Com_SendSignal(3);
         delay(10000);
+        LinIf_MainFunction_LinTpSendHeader();
+        delay(10000);
     }
 }
 

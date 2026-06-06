@@ -84,145 +84,97 @@ void LinIf_RxIndication(NetworkHandleType Channel, uint8 *Lin_SduPtr)
             }
         }
     }
-    //---------------------------------------------------------------------------------------------------------
-    // Slave
-    for (int i = 0; i < 2; i++)
-    {
-        if (Channel == LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpRxNSdu_0[0].LinTpRxNSduChannelRef)
-        {
-            for (int j = 0; j < 2; j++)
-            {
-                if (Lin_SduPtr[0] == LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpRxNSdu_0[0].LinTpRxNSduNad)
-                {
-                    uint8 LENGTH = ((Lin_SduPtr[1] && 0x0F) >> 4 | Lin_SduPtr[2] & 0x0FF);
-                    uint8 LinTpRxBuffer[LENGTH];
-                    for (int a = 0; a < LENGTH; a++)
-                    {
-                        LinTpRxBuffer[a] = 0xFF;
-                    }
-                    if (LENGTH <= 4)
-                    {
-                        for (int a = 0; a < LENGTH; a++)
-                        {
-                            LinTpRxBuffer[a] = Lin_SduPtr[a + 3];
-                        }
-                    }
-                    else
-                    {
-                        for (int a = 0; a < 4; a++)
-                        {
-                            LinTpRxBuffer[a] = Lin_SduPtr[a + 3];
-                        }
-                        Lin_PduType LocalPduInfo;
-                        LocalPduInfo.Pid = Lin_SduPtr[0];
-                        LocalPduInfo.Dl = 7;
-                        LocalPduInfo.CsModel = CLASSIC;
-                        LocalPduInfo.Response = LIN_FRAMERESPONSE_TX;
-                        LocalPduInfo.SduDataPtr = (uint8[]){Lin_SduPtr[0], 0x30, 0x08, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-                        Lin_SendFrame(LIN_CHANNEL_1, &LocalPduInfo);
-                    }
-                }
-            }
-        }
-    }
-
-    // Master
-    // for (int i = 0; i < 2; i++)
-    // {
-    //     if (Channel == LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpTxNSdu_0[i].LinTpTxNSduChannelRef)
-    //     {
-    //         for (int j = 0; j < 2; j++)
-    //         {
-    //             if (Lin_SduPtr[0] == LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpTxNSdu_0[i].LinTpTxNSduId)
-    //             {
-    //                 if (Lin_SduPtr[1] == 0x30)
-    //                     LinTpMasterState = 0;
-    //             }
-    //         }
-    //     }
-    // }
 }
 
 //---------------------------------------------------------------------------------------------------------
+
+typedef enum
+{
+    LINTP_UNINIT,
+    LINTP_INIT,
+} LinTpStateMachine;
+
+typedef enum
+{
+    LINTP_CHANNEL_IDLE,
+    LINTP_CHANNEL_BUSY,
+} LinTpSubStateMachine;
+
+LinTpStateMachine LinTpState[] = {[0] = LINTP_UNINIT};
+LinTpSubStateMachine LinTpSubState[] = {[0] = LINTP_CHANNEL_IDLE};
+
 void LinTp_Init(const LinTp_ConfigType *ConfigPtr)
 {
     if (ConfigPtr != NULL_PTR)
         LinTp_LocalConfig = ConfigPtr;
+    for (int i = 0; i < sizeof(LinTpTxNSduConfig) / sizeof(LinTpTxNSduConfig[0]); i++)
+    {
+        LinTpState[i] = LINTP_INIT;
+    }
 }
 
 Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 {
-    // Master
-    // for (int i = 0; i < 2; i++)
-    // {
-    //     if (TxPduId == LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpTxNSdu_0[i].LinTpTxNSduId)
-    //     {
-    //         uint16 current_length = PduInfoPtr->SduLength;
-    //         Lin_PduType LocalPduInfo;
-    //         LocalPduInfo.Pid = LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpTxNSdu_0[i].LinTpTxNSduNad;
-    //         if (current_length > 4)
-    //         {
-    //             LocalPduInfo.Dl = 7;
-    //             LocalPduInfo.CsModel = CLASSIC;
-    //             LocalPduInfo.Response = LIN_FRAMERESPONSE_TX;
-    //             uint8 PCI = 0x10 | ((current_length & 0x0F00) >> 8);
-    //             uint8 LENGTH = current_length & 0xFF;
-    //             static uint8 FF[7] = {0};
-    //             FF[0] = PCI;
-    //             FF[1] = LENGTH;
-    //             for (int a = 0; a <= LocalPduInfo.Dl - 3; a++)
-    //             {
-    //                 FF[a + 2] = PduInfoPtr->SduDataPtr[a];
-    //             }
-    //             LocalPduInfo.SduDataPtr = FF;
-    //             for (int c = 0; c < 1; c++) //
-    //             {
-    //                 if (LinTpMasterState == 0)
-    //                 {
-    //                     Lin_SendFrame(LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpTxNSdu_0[i].LinTpTxNSduChannelRef, &LocalPduInfo);
-    //                 }
-    //                 LinTpMasterState = 1;
-    //                 // while (LinTpMasterState != 1)
-    //                 // {
-    //                 //     break;
-    //                 // }
-    //             }
-    //         }
-    //         else
-    //         {
-    //             LocalPduInfo.Dl = 7;
-    //             LocalPduInfo.CsModel = CLASSIC;
-    //             LocalPduInfo.Response = LIN_FRAMERESPONSE_TX;
-    //             uint8 PCI = 0x10 | ((current_length & 0x0F00) >> 8);
-    //             uint8 LENGTH = current_length & 0xFF;
-    //             static uint8 SF[7] = {0};
-    //             SF[0] = PCI;
-    //             SF[1] = LENGTH;
-    //             for (int a = 0; a < current_length; a++)
-    //             {
-    //                 SF[a + 2] = PduInfoPtr->SduDataPtr[a];
-    //             }
-    //             uint8 total_length = current_length + 3;
-    //             while (total_length < 7)
-    //             {
-    //                 SF[total_length] = 0;
-    //                 total_length++;
-    //             }
-    //             LocalPduInfo.SduDataPtr = SF;
-    //             Lin_SendFrame(LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpTxNSdu_0[i].LinTpTxNSduChannelRef, &LocalPduInfo);
-    //         }
-    //     }
-    // }
+    for (int a = 0; a < sizeof(LinTpTxNSduConfig) / sizeof(LinTpTxNSduConfig[0]); a++)
+    {
+        if (LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpTxNSdu_0[a].LinTpTxNSduId == TxPduId)
+        {
+            if (LinTpState[a] != LINTP_INIT)
+                return E_NOT_OK;
 
-    // Slave
+            if (LinTpSubState[a] != LINTP_CHANNEL_IDLE)
+                return E_NOT_OK;
 
-    return E_OK;
+            LinTpSubState[a] = LINTP_CHANNEL_BUSY;
+            for (int j = 0; j < PduInfoPtr->SduLength; j++)
+            {
+                LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpTxNSdu_0[a].LinTpTxNSduPduRef[j] = PduInfoPtr->SduDataPtr[j];
+            }
+            break;
+        }
+        return E_OK;
+    }
+    return E_NOT_OK;
+}
+
+void LinIf_MainFunction_LinTpSendHeader(void)
+{
+    if (LinTpSubState[0] == LINTP_CHANNEL_BUSY)
+    {
+        Lin_PduType PduInfo;
+        PduInfo.Pid = 0x12;
+        PduInfo.Dl = 8;
+        PduInfo.CsModel = LIN_CLASSIC_CS;
+        PduInfo.Response = LIN_FRAMERESPONSE_RX;
+        if (sizeof(Buffer_ID_0x12) < 8)
+        {
+            uint8 PCI = 0x00 | (PduInfo.Dl & 0x0F);
+            uint8 DATA[8] = {0};
+            DATA[0] = PCI;
+            for (int i = 0; i < PduInfo.Dl; i++)
+            {
+                DATA[1 + i] = LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpTxNSdu_0[0].LinTpTxNSduPduRef[i];
+            }
+            PduInfo.SduDataPtr = DATA;
+        }
+        else
+        {
+            uint8 PCI = 0x10 | ((sizeof(Buffer_ID_0x12) >> 8) & 0x0F);
+            uint8 DATA_LENGTH = sizeof(Buffer_ID_0x12) & 0xFF;
+            uint8 DATA[8] = {0};
+            DATA[0] = PCI;
+            DATA[1] = DATA_LENGTH;
+            for (int i = 0; i < 6; i++)
+            {
+                DATA[i + 2] = LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpTxNSdu_0[0].LinTpTxNSduPduRef[i];
+            }
+            PduInfo.SduDataPtr = DATA;
+        }
+        Lin_SendFrame(LinTp_LocalConfig->LinTpGlobalConfig_0->LinTpTxNSdu_0[0].LinTpTxNSduChannelRef, &PduInfo);
+        LinTpSubState[0] = LINTP_CHANNEL_IDLE;
+    }
 }
 
 void LinTp_Shutdown(void)
-{
-}
-
-Std_ReturnType LinTp_ChangeParameter(PduIdType id, TPParameterType parameter, uint16 value)
 {
 }

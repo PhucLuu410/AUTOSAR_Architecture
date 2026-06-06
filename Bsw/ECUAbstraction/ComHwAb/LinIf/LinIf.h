@@ -9,76 +9,6 @@
 
 typedef uint8 LinIf_SchHandleType;
 
-typedef enum
-{
-    LINTP_APPLICATIVE_SCHEDULE,
-    LINTP_DIAG_REQUEST,
-    LINTP_DIAG_RESPONSE,
-} LinTp_Mode;
-
-typedef enum
-{
-    LINIF_E_SCHEDULE_TABLE_SWITCH_REQUEST_NOT_ACCEPTED,
-    LINTP_E_DROPPED_CONSECUTIVE_FRAMES_DETECTED,
-    LINTP_E_LINTPNAS_TIMEOUT_OCCURRED,
-    LINTP_E_LINTPNCR_TIMEOUT_OCCURRED,
-    LINTP_E_LINTPNCS_TIMEOUT_OCCURRED,
-    LINTP_E_SWAPPED_CONSECUTIVE_FRAMES_RECEIVED,
-} LinTpDemEventParameterRefs;
-
-typedef struct
-{
-    uint8 LinTpNcr;
-    uint32 LinTpRxNSduId;
-    uint8 LinTpRxNSduNad;
-    uint8 LinTpRxNSduChannelRef;
-    uint8 *LinTpRxNSduPduRef;
-} LinTpRxNSdu;
-
-typedef struct
-{
-    uint8 LinTpMaxBufReq;
-    uint8 LinTpNas;
-    uint8 LinTpNcs;
-    uint32 LinTpTxNSduId;
-    uint8 LinTpTxNSduNad;
-    uint8 LinTpTxNSduChannelRef;
-    uint8 *LinTpTxNSduPduRef;
-} LinTpTxNSdu;
-
-typedef struct
-{
-    boolean LinTpDropNotRequestedNad;
-    uint32 LinTpMaxNumberOfRespPendingFrames;
-    uint8 LinTpP2Max;
-    uint8 LinTpP2Timing;
-    boolean LinTpScheduleChangeDiag;
-    uint8 LinTpChannelRef;
-} LinTpChannelConfig;
-
-typedef struct
-{
-    boolean LinTpChangeParameterApi;
-} LinTpGeneral;
-
-typedef struct
-{
-    uint32 LinTpMaxRxNSduCnt;
-    uint32 LinTpMaxTxNSduCnt;
-    LinTpChannelConfig *LinTpChannelConfig_0;
-    LinTpDemEventParameterRefs *LinTpDemEventParameterRefs_0;
-    LinTpRxNSdu *LinTpRxNSdu_0;
-    LinTpTxNSdu *LinTpTxNSdu_0;
-} LinTpGlobalConfig;
-
-typedef struct
-{
-    LinTpGeneral *LinTpGeneral_0;
-    LinTpGlobalConfig *LinTpGlobalConfig_0;
-} LinTp_ConfigType;
-
-//------------------------------------------------------------------------
-
 typedef struct
 {
     uint8 Channel;
@@ -177,11 +107,82 @@ Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
 Std_ReturnType LinIf_GotoSleep(NetworkHandleType Channel);
 Std_ReturnType LinIf_Wakeup(NetworkHandleType Channel);
 void LinIf_RxIndication(NetworkHandleType Channel, uint8 *Lin_SduPtr);
+Std_ReturnType LinIf_EnableBusMirroring(NetworkHandleType Channel, boolean MirroringActive);
+
+//-------------------------------------------------------------------------------------------------
+
+typedef enum
+{
+    LINTP_APPLICATIVE_SCHEDULE,
+    LINTP_DIAG_REQUEST,
+    LINTP_DIAG_RESPONSE,
+} LinTp_Mode;
+
+typedef enum
+{
+    LINIF_E_SCHEDULE_TABLE_SWITCH_REQUEST_NOT_ACCEPTED,
+    LINTP_E_DROPPED_CONSECUTIVE_FRAMES_DETECTED,
+    LINTP_E_LINTPNAS_TIMEOUT_OCCURRED,
+    LINTP_E_LINTPNCR_TIMEOUT_OCCURRED,
+    LINTP_E_LINTPNCS_TIMEOUT_OCCURRED,
+    LINTP_E_SWAPPED_CONSECUTIVE_FRAMES_RECEIVED,
+} LinTpDemEventParameterRefs;
+
+typedef struct
+{
+    uint8 LinTpNcr;
+    uint32 LinTpRxNSduId;
+    uint8 LinTpRxNSduNad;
+    uint8 LinTpRxNSduChannelRef;
+    uint8 *LinTpRxNSduPduRef;
+} LinTpRxNSdu;
+
+typedef struct
+{
+    uint8 LinTpMaxBufReq;
+    uint8 LinTpNas;
+    uint8 LinTpNcs;
+    uint32 LinTpTxNSduId;
+    uint8 LinTpTxNSduNad;
+    uint8 LinTpTxNSduChannelRef;
+    uint8 *LinTpTxNSduPduRef;
+} LinTpTxNSdu;
+
+typedef struct
+{
+    boolean LinTpDropNotRequestedNad;
+    uint32 LinTpMaxNumberOfRespPendingFrames;
+    uint8 LinTpP2Max;
+    uint8 LinTpP2Timing;
+    boolean LinTpScheduleChangeDiag;
+    uint8 LinTpChannelRef;
+} LinTpChannelConfig;
+
+typedef struct
+{
+    boolean LinTpChangeParameterApi;
+} LinTpGeneral;
+
+typedef struct
+{
+    uint32 LinTpMaxRxNSduCnt;
+    uint32 LinTpMaxTxNSduCnt;
+    LinTpChannelConfig *LinTpChannelConfig_0;
+    LinTpDemEventParameterRefs *LinTpDemEventParameterRefs_0;
+    LinTpRxNSdu *LinTpRxNSdu_0;
+    LinTpTxNSdu *LinTpTxNSdu_0;
+} LinTpGlobalConfig;
+
+typedef struct
+{
+    LinTpGeneral *LinTpGeneral_0;
+    LinTpGlobalConfig *LinTpGlobalConfig_0;
+} LinTp_ConfigType;
 
 void LinTp_Init(const LinTp_ConfigType *ConfigPtr);
 Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
 void LinTp_Shutdown(void);
 Std_ReturnType LinTp_ChangeParameter(PduIdType id, TPParameterType parameter, uint16 value);
-Std_ReturnType LinIf_EnableBusMirroring(NetworkHandleType Channel, boolean MirroringActive);
+void LinIf_MainFunction_LinTpSendHeader(void);
 
 #endif
