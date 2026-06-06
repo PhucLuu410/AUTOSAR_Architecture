@@ -254,10 +254,6 @@ void USART1_IRQHandler(void)
 
     if (Lin_Hardware[LIN_CHANNEL_1]->SR & (1 << 8))
     {
-        if (SyncFlag == 3)
-        {
-            LinIf_RxIndication(LIN_CHANNEL_1, Lin_RxData[LIN_CHANNEL_1]);
-        }
         Lin_Hardware[LIN_CHANNEL_1]->SR &= ~(1 << 8);
         index = 0;
         SyncFlag = 1;
@@ -283,6 +279,10 @@ void USART1_IRQHandler(void)
         {
             Lin_RxData[CurrentPdu][index++] = Data;
             Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_OK;
+            if (index >= 10)
+            {
+                LinIf_RxIndication(LIN_CHANNEL_1, Lin_RxData[LIN_CHANNEL_1]);
+            }
             return;
         }
     }

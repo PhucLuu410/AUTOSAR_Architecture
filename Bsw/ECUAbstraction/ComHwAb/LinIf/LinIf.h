@@ -183,6 +183,7 @@ void LinTp_Init(const LinTp_ConfigType *ConfigPtr);
 Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
 void LinTp_Shutdown(void);
 Std_ReturnType LinTp_ChangeParameter(PduIdType id, TPParameterType parameter, uint16 value);
-void LinIf_MainFunction_LinTpSendHeader(void);
+void LinIf_MainFunction_LinTpMasterSend_SF_FF(void);
+void LinIf_MainFunction_LinTpMasterSend_CF(void);
 
 #endif
