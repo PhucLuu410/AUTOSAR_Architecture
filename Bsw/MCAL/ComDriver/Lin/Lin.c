@@ -11,6 +11,7 @@ static const Lin_ConfigType *Lin_Local_Config;
 static USART_TypeDef *Lin_Hardware[NUMBER_OF_LIN_CHANNEL] = {USART1, USART2};
 Lin_StatusType Lin_ChannelStatus[NUMBER_OF_LIN_CHANNEL];
 static uint8 Lin_StateMachine[NUMBER_OF_LIN_CHANNEL] = {LIN_UNINIT};
+volatile uint8 DATA;
 
 void Lin_Init(const Lin_ConfigType *Config)
 {
@@ -35,11 +36,15 @@ void Lin_Init(const Lin_ConfigType *Config)
     }
     if (Config->LinGlobalConfig_0->LinChannel_0->LinChannelId == LIN_CHANNEL_1)
     {
+        volatile uint8_t dummy = Lin_Hardware[LIN_CHANNEL_1]->DR;
+        (void)dummy;
         NVIC_EnableIRQ(USART1_IRQn);
         NVIC_SetPriority(USART1_IRQn, 0);
     }
     if (Config->LinGlobalConfig_0->LinChannel_0->LinChannelId == LIN_CHANNEL_2)
     {
+        volatile uint8_t dummy = Lin_Hardware[LIN_CHANNEL_2]->DR;
+        (void)dummy;
         NVIC_EnableIRQ(USART2_IRQn);
         NVIC_SetPriority(USART2_IRQn, 2);
     }
@@ -86,7 +91,7 @@ Std_ReturnType Lin_SendFrame(uint8 Channel, const Lin_PduType *PduInfoPtr)
     }
     Lin_ChannelStatus[Channel] = LIN_BUSY;
 
-    static uint32 Lin_Cs = 0;
+    uint32 Lin_Cs = 0;
     if (PduInfoPtr->CsModel == LIN_ENHANCED_CS)
     {
         Lin_Cs += PduInfoPtr->Pid;
@@ -228,7 +233,7 @@ Lin_StatusType Lin_GetStatus(uint8 Channel, const uint8 **Lin_SduPtr)
         return LIN_NOT_OK;
     }
 
-    *Lin_SduPtr = Lin_RxData[Channel];
+    // *Lin_SduPtr = Lin_RxData[Channel];
 
     Lin_StatusType status = Lin_ChannelStatus[Channel];
 
@@ -242,58 +247,96 @@ void USART1_IRQHandler(void)
         return;
     }
 
-    static uint8 index = 0;
-    static uint8 SyncFlag = 0;
-    static uint8 CurrentPdu = 0;
+    static Lin_RxStateMachineType RxState = LIN_RX_IDLE;
+
+    static uint8 TABLE_INDEX = 0;
+    static uint8 DATA_INDEX = 0;
 
     if (Lin_Hardware[LIN_CHANNEL_1]->SR & (1 << 6))
     {
         Lin_Hardware[LIN_CHANNEL_1]->SR &= ~(1 << 6);
-        volatile uint8 temp = Lin_Hardware[LIN_CHANNEL_1]->DR;
+        volatile uint8 temp = (uint8)Lin_Hardware[LIN_CHANNEL_1]->DR;
+        (void)temp;
+        return;
     }
 
     if (Lin_Hardware[LIN_CHANNEL_1]->SR & (1 << 8))
     {
         Lin_Hardware[LIN_CHANNEL_1]->SR &= ~(1 << 8);
-        index = 0;
-        SyncFlag = 1;
-        return;
+        if (RxState == LIN_RX_IDLE)
+        {
+            TABLE_INDEX = 0;
+            DATA_INDEX = 0;
+            RxState = LIN_RX_SYNC;
+            return;
+        }
     }
 
     if (Lin_Hardware[LIN_CHANNEL_1]->SR & (1 << 5))
     {
-        volatile uint8 Data = Lin_Hardware[LIN_CHANNEL_1]->DR;
-        if (Data == 0x55)
+
+        DATA = *(volatile uint8_t *)&(Lin_Hardware[LIN_CHANNEL_1]->DR);
+        if (DATA == 0x55 && RxState == LIN_RX_SYNC)
         {
-            SyncFlag = 2;
+            RxState = LIN_RX_PID;
             return;
         }
 
-        if (SyncFlag == 2)
+        if (RxState == LIN_RX_PID)
         {
-            Lin_RxData[LIN_CHANNEL_1][index++] = Data;
-            SyncFlag = 3;
-            return;
-        }
-        if (SyncFlag == 3)
-        {
-            Lin_RxData[CurrentPdu][index++] = Data;
-            Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_OK;
-            if (index >= 10)
+            for (int CheckId = 0; CheckId < NUMBER_OF_LIN_PDU; CheckId++)
             {
-                LinIf_RxIndication(LIN_CHANNEL_1, Lin_RxData[LIN_CHANNEL_1]);
+                if (DATA == Lin_DataCfg[CheckId].Pid)
+                {
+                    TABLE_INDEX = CheckId;
+                    DATA_INDEX = 0;
+                    Lin_DataCfg[TABLE_INDEX].SduDataPtr[DATA_INDEX++] = DATA;
+                    RxState = LIN_RX_DATA;
+                    break;
+                }
             }
             return;
         }
+
+        if (RxState == LIN_RX_DATA)
+        {
+            Lin_DataCfg[TABLE_INDEX].SduDataPtr[DATA_INDEX++] = DATA;
+            if (DATA_INDEX > Lin_DataCfg[TABLE_INDEX].Dl)
+            {
+                Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_OK;
+                RxState = LIN_RX_CS;
+            }
+            return;
+        }
+
+        if (RxState == LIN_RX_CS)
+        {
+            uint32 Lin_Cs = 0;
+            if (Lin_DataCfg[TABLE_INDEX].CsModel == LIN_ENHANCED_CS)
+            {
+                Lin_Cs += Lin_DataCfg[TABLE_INDEX].Pid;
+            }
+            for (int i = 0; i < Lin_DataCfg[TABLE_INDEX].Dl; i++)
+            {
+                Lin_Cs += Lin_DataCfg[TABLE_INDEX].SduDataPtr[i + 1];
+            }
+            while (Lin_Cs > 0xFF)
+            {
+                Lin_Cs = (Lin_Cs & 0xFF) + (Lin_Cs >> 8);
+            }
+            Lin_Cs = ~Lin_Cs;
+            Lin_Cs = (uint8)(Lin_Cs & 0xFF);
+
+            if (DATA == Lin_Cs)
+            {
+                // LinIf_RxIndication(LIN_CHANNEL_1, &Lin_DataCfg[TABLE_INDEX]);
+                Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_OK;
+            }
+            else
+            {
+                Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_ERROR;
+            }
+            RxState = LIN_RX_IDLE;
+        }
     }
-    // if (Lin_Hardware[LIN_CHANNEL_1]->SR & (1 << 4))
-    // {
-    //     index = 0;
-    //     SyncFlag = 0;
-    //     if (Lin_ChannelStatus[LIN_CHANNEL_1] != LIN_RX_OK)
-    //     {
-    //         Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_ERROR;
-    //     }
-    //     return;
-    // }
 }

@@ -1,4 +1,5 @@
 #include "Lin_Cfg.h"
+#include "Lin_GeneralTypes.h"
 
 LinGobalConfig LinGlobalConfig_0 = {
     .LinChannel_0 = &(LinChannel){
@@ -21,8 +22,14 @@ Lin_ConfigType Lin_Config = {
     .LinGeneral_0 = &LinGeneral_0,
     .LinGlobalConfig_0 = &LinGlobalConfig_0};
 
-uint8 Channel_1_Buffer[10] = {0};
-uint8 Channel_2_Buffer[10] = {0};
+uint8 Lin_RxData1[9];
+uint8 Lin_RxData2[9];
+uint8 Lin_RxData3[9];
+uint8 Lin_RxData4[9];
 
-uint8 *Lin_RxData[] = {[LIN_CHANNEL_1] = Channel_1_Buffer,
-                       [LIN_CHANNEL_2] = Channel_2_Buffer};
+Lin_PduType Lin_DataCfg[NUMBER_OF_LIN_PDU] = {
+    [0] = {.Pid = 0x3C, .Dl = 8, .CsModel = LIN_CLASSIC_CS, .Response = LIN_FRAMERESPONSE_RX, .SduDataPtr = Lin_RxData1},
+    [1] = {.Pid = 0x3D, .Dl = 8, .CsModel = LIN_CLASSIC_CS, .Response = LIN_FRAMERESPONSE_RX, .SduDataPtr = Lin_RxData2},
+    [2] = {.Pid = 0x12, .Dl = 8, .CsModel = LIN_CLASSIC_CS, .Response = LIN_FRAMERESPONSE_RX, .SduDataPtr = Lin_RxData3},
+    [3] = {.Pid = 0x14, .Dl = 8, .CsModel = LIN_CLASSIC_CS, .Response = LIN_FRAMERESPONSE_RX, .SduDataPtr = Lin_RxData4},
+};

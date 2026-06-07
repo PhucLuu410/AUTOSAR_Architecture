@@ -3,7 +3,17 @@
 
 #include "Lin.h"
 
+typedef enum
+{
+    LIN_RX_IDLE,
+    LIN_RX_SYNC,
+    LIN_RX_PID,
+    LIN_RX_DATA,
+    LIN_RX_CS,
+} Lin_RxStateMachineType;
+
 #define NUMBER_OF_LIN_CHANNEL 2
+#define NUMBER_OF_LIN_PDU 4
 
 #define LIN_CHANNEL_1 0
 #define LIN_CHANNEL_2 1
@@ -34,5 +44,5 @@
 
 extern Lin_ConfigType Lin_Config;
 
-extern uint8 *Lin_RxData[];
+extern Lin_PduType Lin_DataCfg[NUMBER_OF_LIN_PDU];
 #endif
