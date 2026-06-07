@@ -21,8 +21,6 @@
 #include "Lin_Cfg.h"
 #include "LinIf.h"
 #include "LinIf_Cfg.h"
-#include "Rte.h"
-#include "Os.h"
 #include "stm32f103xb.h"
 
 void delay(volatile uint32_t t)
@@ -52,17 +50,20 @@ int main(void)
     Port_Init(Port_Configuration);
 
     Can_Init(&CanConfig);
-    Can_EnableControllerInterrupts(CAN_1_CONTROLLER);
+    Can_DisableControllerInterrupts(CAN_1_CONTROLLER);
     Can_SetBaudrate(CAN_1_CONTROLLER, 0);
     Can_SetControllerMode(CAN_1_CONTROLLER, CAN_CS_STARTED);
 
     CanIf_Init(&CanIfConfig);
     // CanIf_SetControllerMode(0, CAN_CS_STARTED);
 
-    Lin_Init(&Lin_Config[LIN_CHANNEL_1]);
+    Lin_Init(&Lin_Config);
     Lin_GoToSleepInternal(LIN_CHANNEL_1);
-    // LinIf_Init(&LinIfConfig);
     Lin_WakeupInternal(LIN_CHANNEL_1);
+
+    // LinIf_Init(&LinIf_Config);
+    // LinIf_EnableBusMirroring(LIN_CHANNEL_1, TRUE);
+    // LinTp_Init(&LinTp_Config);
 
     PduR_Init(&PduR_PBConfig);
     // SysTick_Init_8MHz();
@@ -70,6 +71,12 @@ int main(void)
     // Os_Start();
     while (1)
     {
+        // Com_SendSignal(3);
+        // delay(100);
+        // LinIf_MainFunction_LinTpMasterSend_SF_FF();
+        // delay(100);
+        // LinIf_MainFunction_LinTpMasterSend_CF();
+        // delay(100);
     }
 }
 

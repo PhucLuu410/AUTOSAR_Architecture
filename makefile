@@ -19,12 +19,16 @@ IPATH = -I. \
 		-I./Bsw/Service/ComService/PduR \
 		-I./Bsw/Service/ComService/Com \
 		-I./Bsw/Service/SystemService/Os \
+		-I./Rte \
+		-I./App/Swc_GasControl \
+		-I./App/Swc_DiagError \
+		-I./App/Swc_ElectricDoorControl \
+		-I./App/Swc_PedalControl \
 		-I./Bsw/Service/SystemService/Dem \
 		-I./Bsw/Service/SystemService/Det \
-		-I./Rte
 
 SRC = 	./System/Startup/startup.c \
-		App/main.c \
+		main.c \
 		Bsw/Mcal/IoDriver/Dio/Dio.c  \
 		Bsw/Mcal/IoDriver/Dio/Dio_Cfg.c \
 		Bsw/Mcal/IoDriver/Port/Port.c \
@@ -57,6 +61,10 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Service/SystemService/Dem/Dem_Cfg.c \
 		Bsw/Service/SystemService/Det/Det.c \
 		Rte/Rte.c \
+		App/Swc_GasControl/Swc_GasControl.c \
+		App/Swc_DiagError/Swc_DiagError.c \
+		App/Swc_ElectricDoorControl/Swc_ElectricDoorControl.c \
+		App/Swc_PedalControl/Swc_PedalControl.c \
 
 		
 

@@ -3,7 +3,17 @@
 
 #include "Lin.h"
 
+typedef enum
+{
+    LIN_RX_IDLE,
+    LIN_RX_SYNC,
+    LIN_RX_PID,
+    LIN_RX_DATA,
+    LIN_RX_CS,
+} Lin_RxStateMachineType;
+
 #define NUMBER_OF_LIN_CHANNEL 2
+#define NUMBER_OF_LIN_PDU 4
 
 #define LIN_CHANNEL_1 0
 #define LIN_CHANNEL_2 1
@@ -29,19 +39,10 @@
 #define LIN_BREAK_DETECT_ENABLE 0
 #define LIN_BREAK_DETECT_DISABLE 1
 
-typedef enum
-{
-    LIN_STATE_IDLE,
-    LIN_STATE_BREAK,
-    LIN_STATE_SYNC,
-    LIN_STATE_PID,
-    LIN_STATE_LENGTH,
-    LIN_STATE_CS_MODEL,
-    LIN_STATE_DRC,
-    LIN_STATE_DATA,
-    LIN_STATE_CHECKSUM
-} Lin_FrameState;
+#define Lin_ElectronicWindow 0
+#define Lin_ElectricWipers 1
 
-extern Lin_ConfigType Lin_Config[NUMBER_OF_LIN_CHANNEL];
-extern uint8 Lin_RxBuffer[NUMBER_OF_LIN_CHANNEL][20];
+extern Lin_ConfigType Lin_Config;
+
+extern Lin_PduType Lin_DataCfg[NUMBER_OF_LIN_PDU];
 #endif
