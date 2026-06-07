@@ -18,7 +18,7 @@ LinIfChannel LinIfChannelConfig[NUMBER_OF_LIN_CHANNEL] = {
         .LinIfWakeupConfirmationUL = WAKE_UP_LIN_SM,
         .LinIfChannelRef = LIN_CHANNEL_1,
         .LinIfComMNetworkHandleRef = 0,
-        .LinIfFrameCfg = NULL_PTR,
+        .LinIfFrameCfg = LinIfFrameConfig,
     },
     [1] = {
         .LinIfBusIdleTimeoutPeriod = 200,
@@ -27,7 +27,7 @@ LinIfChannel LinIfChannelConfig[NUMBER_OF_LIN_CHANNEL] = {
         .LinIfWakeupConfirmationUL = WAKE_UP_CDD,
         .LinIfChannelRef = LIN_CHANNEL_2,
         .LinIfComMNetworkHandleRef = 1,
-        .LinIfFrameCfg = NULL_PTR,
+        .LinIfFrameCfg = LinIfFrameConfig,
     },
 };
 

@@ -71,8 +71,8 @@ int main(void)
     // Os_Start();
     while (1)
     {
-        Com_SendSignal(2);
-        delay(100);
+        // Com_SendSignal(2);
+        // delay(100);
         // LinIf_MainFunction_LinTpMasterSend_SF_FF();
         // delay(100);
         // LinIf_MainFunction_LinTpMasterSend_CF();
