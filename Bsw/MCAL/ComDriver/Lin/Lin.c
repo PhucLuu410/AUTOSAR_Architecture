@@ -329,7 +329,7 @@ void USART1_IRQHandler(void)
 
             if (DATA == Lin_Cs)
             {
-                // LinIf_RxIndication(LIN_CHANNEL_1, &Lin_DataCfg[TABLE_INDEX]);
+                LinIf_RxIndication(LIN_CHANNEL_1, Lin_DataCfg[TABLE_INDEX].SduDataPtr);
                 Lin_ChannelStatus[LIN_CHANNEL_1] = LIN_RX_OK;
             }
             else

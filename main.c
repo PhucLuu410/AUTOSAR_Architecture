@@ -61,7 +61,7 @@ int main(void)
     Lin_GoToSleepInternal(LIN_CHANNEL_1);
     Lin_WakeupInternal(LIN_CHANNEL_1);
 
-    // LinIf_Init(&LinIf_Config);
+    LinIf_Init(&LinIf_Config);
     // LinIf_EnableBusMirroring(LIN_CHANNEL_1, TRUE);
     // LinTp_Init(&LinTp_Config);
 
@@ -71,8 +71,8 @@ int main(void)
     // Os_Start();
     while (1)
     {
-        // Com_SendSignal(3);
-        // delay(100);
+        Com_SendSignal(2);
+        delay(100);
         // LinIf_MainFunction_LinTpMasterSend_SF_FF();
         // delay(100);
         // LinIf_MainFunction_LinTpMasterSend_CF();

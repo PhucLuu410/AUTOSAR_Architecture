@@ -18,10 +18,10 @@ PduR_TxRoutingPathType PduR_TxRouteTable[NUMBER_OF_COM_TX_SIGNAL] = {
                          .Transmit_Func = CanIf_Transmit},
     [Pedal_Sensor_Data] = {.GlobalPduId = 1,
                            .LocalPduId = 1,
-                           .Transmit_Func = CanIf_Transmit}};
-// [Door_Control_Data] = {.GlobalPduId = 2,
-//                        .LocalPduId = 0,
-//                        .Transmit_Func = LinIf_Transmit}};
+                           .Transmit_Func = CanIf_Transmit},
+    [Door_Control_Data] = {.GlobalPduId = 2,
+                           .LocalPduId = 0,
+                           .Transmit_Func = LinIf_Transmit}};
 // [Diag_Error_Data_Tx] = {.GlobalPduId = 3,
 //                         .LocalPduId = 0,
 //                         .Transmit_Func = LinTp_Transmit}};

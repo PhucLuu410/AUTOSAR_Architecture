@@ -11,7 +11,6 @@ typedef uint8 LinIf_SchHandleType;
 
 typedef struct
 {
-    /* https://www.autosar.org/fileadmin/standards/R25-11/CP/AUTOSAR_CP_SWS_LINInterface.pdf#page=143&zoom=100,410,190 */
     boolean LinIfBusMirroringSupported;
     boolean LinIfDevErrorDetect;
     boolean LinIfMultipleDriversSupported;
@@ -33,26 +32,54 @@ typedef enum
     GOTO_SLEEP_LIN_SM,
 } LinIfGotoSleepConfirmationUL;
 
+typedef enum
+{
+    CLASSIC,
+    ENHANCED,
+} LinIfChecksumType;
+
+typedef enum
+{
+    ASSIGN,
+    ASSIGN_FRAME_ID_RANGE,
+    ASSIGN_NAD,
+    CONDITIONAL,
+    EVENT_TRIGGERED,
+    FREE,
+    MRF,
+    SAVE_CONFIGURATION,
+    SPORADIC,
+    SRF,
+    UNASSIGN,
+    UNCONDITIONAL,
+} LinIfFrameType;
+
 typedef struct
 {
-    /* https://www.autosar.org/fileadmin/standards/R25-11/CP/AUTOSAR_CP_SWS_LINInterface.pdf#page=149&zoom=100,405,914 */
+    LinIfChecksumType LinIfChecksum;
+    uint8 LinIfFrameId;
+    uint8 LinIfFrameIndex;
+    LinIfFrameType LinIfFrame;
+} LinIfFrame;
+
+typedef struct
+{
     uint32 LinIfBusIdleTimeoutPeriod;
     LinIfGotoSleepConfirmationUL LinIfGotoSleepConfirmationUL;
     uint32 LinIfMainFunctionPeriod;
     LinIfWakeupConfirmationUL LinIfWakeupConfirmationUL;
     uint8 LinIfChannelRef;
     uint8 LinIfComMNetworkHandleRef;
+    LinIfFrame *LinIfFrameCfg;
 } LinIfChannel;
 
 typedef struct
 {
-    /* https://www.autosar.org/fileadmin/standards/R25-11/CP/AUTOSAR_CP_SWS_LINInterface.pdf#page=149&zoom=100,340,180 */
     LinIfChannel *LinIfChannelCfg;
 } LinIfGlobalConfig;
 
 typedef struct
 {
-    /* https://www.autosar.org/fileadmin/standards/R25-11/CP/AUTOSAR_CP_SWS_LINInterface.pdf */
     LinIfGeneral LinIfGeneralCfg;
     LinIfGlobalConfig LinIfGlobalCfg;
 } LinIf_ConfigType;
