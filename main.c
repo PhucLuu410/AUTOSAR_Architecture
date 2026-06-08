@@ -63,19 +63,16 @@ int main(void)
 
     LinIf_Init(&LinIf_Config);
     // LinIf_EnableBusMirroring(LIN_CHANNEL_1, TRUE);
-    // LinTp_Init(&LinTp_Config);
+    LinTp_Init(&LinTp_Config);
 
     PduR_Init(&PduR_PBConfig);
     // SysTick_Init_8MHz();
     // Os_Init();
     // Os_Start();
+    // Com_SendSignal(3);
     while (1)
     {
-        // Com_SendSignal(2);
-        // delay(100);
-        // LinIf_MainFunction_LinTpMasterSend_SF_FF();
-        // delay(100);
-        // LinIf_MainFunction_LinTpMasterSend_CF();
+        // Com_SendSignal(3);
         // delay(100);
     }
 }

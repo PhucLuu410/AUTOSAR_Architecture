@@ -93,17 +93,55 @@ Std_ReturnType LinIf_EnableBusMirroring(NetworkHandleType Channel, boolean Mirro
 
 //-------------------------------------------------------------------------------------------------
 
-// typedef struct
-// {
-//     LinTpGeneral LinTpGeneralCfg;
-//     LinTpGlobalConfig LinTpGlobalCfg;
-// } LinTp_ConfigType;
+typedef struct
+{
+    boolean LinTpChangeParameterApi;
+} LinTpGeneral;
 
-// void LinTp_Init(const LinTp_ConfigType *ConfigPtr);
-// Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
-// void LinTp_Shutdown(void);
-// Std_ReturnType LinTp_ChangeParameter(PduIdType id, TPParameterType parameter, uint16 value);
-// void LinIf_MainFunction_LinTpMasterSend_SF_FF(void);
-// void LinIf_MainFunction_LinTpMasterSend_CF(void);
+typedef struct
+{
+    uint8 LinTpMaxBufReq;
+    uint8 LinTpNas;
+    uint32 LinTpTxNSduId;
+    uint8 LinTpTxNSduNad;
+    uint8 LinTpTxNSduChannelRef;
+    uint8 *LinTpTxNSduPduRef;
+} LinTpTxNSdu;
+
+typedef struct
+{
+    uint32 LinTpRxNSduId;
+    uint8 LinTpRxNSduNad;
+    uint8 LinTpRxNSduChannelRef;
+    uint8 *LinTpRxNSduPduRef;
+} LinTpRxNSdu;
+
+typedef struct
+{
+    boolean LinTpDropNotRequestedNad;
+    uint32 LinTpMaxNumberOfRespPendingFrames;
+    uint8 LinTpP2Max;
+    uint8 LinTpP2Timing;
+    boolean LinTpScheduleChangeDiag;
+    uint8 LinTpChannelRef;
+} LinTpChannelConfig;
+
+typedef struct
+{
+    uint32 LinTpMaxRxNSduCnt;
+    uint32 LinTpMaxTxNSduCnt;
+    LinTpChannelConfig *LinTpChannelCfg;
+    LinTpRxNSdu *LinTpRxNSduCfg;
+    LinTpTxNSdu *LinTpTxNSduCfg;
+} LinTpGlobalConfig;
+
+typedef struct
+{
+    LinTpGeneral LinTpGeneralCfg;
+    LinTpGlobalConfig LinTpGlobalCfg;
+} LinTp_ConfigType;
+
+void LinTp_Init(const LinTp_ConfigType *ConfigPtr);
+Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
 
 #endif

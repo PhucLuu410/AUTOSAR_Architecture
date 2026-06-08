@@ -21,13 +21,13 @@ PduR_TxRoutingPathType PduR_TxRouteTable[NUMBER_OF_COM_TX_SIGNAL] = {
                            .Transmit_Func = CanIf_Transmit},
     [Door_Control_Data] = {.GlobalPduId = 2,
                            .LocalPduId = 0,
-                           .Transmit_Func = LinIf_Transmit}};
-// [Diag_Error_Data_Tx] = {.GlobalPduId = 3,
-//                         .LocalPduId = 0,
-//                         .Transmit_Func = LinTp_Transmit}};
+                           .Transmit_Func = LinIf_Transmit},
+    [Diag_Error_Data_Tx] = {.GlobalPduId = 3,
+                            .LocalPduId = 0,
+                            .Transmit_Func = LinTp_Transmit}};
 
 PduR_RxRoutingPathType PduR_RxRouteTable[NUMBER_OF_COM_RX_SIGNAL] = {
-    [Motor_Control_Data] = {.GlobalPduId = 0,
+    [Motor_Control_Data] = {.GlobalPduId = 3,
                             .LocalPduId = 0,
                             .Rx_Func = Com_RxIndication},
     [Pedal_Handle_Data] = {.GlobalPduId = 1,
@@ -36,7 +36,7 @@ PduR_RxRoutingPathType PduR_RxRouteTable[NUMBER_OF_COM_RX_SIGNAL] = {
     [Electric_Door_Data] = {.GlobalPduId = 2,
                             .LocalPduId = 2,
                             .Rx_Func = Com_RxIndication},
-    [Diag_Error_Data_Rx] = {.GlobalPduId = 3,
+    [Diag_Error_Data_Rx] = {.GlobalPduId = 0,
                             .LocalPduId = 3,
                             .Rx_Func = CanTp_RxIndication}};
 
