@@ -27,7 +27,7 @@ PduR_TxRoutingPathType PduR_TxRouteTable[NUMBER_OF_COM_TX_SIGNAL] = {
                             .Transmit_Func = LinTp_Transmit}};
 
 PduR_RxRoutingPathType PduR_RxRouteTable[NUMBER_OF_COM_RX_SIGNAL] = {
-    [Motor_Control_Data] = {.GlobalPduId = 3,
+    [Motor_Control_Data] = {.GlobalPduId = 0,
                             .LocalPduId = 0,
                             .Rx_Func = Com_RxIndication},
     [Pedal_Handle_Data] = {.GlobalPduId = 1,
@@ -38,7 +38,7 @@ PduR_RxRoutingPathType PduR_RxRouteTable[NUMBER_OF_COM_RX_SIGNAL] = {
                             .Rx_Func = Com_RxIndication},
     [Diag_Error_Data_Rx] = {.GlobalPduId = 0,
                             .LocalPduId = 3,
-                            .Rx_Func = CanTp_RxIndication}};
+                            .Rx_Func = Com_RxIndication}};
 
 PduR_PBConfigType PduR_PBConfig = {
     .RxRoutingTable = PduR_RxRouteTable,

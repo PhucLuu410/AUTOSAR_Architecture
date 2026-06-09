@@ -3,7 +3,8 @@
 #include "Can.h"
 #include "Can_Cfg.h"
 #include "PduR.h"
-
+#include "Can_GeneralTypes.h"
+#include "Det.h"
 static const CanIf_ConfigType *CanIfGlobalConfigPtr = NULL_PTR;
 
 void CanIf_Init(const CanIf_ConfigType *ConfigPtr)
@@ -18,88 +19,42 @@ void CanIf_DeInit(void)
 
 void CanIf_TxConfirmation(PduIdType CanTxPduId)
 {
-    for (int i = 0; i < SIZE_OF_CAN_IF_TX_TABLE; i++)
+}
+
+Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
+{
+    for (int i = 0; i < NUMBER_OF_CAN_IF_TX_PDU; i++)
     {
-        if (CanIfGlobalConfigPtr->TxTableConfig[i].CanIf_LocalId == CanTxPduId)
+        if (CanIfGlobalConfigPtr->CanIfInitConfig.CanIfTxPduCfgRef[i].CanIfTxPduId == TxPduId)
         {
-            PduR_CanIfTxConfirmation(CanTxPduId, E_OK);
-            break;
+            Can_HwHandleType Hoh = CanIfGlobalConfigPtr->CanIfInitConfig.CanIfTxPduCfgRef[i].CanIfTxPduBufferRef;
+            Can_PduType PduInfo;
+            PduInfo.id = CanIfGlobalConfigPtr->CanIfInitConfig.CanIfTxPduCfgRef[i].CanIfTxCanId;
+            PduInfo.length = PduInfoPtr->SduLength;
+            PduInfo.sdu = PduInfoPtr->SduDataPtr;
+            PduInfo.swPduHandle = CanIfGlobalConfigPtr->CanIfInitConfig.CanIfTxPduCfgRef[i].CanIfTxPduRef;
+            return Can_Write(Hoh, &PduInfo);
         }
     }
-}
-
-// Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId, Can_ControllerStateType ControllerMode)
-// {
-//     return Can_SetControllerMode(ControllerId, ControllerMode);
-// }
-
-Std_ReturnType CanIf_GetControllerMode(uint8 ControllerId, Can_ControllerStateType *ControllerModePtr)
-{
-    if (ControllerModePtr == NULL_PTR)
-    {
-        return E_NOT_OK;
-    }
-    *ControllerModePtr = Can_ControllerState[ControllerId];
-    return E_OK;
-}
-
-Std_ReturnType CanIf_GetControllerErrorState(uint8 ControllerId, Can_ErrorStateType *ErrorStatePtr)
-{
-    // return Can_GetControllerErrorState(ControllerId, ErrorStatePtr);
-    return 0;
-}
-
-// void CanIf_SetDynamicTxId(PduIdType CanIfTxSduId, Can_IdType CanId)
-// {
-//     for (int i = 0; i < CAN_SERSOR_DATA_LENGTH; i++)
-//     {
-//         if (CanIfTxSduId == CanIfGlobalConfigPtr->TxTableConfig[i].CanIf_LocalId)
-//         {
-//             CanIfGlobalConfigPtr->TxTableConfig[i].TxPduTable->id = CanId;
-//             break;
-//         }
-//     }
-// }
-
-Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoType)
-{
-    for (int i = 0; i < SIZE_OF_CAN_IF_TX_TABLE; i++)
-    {
-        if (CanIfGlobalConfigPtr->TxTableConfig[i].CanIf_LocalId == TxPduId)
-        {
-            Can_PduType CanPdu;
-            CanPdu.swPduHandle = TxPduId;
-            CanPdu.id = CanIfGlobalConfigPtr->TxTableConfig[i].CanIf_CanId;
-            CanPdu.length = PduInfoType->SduLength;
-            CanPdu.sdu = PduInfoType->SduDataPtr;
-            return Can_Write(CanIf_TxTable[i].Hoh, &CanPdu);
-        }
-    }
-    return E_NOT_OK;
 }
 
 void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfoPtr)
 {
-    for (int i = 0; i < SIZE_OF_CAN_IF_RX_TABLE; i++)
+    if (CanIfGlobalConfigPtr == NULL_PTR)
     {
-        if (Mailbox->CanId == CanIfGlobalConfigPtr->RxTableConfig[i].CanIf_CanId)
+        Det_ReportError(0, 0, 0, 1);
+        return;
+    }
+    for (int i = 0; i < NUMBER_OF_CAN_IF_RX_PDU; i++)
+    {
+        if (CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].CanIfRxCanId == Mailbox->CanId &&
+            CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].CanIfRxPduHrhIdRef == Mailbox->Hoh &&
+            CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].CanIfRxPduRef == Mailbox->ControllerId)
         {
-            PduR_RxIndication(CanIfGlobalConfigPtr->RxTableConfig[i].CanIf_LocalId, PduInfoPtr);
-            break;
+            PduIdType RxPduId = CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].CanIfRxPduId;
+            PduR_RxIndication(RxPduId, PduInfoPtr);
+            return;
         }
     }
-}
-
-Std_ReturnType CanIf_ReadRxPduData(PduIdType CanIfRxPduId, PduInfoType *PduInfoPtr)
-{
-    for (int i = 0; i < SIZE_OF_CAN_IF_RX_TABLE; i++)
-    {
-        if (CanIfGlobalConfigPtr->RxTableConfig[i].CanIf_LocalId == CanIfRxPduId)
-        {
-            PduInfoPtr->SduLength = CanIfGlobalConfigPtr->RxTableConfig[i].Length;
-            PduInfoPtr->SduDataPtr = CanIfGlobalConfigPtr->RxTableConfig[i].data;
-            return E_OK;
-        }
-    }
-    return E_NOT_OK;
+    Det_ReportError(0, 0, 0, 1);
 }

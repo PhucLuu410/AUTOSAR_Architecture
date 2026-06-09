@@ -1,28 +1,59 @@
 #include "CanIf_Cfg.h"
-
 #include "Can_Cfg.h"
+#include "Can_Cfg.h"
+CanIfRxPduCfg CanIfRxPduCfgs[NUMBER_OF_CAN_IF_RX_PDU] = {
+    {
+        .CanIfRxPduDataLength = 8,
+        .CanIfRxPduDataLengthCheck = FALSE,
+        .CanIfRxPduId = 0,
+        .CanIfRxPduReadData = TRUE,
+        .CanIfRxPduReadNotifyStatus = TRUE,
+        .CanIfRxCanId = 0x123,
+        .CanIfRxPduHrhIdRef = CAN_1_CONTROLLER,
+        .CanIfRxPduRef = 0,
+    },
+    {
+        .CanIfRxPduDataLength = 8,
+        .CanIfRxPduDataLengthCheck = FALSE,
+        .CanIfRxPduId = 1,
+        .CanIfRxPduReadData = TRUE,
+        .CanIfRxPduReadNotifyStatus = TRUE,
+        .CanIfRxCanId = 0x456,
+        .CanIfRxPduHrhIdRef = CAN_1_CONTROLLER,
+        .CanIfRxPduRef = 1,
+    },
+};
 
-CanIf_PduTxTableConfig CanIf_TxTable[SIZE_OF_CAN_IF_TX_TABLE] = {
-    [0] = {.Hoh = 0,
-           .CanIf_LocalId = 0,
-           .CanIf_CanId = 0x123},
-    [1] = {.Hoh = 1,
-           .CanIf_LocalId = 1,
-           .CanIf_CanId = 0x127}};
+CanIfTxPduCfg CanIfTxPduCfgs[NUMBER_OF_CAN_IF_TX_PDU] = {
+    {
+        .CanIfTxPduId = 0,
+        .CanIfTxPduReadNotifyStatus = TRUE,
+        .CanIfTxPduTruncation = FALSE,
+        .CanIfTxPduTypeCfg = CAN_ID_STATIC,
+        .CanIfTxCanId = 0x123,
+        .CanIfTxPduBufferRef = CAN_1_CONTROLLER,
+        .CanIfTxPduRef = 0,
+    },
+    {
+        .CanIfTxPduId = 1,
+        .CanIfTxPduReadNotifyStatus = TRUE,
+        .CanIfTxPduTruncation = FALSE,
+        .CanIfTxPduTypeCfg = CAN_ID_STATIC,
+        .CanIfTxCanId = 0x456,
+        .CanIfTxPduBufferRef = CAN_1_CONTROLLER,
+        .CanIfTxPduRef = 1,
+    },
+};
 
-CanIf_PduRxTableConfig CanIf_RxTable[SIZE_OF_CAN_IF_RX_TABLE] = {
-    [0] = {.CanIf_LocalId = 0,
-           .CanIf_CanId = 0x123,
-           .Length = 0,
-           .data = NULL_PTR},
-    [1] = {.CanIf_LocalId = 1,
-           .CanIf_CanId = 0x127,
-           .Length = 0,
-           .data = NULL_PTR}};
+const CanIfInitCfg CanIfInitConfig = {
+    .CanIfInitCfgSet = 0,
+    .CanIfMaxBufferSize = 8,
+    .CanIfMaxRxPduCfg = NUMBER_OF_CAN_IF_RX_PDU,
+    .CanIfMaxTxPduCfg = NUMBER_OF_CAN_IF_TX_PDU,
+    .CanIfRxPduCfgRef = CanIfRxPduCfgs,
+    .CanIfTxPduCfgRef = CanIfTxPduCfgs,
+};
 
-CanIf_PduModeType CanIfPduMode[SIZE_OF_CAN_IF_TX_TABLE] = {
-    CANIF_OFFLINE,
-    CANIF_OFFLINE};
-
-CanIf_ConfigType CanIfConfig = {.RxTableConfig = CanIf_RxTable,
-                                .TxTableConfig = CanIf_TxTable};
+const CanIf_ConfigType CanIf_Config = {
+    .CanIfInitConfig = CanIfInitConfig,
+};

@@ -3,15 +3,8 @@
 
 #include "CanIf.h"
 
-#define SIZE_OF_CAN_IF_TX_TABLE 2
-#define SIZE_OF_CAN_IF_RX_TABLE 2
+#define NUMBER_OF_CAN_IF_RX_PDU 2
+#define NUMBER_OF_CAN_IF_TX_PDU 2
 
-extern CanIf_ConfigType CanIfConfig;
-
-extern Can_PduType CanTxPduInfo[];
-
-extern CanIf_PduTxTableConfig CanIf_TxTable[];
-
-extern CanIf_PduRxTableConfig CanIf_RxTable[];
-
+extern const CanIf_ConfigType CanIf_Config;
 #endif

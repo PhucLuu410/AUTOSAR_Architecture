@@ -14,6 +14,7 @@
 #include "Can_Cfg.h"
 #include "CanIf.h"
 #include "CanIf_Cfg.h"
+#include "CanTp.h"
 #include "PduR.h"
 #include "PduR_Cfg.h"
 #include "Com.h"
@@ -50,11 +51,11 @@ int main(void)
     Port_Init(Port_Configuration);
 
     Can_Init(&CanConfig);
-    Can_DisableControllerInterrupts(CAN_1_CONTROLLER);
+    Can_EnableControllerInterrupts(CAN_1_CONTROLLER);
     Can_SetBaudrate(CAN_1_CONTROLLER, 0);
     Can_SetControllerMode(CAN_1_CONTROLLER, CAN_CS_STARTED);
 
-    CanIf_Init(&CanIfConfig);
+    CanIf_Init(&CanIf_Config);
     // CanIf_SetControllerMode(0, CAN_CS_STARTED);
 
     Lin_Init(&Lin_Config);
@@ -62,7 +63,6 @@ int main(void)
     Lin_WakeupInternal(LIN_CHANNEL_1);
 
     LinIf_Init(&LinIf_Config);
-    // LinIf_EnableBusMirroring(LIN_CHANNEL_1, TRUE);
     LinTp_Init(&LinTp_Config);
 
     PduR_Init(&PduR_PBConfig);
@@ -72,7 +72,7 @@ int main(void)
     // Com_SendSignal(3);
     while (1)
     {
-        // Com_SendSignal(3);
+        // Com_SendSignal(0);
         // delay(10000);
     }
 }

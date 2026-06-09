@@ -3,7 +3,6 @@
 
 #include "PduR.h"
 #include "CanIf.h"
-#include "CanTp.h"
 #include "LinIf.h"
 
 #define NUMBER_OF_COM_TX_SIGNAL 4
