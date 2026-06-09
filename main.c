@@ -73,7 +73,7 @@ int main(void)
     while (1)
     {
         // Com_SendSignal(3);
-        // delay(100);
+        // delay(10000);
     }
 }
 

@@ -8,6 +8,12 @@
 
 #define NUMBER_OF_LINTP_FRAME_TX 1
 #define NUMBER_OF_LINTP_FRAME_RX 1
+
+/* For Slave */
+#define LINTP_BLOCK_SIZE 2
+#define LINTP_ST_MIN 100
+#define LINTP_DATA_LENGTH 20
+
 typedef enum
 {
     LIN_DIRECTION_RX,

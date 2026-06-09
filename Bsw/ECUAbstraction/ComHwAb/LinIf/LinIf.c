@@ -4,7 +4,8 @@
 
 const LinIf_ConfigType *LinIf_Local_Config;
 uint8 data[8] = {0};
-
+static uint8 BS = 0;
+static uint8 STmin = 0;
 void LinIf_Init(const LinIf_ConfigType *ConfigPtr)
 {
     if (ConfigPtr == NULL_PTR)
@@ -183,7 +184,6 @@ Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 
 void LinTp_RxIndication(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 {
-
     // SLAVE
     for (int i = 0; i < NUMBER_OF_LINTP_FRAME_RX; i++)
     {
@@ -233,8 +233,8 @@ void LinTp_RxIndication(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
                 }
                 uint8 FC[8] = {0};
                 FC[0] = 0x30;
-                FC[1] = 0;
-                FC[2] = 0;
+                FC[1] = LINTP_BLOCK_SIZE;
+                FC[2] = LINTP_ST_MIN;
                 Lin_PduType LinPdu;
                 LinPdu.Pid = LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduNad;
                 LinPdu.Dl = 8;
@@ -253,18 +253,19 @@ void LinTp_RxIndication(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
                 {
                     LinTp_Local_Config->LinTpGlobalCfg.LinTpRxNSduCfg[i].LinTpRxNSduPduRef[count++] = PduInfoPtr->SduDataPtr[j + 1];
                 }
-
-                if (count >= 20)
+                static uint8 BS_Count = LINTP_BLOCK_SIZE;
+                if (count >= LINTP_DATA_LENGTH)
                 {
                     count = 0;
+                    BS_Count = LINTP_BLOCK_SIZE;
                     PduInfoType PduInfo;
-                    PduInfo.SduLength = 20;
+                    PduInfo.SduLength = LINTP_DATA_LENGTH;
                     PduInfo.SduDataPtr = LinTp_Local_Config->LinTpGlobalCfg.LinTpRxNSduCfg[i].LinTpRxNSduPduRef;
                     PduR_RxIndication(LinTp_Local_Config->LinTpGlobalCfg.LinTpRxNSduCfg[i].LinTpRxNSduId, &PduInfo);
                     uint8 FC[8] = {0};
                     FC[0] = 0x30;
-                    FC[1] = 0;
-                    FC[2] = 0;
+                    FC[1] = LINTP_BLOCK_SIZE;
+                    FC[2] = LINTP_ST_MIN;
                     Lin_PduType LinPdu;
                     LinPdu.Pid = LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduNad;
                     LinPdu.Dl = 8;
@@ -275,21 +276,37 @@ void LinTp_RxIndication(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
                     LinTp_RxState[i] = LIN_TP_RX_IDLE;
                     return;
                 }
+                BS_Count--;
+                if (BS_Count == 0)
+                {
+                    BS_Count = LINTP_BLOCK_SIZE;
+                    uint8 FC[8] = {0};
+                    FC[0] = 0x30;
+                    FC[1] = LINTP_BLOCK_SIZE;
+                    FC[2] = LINTP_ST_MIN;
+                    Lin_PduType LinPdu;
+                    LinPdu.Pid = LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduNad;
+                    LinPdu.Dl = 8;
+                    LinPdu.CsModel = LIN_CLASSIC_CS;
+                    LinPdu.Response = LIN_FRAMERESPONSE_TX;
+                    LinPdu.SduDataPtr = FC;
+                    Lin_SendFrame(LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduChannelRef, &LinPdu);
+                    return;
+                }
 
-                // Chuan bi goi tin FC de gui di
-                uint8 FC[8] = {0};
-                FC[0] = 0x30;
-                FC[1] = 0;
-                FC[2] = 0;
-                Lin_PduType LinPdu;
-                LinPdu.Pid = LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduNad;
-                LinPdu.Dl = 8;
-                LinPdu.CsModel = LIN_CLASSIC_CS;
-                LinPdu.Response = LIN_FRAMERESPONSE_TX;
-                LinPdu.SduDataPtr = FC;
-                Lin_SendFrame(LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduChannelRef, &LinPdu);
-                LinTp_RxState[i] = LIN_TP_RX_WAIT_CF;
-                return;
+                // uint8 FC[8] = {0};
+                // FC[0] = 0x30;
+                // FC[1] = LINTP_BLOCK_SIZE;
+                // FC[2] = LINTP_ST_MIN;
+                // Lin_PduType LinPdu;
+                // LinPdu.Pid = LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduNad;
+                // LinPdu.Dl = 8;
+                // LinPdu.CsModel = LIN_CLASSIC_CS;
+                // LinPdu.Response = LIN_FRAMERESPONSE_TX;
+                // LinPdu.SduDataPtr = FC;
+                // Lin_SendFrame(LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduChannelRef, &LinPdu);
+                // LinTp_RxState[i] = LIN_TP_RX_WAIT_CF;
+                // return;
             }
         }
     }
@@ -306,6 +323,8 @@ void LinTp_RxIndication(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
     //         }
     //         else if (PduInfoPtr->SduDataPtr[0] == 0x30 && LinTp_TxState[i] == LIN_TP_TX_WAIT_FC_FF)
     //         {
+    //             BS = PduInfoPtr->SduDataPtr[1];
+    //             STmin = PduInfoPtr->SduDataPtr[2];
     //             LinTp_TxState[i] = LIN_TP_TX_CF;
     //         }
     //         else if (PduInfoPtr->SduDataPtr[0] == 0x31)
@@ -318,46 +337,49 @@ void LinTp_RxIndication(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
     //             return;
     //         }
 
-    //         if (LinTp_TxState[i] == LIN_TP_TX_CF)
+    //         // Neu la gui FF chuan bi FC
+    //         for (int j = 0; j < BS; j++)
     //         {
-    //             // Chuan bi Index FC
-    //             static uint16 DataPtrIndex = 6;
-    //             static uint16 Count = 1;
 
-    //             // Chuan Bi Goi tin gui FC
-    //             uint8 CF[8] = {0};
-    //             CF[0] = (0x20 | (Count & 0x0F));
-    //             for (int j = 0; j < 7; j++)
+    //             if (LinTp_TxState[i] == LIN_TP_TX_CF)
     //             {
-    //                 if (DataPtrIndex >= 20)
+    //                 static uint16 DataPtrIndex = 6;
+    //                 static uint16 Count = 1;
+    //                 uint8 CF[8] = {0};
+    //                 CF[0] = (0x20 | (Count & 0x0F));
+    //                 for (int j = 0; j < 7; j++)
     //                 {
-    //                     LinTp_TxState[i] = LIN_TP_TX_IDLE;
-    //                     break;
+    //                     if (DataPtrIndex >= 20)
+    //                     {
+    //                         LinTp_TxState[i] = LIN_TP_TX_IDLE;
+    //                         break;
+    //                     }
+    //                     CF[j + 1] = LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduPduRef[DataPtrIndex++];
     //                 }
-    //                 CF[j + 1] = LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduPduRef[DataPtrIndex++];
+    //                 Lin_PduType LinPdu;
+    //                 LinPdu.Pid = LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduNad;
+    //                 LinPdu.Dl = 8;
+    //                 LinPdu.CsModel = LIN_CLASSIC_CS;
+    //                 LinPdu.Response = LIN_FRAMERESPONSE_TX;
+    //                 LinPdu.SduDataPtr = CF;
+    //                 if (LinTp_TxState[i] != LIN_TP_TX_IDLE)
+    //                 {
+    //                     Lin_SendFrame(LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduChannelRef, &LinPdu);
+    //                     Count++;
+    //                 }
+    //                 else if (LinTp_TxState[i] == LIN_TP_TX_IDLE)
+    //                 {
+    //                     DataPtrIndex = 6;
+    //                     Count = 1;
+    //                     return;
+    //                 }
     //             }
-
-    //             // Chuan bi goi tin cho Lin_SendFrame va gui di
-    //             Lin_PduType LinPdu;
-    //             LinPdu.Pid = LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduNad;
-    //             LinPdu.Dl = 8;
-    //             LinPdu.CsModel = LIN_CLASSIC_CS;
-    //             LinPdu.Response = LIN_FRAMERESPONSE_TX;
-    //             LinPdu.SduDataPtr = CF;
-    //             if (LinTp_TxState[i] != LIN_TP_TX_IDLE)
+    //             while (STmin)
     //             {
-    //                 Lin_SendFrame(LinTp_Local_Config->LinTpGlobalCfg.LinTpTxNSduCfg[i].LinTpTxNSduChannelRef, &LinPdu);
-    //                 Count++;
-    //                 LinTp_TxState[i] = LIN_TP_TX_WAIT_FC_FF;
-    //             }
-    //             else
-    //             {
-    //                 DataPtrIndex = 6;
-    //                 Count = 1;
-    //                 LinTp_TxState[i] = LIN_TP_TX_IDLE;
-    //                 return;
+    //                 STmin--;
     //             }
     //         }
+    //         LinTp_TxState[i] = LIN_TP_TX_WAIT_FC_FF;
     //     }
     // }
 }
