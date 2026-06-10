@@ -50,6 +50,7 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/EcuAbstraction/ComHwAb/CanIf/CanIf.c \
 		Bsw/EcuAbstraction/ComHwAb/CanIf/CanIf_Cfg.c \
 		Bsw/EcuAbstraction/ComHwAb/CanIf/CanTp.c \
+		Bsw/EcuAbstraction/ComHwAb/CanIf/CanTp_Cfg.c \
 		Bsw/EcuAbstraction/ComHwAb/LinIf/LinIf.c \
 		Bsw/EcuAbstraction/ComHwAb/LinIf/LinIf_Cfg.c \
 		Bsw/Service/ComService/PduR/PduR.c \

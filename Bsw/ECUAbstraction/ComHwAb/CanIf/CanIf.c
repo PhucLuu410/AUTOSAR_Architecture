@@ -36,6 +36,7 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
             return Can_Write(Hoh, &PduInfo);
         }
     }
+    return E_NOT_OK;
 }
 
 void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfoPtr)
@@ -52,7 +53,15 @@ void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfoPtr
             CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].CanIfRxPduRef == Mailbox->ControllerId)
         {
             PduIdType RxPduId = CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].CanIfRxPduId;
-            PduR_RxIndication(RxPduId, PduInfoPtr);
+            if (CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].TargetPduIdDestination == 0)
+            {
+                CanTp_RxIndication(RxPduId, PduInfoPtr);
+                return;
+            }
+            else if (CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].TargetPduIdDestination == 1)
+            {
+                PduR_RxIndication(RxPduId, PduInfoPtr);
+            }
             return;
         }
     }

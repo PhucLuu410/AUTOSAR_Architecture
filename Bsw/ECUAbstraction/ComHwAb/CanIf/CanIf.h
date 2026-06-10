@@ -16,6 +16,7 @@ typedef struct
     boolean CanIfRxPduReadNotifyStatus;
     uint8 CanIfRxPduHrhIdRef;
     uint8 CanIfRxPduRef;
+    uint8 TargetPduIdDestination;
 } CanIfRxPduCfg;
 
 typedef enum

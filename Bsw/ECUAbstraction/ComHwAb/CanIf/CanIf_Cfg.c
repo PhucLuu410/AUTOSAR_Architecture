@@ -11,6 +11,7 @@ CanIfRxPduCfg CanIfRxPduCfgs[NUMBER_OF_CAN_IF_RX_PDU] = {
         .CanIfRxCanId = 0x123,
         .CanIfRxPduHrhIdRef = CAN_1_CONTROLLER,
         .CanIfRxPduRef = 0,
+        .TargetPduIdDestination = 0,
     },
     {
         .CanIfRxPduDataLength = 8,
@@ -18,9 +19,10 @@ CanIfRxPduCfg CanIfRxPduCfgs[NUMBER_OF_CAN_IF_RX_PDU] = {
         .CanIfRxPduId = 1,
         .CanIfRxPduReadData = TRUE,
         .CanIfRxPduReadNotifyStatus = TRUE,
-        .CanIfRxCanId = 0x456,
+        .CanIfRxCanId = 0x127,
         .CanIfRxPduHrhIdRef = CAN_1_CONTROLLER,
         .CanIfRxPduRef = 1,
+        .TargetPduIdDestination = 1,
     },
 };
 
@@ -39,7 +41,7 @@ CanIfTxPduCfg CanIfTxPduCfgs[NUMBER_OF_CAN_IF_TX_PDU] = {
         .CanIfTxPduReadNotifyStatus = TRUE,
         .CanIfTxPduTruncation = FALSE,
         .CanIfTxPduTypeCfg = CAN_ID_STATIC,
-        .CanIfTxCanId = 0x456,
+        .CanIfTxCanId = 0x127,
         .CanIfTxPduBufferRef = CAN_1_CONTROLLER,
         .CanIfTxPduRef = 1,
     },

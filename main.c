@@ -15,6 +15,7 @@
 #include "CanIf.h"
 #include "CanIf_Cfg.h"
 #include "CanTp.h"
+#include "CanTp_Cfg.h"
 #include "PduR.h"
 #include "PduR_Cfg.h"
 #include "Com.h"
@@ -56,6 +57,7 @@ int main(void)
     Can_SetControllerMode(CAN_1_CONTROLLER, CAN_CS_STARTED);
 
     CanIf_Init(&CanIf_Config);
+    CanTp_Init(&CanTp_Config);
     // CanIf_SetControllerMode(0, CAN_CS_STARTED);
 
     Lin_Init(&Lin_Config);
@@ -72,8 +74,8 @@ int main(void)
     // Com_SendSignal(3);
     while (1)
     {
-        // Com_SendSignal(0);
-        // delay(10000);
+        // Com_SendSignal(3);
+        // delay(1000);
     }
 }
 

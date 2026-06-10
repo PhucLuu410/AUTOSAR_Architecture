@@ -4,8 +4,8 @@
 
 const LinIf_ConfigType *LinIf_Local_Config;
 uint8 data[8] = {0};
-static uint8 BS = 0;
-static uint8 STmin = 0;
+volatile static uint8 BS = 0;
+volatile static uint8 STmin = 0;
 void LinIf_Init(const LinIf_ConfigType *ConfigPtr)
 {
     if (ConfigPtr == NULL_PTR)
