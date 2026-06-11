@@ -3,7 +3,7 @@
 #include "CanIf.h"
 #include "Det.h"
 
-#define MASTER
+#define SLAVE
 
 static CanTp_InitAndShutdownStateMachineType CanTp_InitAndShutdownStateMachine = CANTP_OFF;
 static CanTp_TxSubStateMachineType CanTp_TxSubStateMachine = CANTP_TX_WAIT;
@@ -15,6 +15,7 @@ static const CanTp_ConfigType *CanTpLocalConfig;
 
 // // Master
 #ifdef MASTER
+
 volatile uint8 Index = 0;
 volatile uint8 Count = 1;
 volatile uint32 Length = 0;
@@ -118,35 +119,23 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
         Det_ReportError(0, 0, 0, 0);
         return;
     }
-
 #ifdef SLAVE
-    if (CanTp_RxSubStateMachine == CANTP_RX_WAIT)
-    {
-        CanTp_RxSubStateMachine = CANTP_RX_PROCESSING;
-    }
-    else
-    {
-        Det_ReportError(0, 0, 0, 0);
-        return;
-    }
+
     for (int i = 0; i < NUMBER_OF_CAN_TP_RX_NSDU; i++)
     {
         if (CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNPduRefCfg->CanTpRxNPduIdCfg == RxPduId)
         {
-            if (CanTp_RxState == CANTP_RX_IDLE)
+            if ((PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x00)
             {
-                if ((PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x00)
-                {
-                    CanTp_RxState = CANTP_RX_RECEIVE_SF;
-                }
-                else if ((PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x10)
-                {
-                    CanTp_RxState = CANTP_RX_RECEIVE_FF;
-                }
-                else if ((PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x20)
-                {
-                    CanTp_RxState = CANTP_RX_RECEIVE_CF;
-                }
+                CanTp_RxState = CANTP_RX_RECEIVE_SF;
+            }
+            else if ((PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x10)
+            {
+                CanTp_RxState = CANTP_RX_RECEIVE_FF;
+            }
+            else if ((PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x20)
+            {
+                CanTp_RxState = CANTP_RX_RECEIVE_CF;
             }
 
             if (CanTp_RxState == CANTP_RX_RECEIVE_SF)
@@ -168,7 +157,12 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
                 {
                     CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNPduRefCfg->CanTpRxNPduRef[Index++] = PduInfoPtr->SduDataPtr[j + 1];
                 }
-                CanTp_RxState = CANTP_RX_SEND_FC;
+                Bs--;
+                if (Bs == 0)
+                {
+                    Bs = BS;
+                    CanTp_RxState = CANTP_RX_SEND_FC;
+                }
             }
 
             if (CanTp_RxState == CANTP_RX_SEND_FC)
@@ -196,6 +190,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
             return;
         }
     }
+
 #endif
 
 #ifdef MASTER
@@ -208,6 +203,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
     {
         if (CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpTxNSduCfg->CanTpTxNPduRefCfg->CanTpTxNPduConfirmationPduId == RxPduId)
         {
+            // Doi FC phan hoi FF
             if (CanTp_TxState == CANTP_TX_WAIT_FC)
             {
                 if (PduInfoPtr->SduDataPtr[0] == 0x30)
@@ -218,33 +214,36 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
                 }
             }
 
+            // Gui CF
             if (CanTp_TxState == CANTP_TX_SEND_CF)
             {
-                PduInfoType PduInfo;
-                static uint8 TxBuffer[8] = {0};
-                TxBuffer[0] = (0x20 | (Count & 0x0F));
-                for (int j = 0; j < 7; j++)
+                for (int k = 0; k < Bs; k++)
                 {
-                    TxBuffer[j + 1] = CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpTxNSduCfg->CanTpTxNPduRefCfg->CanTpTxNPduRef[Index++];
-                    if (Index >= Length)
+                    static PduInfoType PduInfo;
+                    static uint8 TxBuffer[8] = {0};
+                    TxBuffer[0] = (0x20 | (Count & 0x0F));
+                    for (int j = 0; j < 7; j++)
                     {
-                        Index = 0;
-                        Count = 1;
-                        PduInfo.SduLength = 8;
-                        PduInfo.SduDataPtr = TxBuffer;
-                        CanIf_Transmit(CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpTxNSduCfg->CanTpTxNPduRefCfg->CanTpTxNPduConfirmationPduId, &PduInfo);
-                        CanTp_TxState = CANTP_TX_IDLE;
-                        CanTp_TxSubStateMachine = CANTP_TX_WAIT;
-                        return;
+                        TxBuffer[j + 1] = CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpTxNSduCfg->CanTpTxNPduRefCfg->CanTpTxNPduRef[Index++];
+                        if (Index >= Length)
+                        {
+                            Index = 0;
+                            Count = 1;
+                            PduInfo.SduLength = 8;
+                            PduInfo.SduDataPtr = TxBuffer;
+                            CanTp_TxState = CANTP_TX_IDLE;
+                            CanTp_TxSubStateMachine = CANTP_TX_WAIT;
+                            CanIf_Transmit(CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpTxNSduCfg->CanTpTxNPduRefCfg->CanTpTxNPduConfirmationPduId, &PduInfo);
+                            return;
+                        }
                     }
+                    PduInfo.SduLength = 8;
+                    PduInfo.SduDataPtr = TxBuffer;
+                    CanTp_TxState = CANTP_TX_WAIT_FC;
+                    CanIf_Transmit(CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpTxNSduCfg->CanTpTxNPduRefCfg->CanTpTxNPduConfirmationPduId, &PduInfo);
+                    for (int delay = 0; delay < StMin * 100; delay++)
+                        ;
                 }
-                PduInfo.SduLength = 8;
-                PduInfo.SduDataPtr = TxBuffer;
-                CanIf_Transmit(CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpTxNSduCfg->CanTpTxNPduRefCfg->CanTpTxNPduConfirmationPduId, &PduInfo);
-                Count++;
-                CanTp_TxState = CANTP_TX_WAIT_FC;
-                CanTp_TxSubStateMachine = CANTP_TX_PROCESSING;
-                return;
             }
         }
     }
