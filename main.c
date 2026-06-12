@@ -74,8 +74,8 @@ int main(void)
     // Com_SendSignal(3);
     while (1)
     {
-        // Com_SendSignal(3);
-        // delay(10000);
+        Com_SendSignal(3);
+        delay(10000);
     }
 }
 

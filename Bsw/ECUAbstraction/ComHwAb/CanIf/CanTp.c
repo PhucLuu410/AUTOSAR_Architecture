@@ -3,7 +3,7 @@
 #include "CanIf.h"
 #include "Det.h"
 
-#define SLAVE
+#define MASTER
 
 static CanTp_InitAndShutdownStateMachineType CanTp_InitAndShutdownStateMachine = CANTP_OFF;
 static CanTp_TxSubStateMachineType CanTp_TxSubStateMachine = CANTP_TX_WAIT;
