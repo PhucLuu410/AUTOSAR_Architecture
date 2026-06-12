@@ -11,7 +11,7 @@ Std_ReturnType Com_SendSignal(PduIdType PduId)
             PduInfoType PduInfo;
             PduInfo.SduLength = ComTxSignalConfig[i].DataLength;
             PduInfo.SduDataPtr = ComTxSignalConfig[i].SduDataPtr;
-            return PduR_Transmit(ComTxSignalConfig[i].GlobalPduId, &PduInfo);
+            // return PduR_Transmit(ComTxSignalConfig[i].GlobalPduId, &PduInfo);
         }
     }
     return E_NOT_OK;

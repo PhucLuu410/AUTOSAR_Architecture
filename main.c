@@ -67,11 +67,11 @@ int main(void)
     LinIf_Init(&LinIf_Config);
     LinTp_Init(&LinTp_Config);
 
-    PduR_Init(&PduR_PBConfig);
-    // SysTick_Init_8MHz();
-    // Os_Init();
-    // Os_Start();
-    // Com_SendSignal(3);
+    // PduR_Init(&PduR_PBConfig);
+    //  SysTick_Init_8MHz();
+    //  Os_Init();
+    //  Os_Start();
+    //  Com_SendSignal(3);
     while (1)
     {
         Com_SendSignal(3);

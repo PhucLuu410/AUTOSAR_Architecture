@@ -261,7 +261,7 @@ void LinTp_RxIndication(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
                     PduInfoType PduInfo;
                     PduInfo.SduLength = LINTP_DATA_LENGTH;
                     PduInfo.SduDataPtr = LinTp_Local_Config->LinTpGlobalCfg.LinTpRxNSduCfg[i].LinTpRxNSduPduRef;
-                    PduR_RxIndication(LinTp_Local_Config->LinTpGlobalCfg.LinTpRxNSduCfg[i].LinTpRxNSduId, &PduInfo);
+                    // PduR_RxIndication(LinTp_Local_Config->LinTpGlobalCfg.LinTpRxNSduCfg[i].LinTpRxNSduId, &PduInfo);
                     uint8 FC[8] = {0};
                     FC[0] = 0x30;
                     FC[1] = LINTP_BLOCK_SIZE;
