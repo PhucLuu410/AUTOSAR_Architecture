@@ -3,31 +3,37 @@
 
 #include "ComStack_Types.h"
 #include "Std_Types.h"
+#include "Rte_Dem_Types.h"
 
 typedef uint16 PduR_PBConfigIdType;
 typedef uint16 PduR_RoutingPathGroupIdType;
 
-typedef struct
+typedef enum
 {
-    PduIdType GlobalPduId;
-    PduIdType LocalPduId;
-    Std_ReturnType (*Transmit_Func)(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
-} PduR_TxRoutingPathType;
-typedef struct
-{
-    PduIdType GlobalPduId;
-    PduIdType LocalPduId;
-    void (*Rx_Func)(PduIdType PduId, const PduInfoType *PduInfoPtr);
-} PduR_RxRoutingPathType;
+    PDUR_UNINIT,
+    PDUR_ONLINE,
+} PduR_StateType;
 
 typedef struct
 {
-    PduR_TxRoutingPathType *TxRoutingTable;
-    PduR_RxRoutingPathType *RxRoutingTable;
+    boolean PduRDevErrorDetect;
+    boolean PduRMetaDataSupport;
+    boolean PduRZeroCostOperation;
+} PduRGeneral;
+
+typedef struct
+{
+    uint32 PduRConfigurationId;
+} PduRRoutingPaths;
+typedef struct
+{
+    PduRGeneral *PduRGeneralConfig;
+    PduRRoutingPaths *PduRRoutingPathsConfig;
 } PduR_PBConfigType;
 
-// void PduR_Init(const PduR_PBConfigType *ConfigPtr);
-void PduR_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr);
-Std_ReturnType PduR_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
-void PduR_CanIfTxConfirmation(PduIdType TxPduId, Std_ReturnType result);
+void PduR_Init(const PduR_PBConfigType *ConfigPtr);
+PduR_PBConfigIdType PduR_GetConfigurationId(void);
+void PduR_EnableRouting(PduR_RoutingPathGroupIdType id);
+void PduR_DisableRouting(PduR_RoutingPathGroupIdType id, boolean initialize);
+
 #endif

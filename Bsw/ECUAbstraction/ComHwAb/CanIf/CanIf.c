@@ -1,5 +1,7 @@
 #include "CanIf.h"
 #include "CanIf_Cfg.h"
+#include "CanTp.h"
+#include "CanTp_Cfg.h"
 #include "Can.h"
 #include "Can_Cfg.h"
 #include "PduR.h"

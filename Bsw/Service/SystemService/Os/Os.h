@@ -2,6 +2,7 @@
 #define OS_H
 
 #include "Rte.h"
+#include "Can_GeneralTypes.h"
 
 #define TASK(FunctionName) __attribute__((naked)) void FunctionName(void)
 #define SIZE_OF_TASK_STACK 128
