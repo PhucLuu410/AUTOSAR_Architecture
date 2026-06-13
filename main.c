@@ -31,6 +31,31 @@ void delay(volatile uint32_t t)
         ;
 }
 
+uint8 tx_buffer[8] = {0x0B, 0xB8, 0x5A, 0x64, 0x02, (0x01 << 4) | (0x0A & 0x0F), 0x00, 0x00};
+
+Can_PduType PduInfo1 = {
+    .swPduHandle = 0,
+    .length = 8,
+    .id = 0x181,
+    .sdu = tx_buffer,
+};
+uint8 Data2[8] = {0x03, 0x22, 0x01, 0x0C, 0x00, 0x00, 0x00, 0x00};
+
+Can_PduType PduInfo2 = {
+    .swPduHandle = 0,
+    .length = 8,
+    .id = 0x7E0,
+    .sdu = Data2,
+};
+uint8 Data3[3] = {0x22, 0xF1, 0x90};
+
+Can_PduType PduInfo3 = {
+    .swPduHandle = 0,
+    .length = 3,
+    .id = 0x7E0,
+    .sdu = Data3,
+};
+
 void SysTick_Init_8MHz(void)
 {
     SysTick->CTRL = 0;
@@ -76,6 +101,14 @@ int main(void)
     {
         // Com_SendSignal(3);
         // delay(10000);
+        Can_Write(0, &PduInfo1);
+        delay(10000);
+        Can_Write(0, &PduInfo2);
+        delay(10000);
+        // Can_Write(0, &PduInfo2);
+        // delay(100000);
+        // Can_Write(0, &PduInfo3);
+        // delay(100000);
     }
 }
 

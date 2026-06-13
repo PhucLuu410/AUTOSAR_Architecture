@@ -18,6 +18,7 @@ IPATH = -I. \
 		-I./Bsw/EcuAbstraction/ComHwAb/LinIf \
 		-I./Bsw/Service/ComService/PduR \
 		-I./Bsw/Service/ComService/Com \
+		-I./Bsw/Service/ComService/Dcm \
 		-I./Bsw/Service/SystemService/Os \
 		-I./Rte \
 		-I./App/Swc_GasControl \
@@ -57,6 +58,8 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Service/ComService/PduR/PduR_Cfg.c \
 		Bsw/Service/ComService/Com/Com.c \
 		Bsw/Service/ComService/Com/Com_Cfg.c \
+		Bsw/Service/ComService/Dcm/Dcm.c \
+		Bsw/Service/ComService/Dcm/Dcm_Cfg.c \
 		Bsw/Service/SystemService/Os/Os.c \
 		Bsw/Service/SystemService/Dem/Dem.c \
 		Bsw/Service/SystemService/Dem/Dem_Cfg.c \

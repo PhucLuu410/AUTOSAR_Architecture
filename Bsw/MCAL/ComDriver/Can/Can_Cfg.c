@@ -8,10 +8,10 @@ Can_Filter CanFilter[NUMBER_OF_CAN_FILTERS] = {
         .FilterIdType = CAN_FILTER_STANDART_ID,
         .FilterMode = CAN_FILTER_MODE_LISTMODE,
         .FilterScale = CAN_FILTER_SCALE_2_16,
-        .FilterId1 = 0x123,
-        .FilterId2 = 0x127,
-        .FilterId3 = 0x7FF,
-        .FilterId4 = 0x7FF,
+        .FilterId1 = 0x7E8,
+        .FilterId2 = 0x180,
+        .FilterId3 = 0x280,
+        .FilterId4 = 0x380,
         .FilterMask1 = 0x7FF,
         .FilterMask2 = 0x7FF,
         .FilterAssignToFifo = 0,
@@ -20,13 +20,13 @@ Can_Filter CanFilter[NUMBER_OF_CAN_FILTERS] = {
 
 Can_Baudrate CanBaudrate[NUMBER_OF_CAN_CONTROLLERS] = {
     {
-        .BaudRate = 100000,
+        .BaudRate = 500000,
         .Clock = 8000000,
-        .PropSeg = 1,
-        .Seg1 = 7,
-        .Seg2 = 2,
+        .PropSeg = 2,
+        .Seg1 = 4,
+        .Seg2 = 3,
         .SyncJumpWidth = 1,
-        .Brp = 8,
+        .Brp = 2,
     },
 };
 
