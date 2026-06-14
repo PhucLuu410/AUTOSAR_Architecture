@@ -174,7 +174,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
                     PduInfoToPduR.SduLength = Length;
                     PduInfoToPduR.SduDataPtr = CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNPduRefCfg->CanTpRxNPduRef;
                     (void)PduInfoToPduR;
-                    // PduR_RxIndication(CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNSduIdCfg, &PduInfoToPduR);
+                    PduR_CanTpRxIndication(CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNSduIdCfg, &PduInfoToPduR);
                 }
                 uint8 TxBuffer[8] = {0};
                 TxBuffer[0] = 0x30;

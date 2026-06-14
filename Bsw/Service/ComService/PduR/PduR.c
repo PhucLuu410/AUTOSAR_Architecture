@@ -38,7 +38,18 @@ void PduR_CanIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
     }
 }
 
-void PduR_LinifRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
+void PduR_LinIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
+{
+    for (int i = 0; i < SIZE_OF_RX_PDUR_TABLE; i++)
+    {
+        if (RxPduId == PduR_RoutingTableReceiveConfig[i].Id)
+        {
+            PduR_RoutingTableReceiveConfig[i].TargetFuncPtr(PduR_RoutingTableReceiveConfig[i].TargetPduId, PduInfoPtr);
+        }
+    }
+}
+
+void PduR_CanTpRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 {
     for (int i = 0; i < SIZE_OF_RX_PDUR_TABLE; i++)
     {
