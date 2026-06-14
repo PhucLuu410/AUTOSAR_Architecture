@@ -11,7 +11,7 @@ LinIfFrame LinIfFrameConfigTx[NUMBER_OF_LINIF_FRAME_TX] = {
 };
 
 LinIf_ReceivePduType LinIfFrameConfigRx[NUMBER_OF_LINIF_FRAME_RX] = {
-    [0] = {.Channel = LIN_CHANNEL_1, .PduId = 0, .Pid = 0x3C, .Length = 8, .CsModel = CLASSIC, .Direction = LIN_DIRECTION_RX, .Receive_Func = LinTp_RxIndication},
+    [0] = {.Channel = LIN_CHANNEL_1, .PduId = 1, .Pid = 0x11, .Length = 8, .CsModel = CLASSIC, .Direction = LIN_DIRECTION_RX, .Receive_Func = PduR_LinifRxIndication},
     [1] = {.Channel = LIN_CHANNEL_1, .PduId = 1, .Pid = 0x3D, .Length = 8, .CsModel = CLASSIC, .Direction = LIN_DIRECTION_RX, .Receive_Func = LinTp_RxIndication},
     [2] = {.Channel = LIN_CHANNEL_1, .PduId = 2, .Pid = 0x10, .Length = 8, .CsModel = CLASSIC, .Direction = LIN_DIRECTION_RX, .Receive_Func = LinTp_RxIndication},
     [3] = {.Channel = LIN_CHANNEL_1, .PduId = 3, .Pid = 0x14, .Length = 8, .CsModel = CLASSIC, .Direction = LIN_DIRECTION_RX, .Receive_Func = LinTp_RxIndication},
@@ -81,7 +81,7 @@ uint8 LinTpTxNSduPdu0[20] = {0};
 LinTpTxNSdu LinTpTxNSduCfg[NUMBER_OF_LINTP_FRAME_TX] = {
     [0] = {.LinTpMaxBufReq = 3,
            .LinTpNas = 0,
-           .LinTpTxNSduId = 0,
+           .LinTpTxNSduId = 1,
            .LinTpTxNSduNad = 0x3C,
            .LinTpTxNSduChannelRef = LIN_CHANNEL_1,
            .LinTpTxNSduPduRef = LinTpTxNSduPdu0},

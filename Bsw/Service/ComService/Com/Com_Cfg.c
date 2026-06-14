@@ -15,8 +15,8 @@ uint8 Diag_Error_Data_Rx[20] = {0};
 ComTxSignalType ComTxSignalConfig[NUMBER_OF_COM_TX_SIGNAL] = {
     [0] = {.GlobalPduId = 0, .DataLength = sizeof(Gas_Sensor_Data), .SduDataPtr = Gas_Sensor_Data},
     [1] = {.GlobalPduId = 1, .DataLength = sizeof(Pedal_Sensor_Data), .SduDataPtr = Pedal_Sensor_Data},
-    [2] = {.GlobalPduId = 2, .DataLength = sizeof(Door_Control_Data), .SduDataPtr = Door_Control_Data},
-    [3] = {.GlobalPduId = 3, .DataLength = sizeof(Diag_Error_Data_Tx), .SduDataPtr = Diag_Error_Data_Tx}};
+    [2] = {.GlobalPduId = 3, .DataLength = sizeof(Door_Control_Data), .SduDataPtr = Door_Control_Data},
+    [3] = {.GlobalPduId = 2, .DataLength = sizeof(Diag_Error_Data_Tx), .SduDataPtr = Diag_Error_Data_Tx}};
 
 ComRxSignalType ComRxSignalConfig[NUMBER_OF_COM_RX_SIGNAL] = {
     [0] = {.GlobalPduId = 0, .DataLength = sizeof(Motor_Control_Data), .SduDataPtr = Motor_Control_Data},

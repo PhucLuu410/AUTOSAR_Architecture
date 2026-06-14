@@ -8,7 +8,7 @@
 static CanTp_InitAndShutdownStateMachineType CanTp_InitAndShutdownStateMachine = CANTP_OFF;
 static CanTp_TxSubStateMachineType CanTp_TxSubStateMachine = CANTP_TX_WAIT;
 static CanTp_RxSubStateMachineType CanTp_RxSubStateMachine = CANTP_RX_WAIT;
-static CanTp_BufferStateMachineType CanTp_BufferStateMachine = CANTP_BUFFER_UNLOCK;
+// static CanTp_BufferStateMachineType CanTp_BufferStateMachine = CANTP_BUFFER_UNLOCK;
 static CanTp_TxStateMachine CanTp_TxState = CANTP_TX_IDLE;
 static CanTp_RxStateMachine CanTp_RxState = CANTP_RX_IDLE;
 static const CanTp_ConfigType *CanTpLocalConfig;
@@ -63,7 +63,6 @@ Std_ReturnType CanTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 
     for (int i = 0; i < NUMBER_OF_CAN_TP_TX_NSDU; i++)
     {
-
         if (CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpTxNSduCfg->CanTpTxNSduIdCfg == TxPduId)
         {
             CanTp_TxSubStateMachine = CANTP_TX_PROCESSING;
@@ -108,8 +107,8 @@ Std_ReturnType CanTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
                 }
             }
         }
-        return E_NOT_OK;
     }
+    return E_NOT_OK;
 }
 
 void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
@@ -174,6 +173,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
                     PduInfoType PduInfoToPduR;
                     PduInfoToPduR.SduLength = Length;
                     PduInfoToPduR.SduDataPtr = CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNPduRefCfg->CanTpRxNPduRef;
+                    (void)PduInfoToPduR;
                     // PduR_RxIndication(CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNSduIdCfg, &PduInfoToPduR);
                 }
                 uint8 TxBuffer[8] = {0};

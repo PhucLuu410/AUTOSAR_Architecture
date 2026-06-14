@@ -6,4 +6,5 @@
 
 Std_ReturnType Com_SendSignal(PduIdType PduId);
 void Com_RxIndication(PduIdType PduId, const PduInfoType *PduInfoPtr);
+void Dcm_RxIndication(PduIdType PduId, const PduInfoType *PduInfoPtr);
 #endif

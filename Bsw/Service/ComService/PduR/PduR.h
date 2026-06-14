@@ -35,5 +35,8 @@ void PduR_Init(const PduR_PBConfigType *ConfigPtr);
 PduR_PBConfigIdType PduR_GetConfigurationId(void);
 void PduR_EnableRouting(PduR_RoutingPathGroupIdType id);
 void PduR_DisableRouting(PduR_RoutingPathGroupIdType id, boolean initialize);
+void PduR_CanIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr);
+void PduR_LinifRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr);
+Std_ReturnType PduR_ComTransmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
 
 #endif

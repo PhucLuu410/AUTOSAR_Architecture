@@ -99,16 +99,8 @@ int main(void)
     //  Com_SendSignal(3);
     while (1)
     {
-        // Com_SendSignal(3);
+        // Com_SendSignal(2);
         // delay(10000);
-        Can_Write(0, &PduInfo1);
-        delay(10000);
-        Can_Write(0, &PduInfo2);
-        delay(10000);
-        // Can_Write(0, &PduInfo2);
-        // delay(100000);
-        // Can_Write(0, &PduInfo3);
-        // delay(100000);
     }
 }
 

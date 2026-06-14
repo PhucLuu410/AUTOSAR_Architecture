@@ -62,7 +62,7 @@ void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfoPtr
             }
             else if (CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].TargetPduIdDestination == 1)
             {
-                // PduR_RxIndication(RxPduId, PduInfoPtr);
+                PduR_CanIfRxIndication(RxPduId, PduInfoPtr);
             }
             return;
         }

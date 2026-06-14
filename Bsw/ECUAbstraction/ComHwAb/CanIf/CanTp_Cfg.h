@@ -3,7 +3,7 @@
 
 #include "CanTp.h"
 
-#define NUMBER_OF_CAN_TP_TX_NSDU 1
+#define NUMBER_OF_CAN_TP_TX_NSDU 3
 #define NUMBER_OF_CAN_TP_RX_NSDU 1
 
 #define BS 1
