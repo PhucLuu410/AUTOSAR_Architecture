@@ -23,7 +23,7 @@ IPATH = -I. \
 		-I./Rte \
 		-I./App/Swc_GasControl \
 		-I./App/Swc_DiagError \
-		-I./App/Swc_ElectricDoorControl \
+		-I./App/Swc_ReadRpmAndTemp \
 		-I./App/Swc_PedalControl \
 		-I./Bsw/Service/SystemService/Dem \
 		-I./Bsw/Service/SystemService/Det \
@@ -67,7 +67,7 @@ SRC = 	./System/Startup/startup.c \
 		Rte/Rte.c \
 		App/Swc_GasControl/Swc_GasControl.c \
 		App/Swc_DiagError/Swc_DiagError.c \
-		App/Swc_ElectricDoorControl/Swc_ElectricDoorControl.c \
+		App/Swc_ReadRpmAndTemp/Swc_ReadRpmAndTemp.c \
 		App/Swc_PedalControl/Swc_PedalControl.c \
 
 		

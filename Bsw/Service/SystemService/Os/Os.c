@@ -4,6 +4,7 @@
 #include "Lin.h"
 #include "LinIf.h"
 #include "Swc_GasControl.h"
+#include "Swc_ReadRpmAndTemp.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];
@@ -86,17 +87,26 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
+    Com_SendSignal(0);
+    ReadVehicleCommandData(Vehicle_Command);
     TerminateTask();
 }
 
 TASK(Task_1)
 {
+    Com_SendSignal(1);
+    Change_Diag(Read_Diag_Data_By_Id, 0x01, 0x0C);
+    Com_SendSignal(2);
+    Read_RPM_And_TEMP_Data(Diag_Data);
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-
+    Com_SendSignal(1);
+    Change_Diag(Read_Diag_Data_By_Id, 0x01, 0x05);
+    Com_SendSignal(2);
+    Read_RPM_And_TEMP_Data(Diag_Data);
     TerminateTask();
 }
 
@@ -109,21 +119,21 @@ TASK(Task_Idle)
 
 Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_0,
-                                     .interval = 3,
+                                     .interval = 10,
                                      .timer = &Os_System_Tick,
                                      .Priority = 0,
                                      .State = TASK_SUSPENDED},
 
                               [1] = {.OsStackPointer = &Os_Task_1[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_1,
-                                     .interval = 7,
+                                     .interval = 20,
                                      .timer = &Os_System_Tick,
                                      .Priority = 1,
                                      .State = TASK_SUSPENDED},
 
                               [2] = {.OsStackPointer = &Os_Task_2[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_2,
-                                     .interval = 10,
+                                     .interval = 30,
                                      .timer = &Os_System_Tick,
                                      .Priority = 2,
                                      .State = TASK_SUSPENDED},

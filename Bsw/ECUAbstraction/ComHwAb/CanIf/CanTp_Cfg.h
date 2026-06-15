@@ -4,7 +4,7 @@
 #include "CanTp.h"
 
 #define NUMBER_OF_CAN_TP_TX_NSDU 3
-#define NUMBER_OF_CAN_TP_RX_NSDU 1
+#define NUMBER_OF_CAN_TP_RX_NSDU 3
 
 #define BS 1
 #define STmin 10
@@ -48,6 +48,7 @@ typedef enum
     CANTP_RX_RECEIVE_SF,
     CANTP_RX_RECEIVE_FF,
     CANTP_RX_RECEIVE_CF,
+    CANTP_RX_SEND_CF,
     CANTP_RX_SEND_FC,
 } CanTp_RxStateMachine;
 

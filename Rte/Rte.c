@@ -2,14 +2,14 @@
 
 Std_ReturnType Rte_Write_Gas_Control(Rte_Gas_Control_Pdu_Type *AppData)
 {
-    Gas_Sensor_Data[0] = AppData->TargetSpeed;
-    Gas_Sensor_Data[1] = AppData->Acceleration;
-    Gas_Sensor_Data[2] = AppData->Direction;
-    Gas_Sensor_Data[3] = AppData->MotorTemp;
-    Gas_Sensor_Data[4] = AppData->CurrentSense;
-    Gas_Sensor_Data[5] = AppData->Reserved[0];
-    Gas_Sensor_Data[6] = AppData->AliveCounter;
-    Gas_Sensor_Data[7] = AppData->Checksum;
+    Engine_Status[0] = AppData->TargetSpeed;
+    Engine_Status[1] = AppData->Acceleration;
+    Engine_Status[2] = AppData->Direction;
+    Engine_Status[3] = AppData->MotorTemp;
+    Engine_Status[4] = AppData->CurrentSense;
+    Engine_Status[5] = AppData->Reserved[0];
+    Engine_Status[6] = AppData->AliveCounter;
+    Engine_Status[7] = AppData->Checksum;
     return E_OK;
 }
 Std_ReturnType Rte_Write_Pedal_Control(Rte_Pedal_Control_Pdu_Type *AppData)

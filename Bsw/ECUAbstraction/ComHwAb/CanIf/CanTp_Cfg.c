@@ -8,7 +8,7 @@ uint8 RxDataBuffer[20] = {0};
 uint8 TxDataBuffer[20] = {0};
 
 CanTpRxNPdu CanTpRxNPduCfg = {
-    .CanTpRxNPduIdCfg = 0,
+    .CanTpRxNPduIdCfg = 1,
     .CanTpRxNPduRef = RxDataBuffer,
 };
 

@@ -139,6 +139,16 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 
             if (CanTp_RxState == CANTP_RX_RECEIVE_SF)
             {
+                for (int j = 0; j < PduInfoPtr->SduLength - 2; j++)
+                {
+                    CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNPduRefCfg->CanTpRxNPduRef[Index++] = PduInfoPtr->SduDataPtr[j + 2];
+                }
+                Index = 0;
+                PduInfoType PduInfoToPduR;
+                PduInfoToPduR.SduLength = Length;
+                PduInfoToPduR.SduDataPtr = CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNPduRefCfg->CanTpRxNPduRef;
+                (void)PduInfoToPduR;
+                PduR_CanTpRxIndication(CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNSduIdCfg, &PduInfoToPduR);
             }
 
             if (CanTp_RxState == CANTP_RX_RECEIVE_FF)
