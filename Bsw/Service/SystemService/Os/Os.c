@@ -87,26 +87,19 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    Com_SendSignal(0);
-    ReadVehicleCommandData(Vehicle_Command);
+
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-    Com_SendSignal(1);
-    Change_Diag(Read_Diag_Data_By_Id, 0x01, 0x0C);
-    Com_SendSignal(2);
-    Read_RPM_And_TEMP_Data(Diag_Data);
+
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    Com_SendSignal(1);
-    Change_Diag(Read_Diag_Data_By_Id, 0x01, 0x05);
-    Com_SendSignal(2);
-    Read_RPM_And_TEMP_Data(Diag_Data);
+
     TerminateTask();
 }
 
