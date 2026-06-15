@@ -31,16 +31,16 @@ void delay(volatile uint32_t t)
         ;
 }
 
-uint8 tx_buffer[8] = {0x0B, 0xB8, 0x5A, 0x64, 0x02, 0x1A, 0x00, 0x00};
+uint8 tx_buffer[8] = {0x10, 0x22, 0xF1, 0x90, 0x00, 0x00, 0x00, 0x00};
 
 Can_PduType PduInfo1 = {
     .swPduHandle = 0,
     .length = 8,
-    .id = 0x181,
+    .id = 0x7E0,
     .sdu = tx_buffer,
 };
 
-uint8 Data2[8] = {0x02, 0x10, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00};
+uint8 Data2[8] = {0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 Can_PduType PduInfo2 = {
     .swPduHandle = 0,
@@ -56,33 +56,6 @@ Can_PduType PduInfo3 = {
     .length = 8,
     .id = 0x7E0,
     .sdu = Data3,
-};
-
-uint8 Data4[8] = {0x10, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-Can_PduType PduInfo4 = {
-    .swPduHandle = 0,
-    .length = 8,
-    .id = 0x7E0,
-    .sdu = Data4,
-};
-
-uint8 Data5[8] = {0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-Can_PduType PduInfo5 = {
-    .swPduHandle = 0,
-    .length = 8,
-    .id = 0x7E0,
-    .sdu = Data5,
-};
-
-uint8 Data6[8] = {0x22, 0xF1, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-Can_PduType PduInfo6 = {
-    .swPduHandle = 0,
-    .length = 8,
-    .id = 0x7DF,
-    .sdu = Data6,
 };
 
 void SysTick_Init_8MHz(void)
@@ -127,6 +100,8 @@ int main(void)
     Os_Start();
     while (1)
     {
+        // Com_SendSignal(3);
+        // delay(1000000);
     }
 }
 

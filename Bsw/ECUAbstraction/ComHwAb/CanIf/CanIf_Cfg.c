@@ -16,7 +16,7 @@ CanIfRxPduCfg CanIfRxPduCfgs[NUMBER_OF_CAN_IF_RX_PDU] = {
     {
         .CanIfRxPduDataLength = 8,
         .CanIfRxPduDataLengthCheck = FALSE,
-        .CanIfRxPduId = 1,
+        .CanIfRxPduId = 0,
         .CanIfRxPduReadData = TRUE,
         .CanIfRxPduReadNotifyStatus = TRUE,
         .CanIfRxCanId = 0x7E8,
