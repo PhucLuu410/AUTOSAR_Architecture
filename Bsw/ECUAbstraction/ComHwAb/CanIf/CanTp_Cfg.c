@@ -36,7 +36,7 @@ CanTpTxNSdu CanTpTxNsduConfig = {
     .CanTpNas = 0,
     .CanTpTc = FALSE,
     .CanTpTxAddressingFormatCfg = &CanTpTxAddressingFormatCfg,
-    .CanTpTxNSduIdCfg = 2,
+    .CanTpTxNSduIdCfg = 3,
     .CanTpTxNSduRef = NULL_PTR,
     .CanTpTxNPduRefCfg = &CanTpTxNPduCfg,
 };

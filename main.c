@@ -31,16 +31,16 @@ void delay(volatile uint32_t t)
         ;
 }
 
-uint8 tx_buffer[8] = {0x0B, 0xB8, 0x5A, 0x64, 0x02, 0x1A, 0x00, 0x00};
+uint8 tx_buffer[8] = {0x03, 0x22, 0xF1, 0x90, 0x00, 0x00, 0x00, 0x00};
 
 Can_PduType PduInfo1 = {
     .swPduHandle = 0,
     .length = 8,
-    .id = 0x181,
+    .id = 0x7E0,
     .sdu = tx_buffer,
 };
 
-uint8 Data2[8] = {0x02, 0x10, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00};
+uint8 Data2[8] = {0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 Can_PduType PduInfo2 = {
     .swPduHandle = 0,
@@ -122,9 +122,12 @@ int main(void)
     LinTp_Init(&LinTp_Config);
 
     // PduR_Init(&PduR_PBConfig);
-    SysTick_Init_8MHz();
-    Os_Init();
-    Os_Start();
+    // SysTick_Init_8MHz();
+    // Os_Init();
+    // Os_Start();
+    Can_Write(CAN_1_CONTROLLER, &PduInfo1);
+    delay(1000);
+    Can_Write(CAN_1_CONTROLLER, &PduInfo2);
     while (1)
     {
     }

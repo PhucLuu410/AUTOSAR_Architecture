@@ -39,7 +39,7 @@ PduR_RoutingTableTransmit PduR_RoutingTableTransmitConfig[SIZE_OF_TX_PDUR_TABLE]
     },
     {
         .Id = 3,
-        .TargetFuncPtr = LinIf_Transmit,
+        .TargetFuncPtr = CanTp_Transmit,
         .TargetPduId = 3,
     },
 };

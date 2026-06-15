@@ -3,7 +3,7 @@
 #include "CanIf.h"
 #include "Det.h"
 
-#define SLAVE
+#define MASTER
 
 static CanTp_InitAndShutdownStateMachineType CanTp_InitAndShutdownStateMachine = CANTP_OFF;
 static CanTp_TxSubStateMachineType CanTp_TxSubStateMachine = CANTP_TX_WAIT;
@@ -227,7 +227,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
             // Gui CF
             if (CanTp_TxState == CANTP_TX_SEND_CF)
             {
-                for (int k = 0; k < Bs; k++)
+                for (int k = 0; k < 2; k++)
                 {
                     static PduInfoType PduInfo;
                     static uint8 TxBuffer[8] = {0};

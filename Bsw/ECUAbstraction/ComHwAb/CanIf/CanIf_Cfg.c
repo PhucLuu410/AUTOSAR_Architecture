@@ -5,7 +5,7 @@ CanIfRxPduCfg CanIfRxPduCfgs[NUMBER_OF_CAN_IF_RX_PDU] = {
     {
         .CanIfRxPduDataLength = 8,
         .CanIfRxPduDataLengthCheck = FALSE,
-        .CanIfRxPduId = 0,
+        .CanIfRxPduId = 1,
         .CanIfRxPduReadData = TRUE,
         .CanIfRxPduReadNotifyStatus = TRUE,
         .CanIfRxCanId = 0x180,
@@ -16,7 +16,7 @@ CanIfRxPduCfg CanIfRxPduCfgs[NUMBER_OF_CAN_IF_RX_PDU] = {
     {
         .CanIfRxPduDataLength = 8,
         .CanIfRxPduDataLengthCheck = FALSE,
-        .CanIfRxPduId = 1,
+        .CanIfRxPduId = 0,
         .CanIfRxPduReadData = TRUE,
         .CanIfRxPduReadNotifyStatus = TRUE,
         .CanIfRxCanId = 0x7E8,
@@ -28,7 +28,7 @@ CanIfRxPduCfg CanIfRxPduCfgs[NUMBER_OF_CAN_IF_RX_PDU] = {
 
 CanIfTxPduCfg CanIfTxPduCfgs[NUMBER_OF_CAN_IF_TX_PDU] = {
     {
-        .CanIfTxPduId = 0,
+        .CanIfTxPduId = 1,
         .CanIfTxPduReadNotifyStatus = TRUE,
         .CanIfTxPduTruncation = FALSE,
         .CanIfTxPduTypeCfg = CAN_ID_STATIC,
@@ -37,7 +37,7 @@ CanIfTxPduCfg CanIfTxPduCfgs[NUMBER_OF_CAN_IF_TX_PDU] = {
         .CanIfTxPduRef = 0,
     },
     {
-        .CanIfTxPduId = 1,
+        .CanIfTxPduId = 0,
         .CanIfTxPduReadNotifyStatus = TRUE,
         .CanIfTxPduTruncation = FALSE,
         .CanIfTxPduTypeCfg = CAN_ID_STATIC,
