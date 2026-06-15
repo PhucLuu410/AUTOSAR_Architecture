@@ -10,16 +10,16 @@
 
 typedef struct
 {
-    uint16 Id;
+    uint16 GlobalId;
     void (*TargetFuncPtr)(PduIdType RxPduId, const PduInfoType *PduInfoPtr);
-    uint16 TargetPduId;
+    uint16 InterfaceId;
 } PduR_RoutingTableReceive;
 
 typedef struct
 {
-    uint16 Id;
+    uint16 GlobalId;
     Std_ReturnType (*TargetFuncPtr)(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
-    uint16 TargetPduId;
+    uint16 InterfaceId;
 } PduR_RoutingTableTransmit;
 
 extern PduR_RoutingTableTransmit PduR_RoutingTableTransmitConfig[SIZE_OF_TX_PDUR_TABLE];

@@ -87,7 +87,7 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-
+    Com_SendSignal(0);
     TerminateTask();
 }
 
@@ -99,7 +99,8 @@ TASK(Task_1)
 
 TASK(Task_2)
 {
-
+    Com_SendSignal(1);
+    Com_SendSignal(2);
     TerminateTask();
 }
 
@@ -126,7 +127,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 
                               [2] = {.OsStackPointer = &Os_Task_2[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_2,
-                                     .interval = 30,
+                                     .interval = 22,
                                      .timer = &Os_System_Tick,
                                      .Priority = 2,
                                      .State = TASK_SUSPENDED},
