@@ -19,22 +19,18 @@ void CanIf_DeInit(void)
     CanIfGlobalConfigPtr = NULL_PTR;
 }
 
-void CanIf_TxConfirmation(PduIdType CanTxPduId)
-{
-}
-
 Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 {
     for (int i = 0; i < NUMBER_OF_CAN_IF_TX_PDU; i++)
     {
-        if (CanIfGlobalConfigPtr->CanIfInitConfig.CanIfTxPduCfgRef[i].CanIfTxPduId == TxPduId)
+        if (CanIfGlobalConfigPtr->CanIfTxPduCfgRef[i].CanIfTxPduId == TxPduId)
         {
-            Can_HwHandleType Hoh = CanIfGlobalConfigPtr->CanIfInitConfig.CanIfTxPduCfgRef[i].CanIfTxPduBufferRef;
+            Can_HwHandleType Hoh = CanIfGlobalConfigPtr->CanIfTxPduCfgRef[i].CanIfCanHoh;
             Can_PduType PduInfo;
-            PduInfo.id = CanIfGlobalConfigPtr->CanIfInitConfig.CanIfTxPduCfgRef[i].CanIfTxCanId;
+            PduInfo.id = CanIfGlobalConfigPtr->CanIfTxPduCfgRef[i].CanIfTxCanId;
             PduInfo.length = PduInfoPtr->SduLength;
             PduInfo.sdu = PduInfoPtr->SduDataPtr;
-            PduInfo.swPduHandle = CanIfGlobalConfigPtr->CanIfInitConfig.CanIfTxPduCfgRef[i].CanIfTxPduRef;
+            PduInfo.swPduHandle = 0;
             return Can_Write(Hoh, &PduInfo);
         }
     }
@@ -50,21 +46,9 @@ void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfoPtr
     }
     for (int i = 0; i < NUMBER_OF_CAN_IF_RX_PDU; i++)
     {
-        if (CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].CanIfRxCanId == Mailbox->CanId &&
-            CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].CanIfRxPduHrhIdRef == Mailbox->Hoh &&
-            CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].CanIfRxPduRef == Mailbox->ControllerId)
+        if (Mailbox->CanId == CanIfGlobalConfigPtr->CanIfRxPduCfgRef[i].CanIfRxCanId)
         {
-            PduIdType RxPduId = CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].CanIfRxPduId;
-            if (CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].TargetPduIdDestination == 0)
-            {
-                CanTp_RxIndication(RxPduId, PduInfoPtr);
-                return;
-            }
-            else if (CanIfGlobalConfigPtr->CanIfInitConfig.CanIfRxPduCfgRef[i].TargetPduIdDestination == 1)
-            {
-                PduR_CanIfRxIndication(RxPduId, PduInfoPtr);
-            }
-            return;
+            CanIfGlobalConfigPtr->CanIfRxPduCfgRef[i].DestinationFuncPtr(CanIfGlobalConfigPtr->CanIfRxPduCfgRef[i].CanIfRxPduId, PduInfoPtr);
         }
     }
     Det_ReportError(0, 0, 0, 1);
