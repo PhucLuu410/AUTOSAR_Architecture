@@ -88,19 +88,21 @@ void TerminateTask(void)
 TASK(Task_0)
 {
     Com_SendSignal(0);
+    ReadVehicleCommandData(Vehicle_Command);
+    Parse_Diag_Data(Diag_Data);
+    Com_SendSignal(1);
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-
+    Com_SendSignal(2);
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    Com_SendSignal(1);
-    Com_SendSignal(2);
+    Com_SendSignal(3);
     TerminateTask();
 }
 

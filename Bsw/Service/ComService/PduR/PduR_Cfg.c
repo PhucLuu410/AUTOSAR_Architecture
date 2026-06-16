@@ -25,22 +25,22 @@ PduR_RoutingTableTransmit PduR_RoutingTableTransmitConfig[SIZE_OF_TX_PDUR_TABLE]
     {
         .GlobalId = 0,
         .TargetFuncPtr = CanIf_Transmit,
-        .InterfaceId = 0,
+        .LocalId = 0,
     },
     {
         .GlobalId = 1,
-        .TargetFuncPtr = CanIf_Transmit,
-        .InterfaceId = 1,
+        .TargetFuncPtr = CanTp_Transmit,
+        .LocalId = 1,
     },
     {
         .GlobalId = 2,
-        .TargetFuncPtr = CanIf_Transmit,
-        .InterfaceId = 2,
+        .TargetFuncPtr = CanTp_Transmit,
+        .LocalId = 0,
     },
     {
         .GlobalId = 3,
-        .TargetFuncPtr = LinIf_Transmit,
-        .InterfaceId = 3,
+        .TargetFuncPtr = CanTp_Transmit,
+        .LocalId = 0,
     },
 };
 
@@ -48,21 +48,21 @@ PduR_RoutingTableReceive PduR_RoutingTableReceiveConfig[SIZE_OF_RX_PDUR_TABLE] =
     {
         .GlobalId = 0,
         .TargetFuncPtr = Com_RxIndication,
-        .InterfaceId = 0,
+        .LocalId = 0,
     },
     {
         .GlobalId = 1,
         .TargetFuncPtr = Com_RxIndication,
-        .InterfaceId = 1,
+        .LocalId = 1,
     },
     {
         .GlobalId = 2,
         .TargetFuncPtr = Com_RxIndication,
-        .InterfaceId = 2,
+        .LocalId = 2,
     },
     {
         .GlobalId = 3,
         .TargetFuncPtr = Com_RxIndication,
-        .InterfaceId = 3,
+        .LocalId = 3,
     },
 };

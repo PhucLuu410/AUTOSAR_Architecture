@@ -16,7 +16,6 @@ typedef struct
 extern VehicleCommand VehicleCommandData;
 
 void ReadVehicleCommandData(uint8 *VehicleData);
-void Read_RPM_And_TEMP_Data(uint8 *RPMData);
-void Change_Diag(uint8 *DiagData, uint8 DiagH, uint8 DiagL);
+void Parse_Diag_Data(uint8 *RPMData);
 
 #endif

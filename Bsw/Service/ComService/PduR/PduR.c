@@ -21,7 +21,7 @@ Std_ReturnType PduR_ComTransmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr
     {
         if (TxPduId == PduR_RoutingTableTransmitConfig[i].GlobalId)
         {
-            return PduR_RoutingTableTransmitConfig[i].TargetFuncPtr(PduR_RoutingTableTransmitConfig[i].InterfaceId, PduInfoPtr);
+            return PduR_RoutingTableTransmitConfig[i].TargetFuncPtr(PduR_RoutingTableTransmitConfig[i].LocalId, PduInfoPtr);
         }
     }
     return 0;
@@ -33,7 +33,7 @@ void PduR_CanIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
     {
         if (RxPduId == PduR_RoutingTableReceiveConfig[i].GlobalId)
         {
-            PduR_RoutingTableReceiveConfig[i].TargetFuncPtr(PduR_RoutingTableReceiveConfig[i].InterfaceId, PduInfoPtr);
+            PduR_RoutingTableReceiveConfig[i].TargetFuncPtr(PduR_RoutingTableReceiveConfig[i].LocalId, PduInfoPtr);
         }
     }
 }
@@ -44,7 +44,7 @@ void PduR_LinIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
     {
         if (RxPduId == PduR_RoutingTableReceiveConfig[i].GlobalId)
         {
-            PduR_RoutingTableReceiveConfig[i].TargetFuncPtr(PduR_RoutingTableReceiveConfig[i].InterfaceId, PduInfoPtr);
+            PduR_RoutingTableReceiveConfig[i].TargetFuncPtr(PduR_RoutingTableReceiveConfig[i].LocalId, PduInfoPtr);
         }
     }
 }
@@ -55,7 +55,7 @@ void PduR_CanTpRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
     {
         if (RxPduId == PduR_RoutingTableReceiveConfig[i].GlobalId)
         {
-            PduR_RoutingTableReceiveConfig[i].TargetFuncPtr(PduR_RoutingTableReceiveConfig[i].InterfaceId, PduInfoPtr);
+            PduR_RoutingTableReceiveConfig[i].TargetFuncPtr(PduR_RoutingTableReceiveConfig[i].LocalId, PduInfoPtr);
         }
     }
 }

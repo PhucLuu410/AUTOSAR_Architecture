@@ -20,21 +20,14 @@ void ReadVehicleCommandData(uint8 *VehicleData)
     VehicleCommandData.Crc = VehicleData[3] & 0x0F;
 }
 
-void Read_RPM_And_TEMP_Data(uint8 *RPMData)
+void Parse_Diag_Data(uint8 *RPMData)
 {
-    if (((uint16)RPMData[0] << 8 | RPMData[1]) == 0x010C)
+    if (((uint16)RPMData[1] << 8 | RPMData[2]) == 0x010C)
     {
-        RPM = ((uint16)RPMData[2] << 8) | RPMData[3];
+        RPM = ((uint16)RPMData[3] << 8) | RPMData[4];
     }
-    if (((uint16)RPMData[0] << 8 | RPMData[1]) == 0x0105)
+    if (((uint16)RPMData[1] << 8 | RPMData[2]) == 0x0105)
     {
-        TEMP = RPMData[2];
+        TEMP = RPMData[3];
     }
-}
-
-void Change_Diag(uint8 *DiagData, uint8 DiagH, uint8 DiagL)
-{
-    DiagData[2] = DiagH;
-    DiagData[3] = DiagL;
-    ;
 }
