@@ -9,13 +9,14 @@ typedef enum
     TX_IDLE,
     TX_SEND_SF,
     TX_SEND_CF,
-    TX_WAIT_FC,
+    TX_WAIT,
 } TxStateType;
 
 typedef enum
 {
     RX_IDLE,
     RX_SEND_FC,
+    RX_RECEIVE_CF,
 } RxStateType;
 
 typedef enum
@@ -40,6 +41,7 @@ typedef struct
 
 typedef struct
 {
+    uint16 CanIfTxPduId;
     uint16 CanTpRxPduId;
     uint16 PduRRxPduId;
 } CanTpRxPduCfg;

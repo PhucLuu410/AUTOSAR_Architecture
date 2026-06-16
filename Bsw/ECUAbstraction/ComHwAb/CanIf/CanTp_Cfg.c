@@ -7,15 +7,12 @@ CanTpTxPduCfg CanTpTx_DiagCfg[NUMBER_OF_CANTP_TX] = {
         .CanTpTxPduId = 0,
         .CanIfTxPduId = 1,
     },
-    [1] = {
-        .CanTpTxPduId = 0,
-        .CanIfTxPduId = 1,
-    },
 };
 
 CanTpRxPduCfg CanTpRx_DiagCfg[NUMBER_OF_CANTP_RX] = {
     [0] = {
-        .CanTpRxPduId = 0,
+        .CanTpRxPduId = 1,
+        .CanIfTxPduId = 1,
         .PduRRxPduId = 3,
     },
 };

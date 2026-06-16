@@ -5,6 +5,11 @@
 
 static const CanTp_ConfigType *CanTpLocalConfig = NULL_PTR;
 
+static uint16 CanTpDataLength = 0;
+static uint16 CanTpIndex = 0;
+static uint8 CanTpBuffer[64] = {0};
+static uint8 CanTpCurrentTx = 0;
+
 void CanTp_Init(const CanTp_ConfigType *CfgPtr)
 {
     if (CfgPtr == NULL_PTR)
@@ -33,7 +38,7 @@ Std_ReturnType CanTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
     {
         if (CanTpLocalConfig->CanTpTxPduCfg[i].CanTpTxPduId == TxPduId && CanTp_State.TxState[i] == TX_IDLE)
         {
-            uint16 CanTpDataLength = PduInfoPtr->SduLength;
+            CanTpDataLength = PduInfoPtr->SduLength;
             if (CanTpDataLength < 7)
             {
                 CanTp_State.TxState[i] = TX_SEND_SF;
@@ -47,6 +52,7 @@ Std_ReturnType CanTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
                 }
                 PduInfo.SduDataPtr = Data2CanIf;
                 CanTp_State.TxState[i] = TX_IDLE;
+                CanTpCurrentTx = i;
                 return CanIf_Transmit(CanTpLocalConfig->CanTpTxPduCfg[i].CanIfTxPduId, &PduInfo);
             }
         }
@@ -57,11 +63,11 @@ Std_ReturnType CanTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 
 void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 {
-    for (int i = 0; i < NUMBER_OF_COM_RX_SIGNAL; i++)
+    for (int i = 0; i < NUMBER_OF_CANTP_TX; i++)
     {
-        if (CanTpLocalConfig->CanTpRxPduCfg[i].CanTpRxPduId == RxPduId && (PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x00)
+        if (CanTpLocalConfig->CanTpRxPduCfg[i].CanTpRxPduId == RxPduId && (PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x00 && CanTp_State.RxState[i] == RX_IDLE)
         {
-            uint16 CanTpDataLength = PduInfoPtr->SduDataPtr[0] & 0x0F;
+            CanTpDataLength = PduInfoPtr->SduDataPtr[0] & 0x0F;
             uint8 Data2PduR[CanTpDataLength];
             PduInfoType PduInfo;
             PduInfo.SduLength = CanTpDataLength;
@@ -70,7 +76,48 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
                 Data2PduR[Data] = PduInfoPtr->SduDataPtr[Data + 1];
             }
             PduInfo.SduDataPtr = Data2PduR;
+            CanTp_State.TxState[i] = TX_IDLE;
+            CanTp_State.RxState[i] = RX_IDLE;
             PduR_CanTpRxIndication(CanTpLocalConfig->CanTpRxPduCfg[i].PduRRxPduId, &PduInfo);
+        }
+
+        if (CanTpLocalConfig->CanTpRxPduCfg[i].CanTpRxPduId == RxPduId && (PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x10 && CanTp_State.RxState[i] == RX_IDLE)
+        {
+            CanTp_State.RxState[i] = RX_SEND_FC;
+            CanTpDataLength = (((PduInfoPtr->SduDataPtr[0] & 0x0F) << 8) | (PduInfoPtr->SduDataPtr[1]));
+            for (int Data = 2; Data < 8; Data++)
+            {
+                CanTpBuffer[CanTpIndex++] = PduInfoPtr->SduDataPtr[Data];
+            }
+        }
+
+        if (CanTpLocalConfig->CanTpRxPduCfg[i].CanTpRxPduId == RxPduId && (PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x20 && CanTp_State.RxState[i] == RX_RECEIVE_CF)
+        {
+            for (int Data = 1; Data < 8; Data++)
+            {
+                CanTpBuffer[CanTpIndex++] = PduInfoPtr->SduDataPtr[Data];
+                if (CanTpIndex >= CanTpDataLength)
+                {
+                    CanTp_State.TxState[i] = TX_IDLE;
+                    CanTp_State.RxState[i] = RX_IDLE;
+                    CanTpIndex = 0;
+                    PduInfoType PduInfo;
+                    PduInfo.SduLength = CanTpDataLength;
+                    PduInfo.SduDataPtr = CanTpBuffer;
+                    PduR_CanTpRxIndication(CanTpLocalConfig->CanTpRxPduCfg[i].PduRRxPduId, &PduInfo);
+                }
+            }
+        }
+
+        if (CanTp_State.RxState[i] == RX_SEND_FC)
+        {
+            uint8 Data2CanIf[8] = {0};
+            Data2CanIf[0] = 0x30;
+            PduInfoType PduInfo;
+            PduInfo.SduLength = 8;
+            PduInfo.SduDataPtr = Data2CanIf;
+            CanTp_State.RxState[i] = RX_RECEIVE_CF;
+            CanIf_Transmit(CanTpLocalConfig->CanTpRxPduCfg[i].CanIfTxPduId, &PduInfo);
         }
     }
 }

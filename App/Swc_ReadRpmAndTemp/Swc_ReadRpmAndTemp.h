@@ -17,5 +17,5 @@ extern VehicleCommand VehicleCommandData;
 
 void ReadVehicleCommandData(uint8 *VehicleData);
 void Parse_Diag_Data(uint8 *RPMData);
-
+void Send_Open_Diag_Command(void);
 #endif

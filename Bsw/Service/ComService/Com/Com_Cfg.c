@@ -16,7 +16,7 @@ ComTxSignalType ComTxSignalConfig[NUMBER_OF_COM_TX_SIGNAL] = {
     [0] = {.GlobalPduId = 0, .DataLength = sizeof(Engine_Status), .SduDataPtr = Engine_Status},
     [1] = {.GlobalPduId = 1, .DataLength = sizeof(Diag_Season_Control), .SduDataPtr = Diag_Season_Control},
     [2] = {.GlobalPduId = 2, .DataLength = sizeof(Diag_SoftwareVersion_Id), .SduDataPtr = Diag_SoftwareVersion_Id},
-    [3] = {.GlobalPduId = 3, .DataLength = sizeof(Diag_TEMP_Id), .SduDataPtr = Diag_TEMP_Id}};
+    [3] = {.GlobalPduId = 3, .DataLength = sizeof(Diag_VIN_Id), .SduDataPtr = Diag_VIN_Id}};
 
 ComRxSignalType ComRxSignalConfig[NUMBER_OF_COM_RX_SIGNAL] = {
     [0] = {.GlobalPduId = 0, .DataLength = sizeof(Vehicle_Command), .SduDataPtr = Vehicle_Command},

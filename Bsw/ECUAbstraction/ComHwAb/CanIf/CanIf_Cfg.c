@@ -13,14 +13,7 @@ CanIfTxPduCfg CanIfTxPduTable[] = {
         .CanIfTxPduId = 1,
         .CanIfTxCanId = 0x7E0,
         .CanIfCanHoh = 0,
-    },
-    [2] = {
-        .CanIfTxPduId = 2,
-        .CanIfTxCanId = 0x7E0,
-        .CanIfCanHoh = 0,
-    },
-
-};
+    }};
 
 CanIfRxPduCfg CanIfRxPduTable[] = {
     [0] = {
@@ -29,7 +22,7 @@ CanIfRxPduCfg CanIfRxPduTable[] = {
         .DestinationFuncPtr = PduR_CanIfRxIndication,
     },
     [1] = {
-        .CanIfRxPduId = 0,
+        .CanIfRxPduId = 1,
         .CanIfRxCanId = 0x7E8,
         .DestinationFuncPtr = CanTp_RxIndication,
     }};
