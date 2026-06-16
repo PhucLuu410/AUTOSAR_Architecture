@@ -22,7 +22,7 @@ CanIfRxPduCfg CanIfRxPduTable[] = {
         .DestinationFuncPtr = PduR_CanIfRxIndication,
     },
     [1] = {
-        .CanIfRxPduId = 1,
+        .CanIfRxPduId = 0,
         .CanIfRxCanId = 0x7E8,
         .DestinationFuncPtr = CanTp_RxIndication,
     }};

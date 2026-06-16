@@ -87,18 +87,19 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    Send_Open_Diag_Command();
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-    Com_SendSignal(2);
+    // Send_Open_Diag_Command();
+    Com_SendSignal(1);
     TerminateTask();
 }
 
 TASK(Task_2)
 {
+    Com_SendSignal(2);
     TerminateTask();
 }
 
@@ -125,7 +126,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 
                               [2] = {.OsStackPointer = &Os_Task_2[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_2,
-                                     .interval = 22,
+                                     .interval = 25,
                                      .timer = &Os_System_Tick,
                                      .Priority = 2,
                                      .State = TASK_SUSPENDED},

@@ -11,7 +11,7 @@ CanTpTxPduCfg CanTpTx_DiagCfg[NUMBER_OF_CANTP_TX] = {
 
 CanTpRxPduCfg CanTpRx_DiagCfg[NUMBER_OF_CANTP_RX] = {
     [0] = {
-        .CanTpRxPduId = 1,
+        .CanTpRxPduId = 0,
         .CanIfTxPduId = 1,
         .PduRRxPduId = 3,
     },
