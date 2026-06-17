@@ -4,7 +4,7 @@
 #include "Lin.h"
 #include "LinIf.h"
 #include "Swc_GasControl.h"
-#include "Swc_ReadRpmAndTemp.h"
+#include "Swc_Diag.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];
@@ -87,19 +87,19 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
+    Send_Open_Diag_Command();
+    Parse_Diag_Data(Diag_Data);
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-    // Send_Open_Diag_Command();
-    Com_SendSignal(1);
+    Send_Diag_VIN_Command();
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    Com_SendSignal(2);
     TerminateTask();
 }
 

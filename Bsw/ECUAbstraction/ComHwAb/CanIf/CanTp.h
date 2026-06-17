@@ -6,21 +6,6 @@
 
 typedef enum
 {
-    TX_IDLE,
-    TX_SEND_SF,
-    TX_SEND_CF,
-    TX_WAIT,
-} TxStateType;
-
-typedef enum
-{
-    RX_IDLE,
-    RX_SEND_FC,
-    RX_RECEIVE_CF,
-} RxStateType;
-
-typedef enum
-{
     CANTP_E_CANTPNAR_TIMEOUT_OCCURRED = 1,
     CANTP_E_CANTPNAS_TIMEOUT_OCCURRED,
     CANTP_E_CANTPNBR_TIMEOUT_OCCURRED,
@@ -41,16 +26,10 @@ typedef struct
 
 typedef struct
 {
-    uint16 CanIfTxPduId;
+    uint16 CanIfTxRespondPduId;
     uint16 CanTpRxPduId;
     uint16 PduRRxPduId;
 } CanTpRxPduCfg;
-
-typedef struct
-{
-    TxStateType *TxState;
-    RxStateType *RxState;
-} CanTp_StateType;
 
 typedef struct
 {
