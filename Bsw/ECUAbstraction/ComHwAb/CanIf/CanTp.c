@@ -99,80 +99,8 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
             {
                 for (int DataIndex = 0; DataIndex < 7; DataIndex++)
                 {
-<<<<<<< HEAD
-                    CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNPduRefCfg->CanTpRxNPduRef[Index++] = PduInfoPtr->SduDataPtr[j + 1];
-                }
-                Bs--;
-                if (Bs == 0)
-                {
-                    Bs = BS;
-                    CanTp_RxState = CANTP_RX_SEND_FC;
-                }
-            }
-
-            if (CanTp_RxState == CANTP_RX_SEND_FC)
-            {
-                if (Index >= Length)
-                {
-                    Index = 0;
-                    Count = 1;
-                    PduInfoType PduInfoToPduR;
-                    PduInfoToPduR.SduLength = Length;
-                    PduInfoToPduR.SduDataPtr = CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNPduRefCfg->CanTpRxNPduRef;
-                    (void)PduInfoToPduR;
-                    PduR_CanTpRxIndication(CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpRxNSduCfg->CanTpRxNSduIdCfg, &PduInfoToPduR);
-                }
-                uint8 TxBuffer[8] = {0};
-                TxBuffer[0] = 0x30;
-                TxBuffer[1] = BS;
-                TxBuffer[2] = STmin;
-                PduInfoType PduInfo;
-                PduInfo.SduLength = 8;
-                PduInfo.SduDataPtr = TxBuffer;
-                CanTp_RxState = CANTP_RX_IDLE;
-                CanTp_RxSubStateMachine = CANTP_RX_WAIT;
-                CanIf_Transmit(CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpTxNSduCfg->CanTpTxNPduRefCfg->CanTpTxNPduConfirmationPduId, &PduInfo);
-            }
-            return;
-        }
-    }
-
-#endif
-
-#ifdef MASTER
-    if (CanTp_TxSubStateMachine != CANTP_TX_PROCESSING)
-    {
-        Det_ReportError(0, 0, 0, 0);
-        return;
-    }
-    for (int i = 0; i < NUMBER_OF_CAN_TP_TX_NSDU; i++)
-    {
-        if (CanTpLocalConfig->CanTpCfg->CanTpChannelCfg->CanTpTxNSduCfg->CanTpTxNPduRefCfg->CanTpTxNPduConfirmationPduId == RxPduId)
-        {
-            // Doi FC phan hoi FF
-            if (CanTp_TxState == CANTP_TX_WAIT_FC)
-            {
-                if (PduInfoPtr->SduDataPtr[0] == 0x30)
-                {
-                    Bs = PduInfoPtr->SduDataPtr[1];
-                    StMin = PduInfoPtr->SduDataPtr[2];
-                    CanTp_TxState = CANTP_TX_SEND_CF;
-                }
-            }
-
-            // Gui CF
-            if (CanTp_TxState == CANTP_TX_SEND_CF)
-            {
-                for (int k = 0; k < 2; k++)
-                {
-                    static PduInfoType PduInfo;
-                    static uint8 TxBuffer[8] = {0};
-                    TxBuffer[0] = (0x20 | (Count & 0x0F));
-                    for (int j = 0; j < 7; j++)
-                        == == == =
-                                     CanTpBuffer[CanTpIndex++] = PduInfoPtr->SduDataPtr[DataIndex + 1];
+                    CanTpBuffer[CanTpIndex++] = PduInfoPtr->SduDataPtr[DataIndex + 1];
                     if (CanTpIndex >= CanTpRxDataLength)
->>>>>>> develop
                     {
                         PduInfoType CanTpPduInfo;
                         CanTpPduInfo.SduDataPtr = CanTpBuffer;

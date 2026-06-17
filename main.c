@@ -31,30 +31,6 @@ void delay(volatile uint32_t t)
         ;
 }
 
-uint8 Data1[8] = {0x02, 0x10, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00};
-Can_PduType Pdu1 = {
-    .id = 0x7E0,
-    .length = 8,
-    .sdu = Data1,
-    .swPduHandle = 0,
-};
-
-uint8 Data2[8] = {0x03, 0x22, 0xF1, 0x90, 0x00, 0x00, 0x00, 0x00};
-Can_PduType Pdu2 = {
-    .id = 0x7E0,
-    .length = 8,
-    .sdu = Data2,
-    .swPduHandle = 0,
-};
-
-uint8 Data3[8] = {0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-Can_PduType Pdu3 = {
-    .id = 0x7E0,
-    .length = 8,
-    .sdu = Data3,
-    .swPduHandle = 0,
-};
-
 void SysTick_Init_8MHz(void)
 {
     SysTick->CTRL = 0;
@@ -92,19 +68,10 @@ int main(void)
     LinTp_Init(&LinTp_Config);
 
     // PduR_Init(&PduR_PBConfig);
-<<<<<<< HEAD
-    // SysTick_Init_8MHz();
-    // Os_Init();
-    // Os_Start();
-    Can_Write(CAN_1_CONTROLLER, &PduInfo1);
-    delay(1000);
-    Can_Write(CAN_1_CONTROLLER, &PduInfo2);
-    == == == =
-                 SysTick_Init_8MHz();
+    SysTick_Init_8MHz();
     Os_Init();
     Os_Start();
 
->>>>>>> develop
     while (1)
     {
     }
