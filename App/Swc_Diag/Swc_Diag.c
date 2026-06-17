@@ -23,9 +23,9 @@ void ReadVehicleCommandData(uint8 *VehicleData)
 
 void Parse_Diag_Data(uint8 *DiagData)
 {
-    if (DiagData[0] == 0x50 && DiagData[1] == 0x03 && DiagData[2] == 0x00 && Open_Diag_Flag == 0)
+    if (DiagData[0] == 0x50 && DiagData[1] == 0x03 && DiagData[2] == 0x00 && Open_Diag_Flag == 1)
     {
-        Open_Diag_Flag = 1;
+        Open_Diag_Flag = 2;
     }
     if (((uint16)DiagData[1] << 8 | DiagData[2]) == 0x010C)
     {
@@ -46,12 +46,13 @@ void Send_Open_Diag_Command(void)
     if (Open_Diag_Flag == 0)
     {
         Com_SendSignal(1);
+        Open_Diag_Flag = 1;
     }
 }
 
 void Send_Diag_RPM_Command(void)
 {
-    if (Open_Diag_Flag == 1)
+    if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(2);
     }
@@ -59,7 +60,7 @@ void Send_Diag_RPM_Command(void)
 
 void Send_Diag_TEMP_Command(void)
 {
-    if (Open_Diag_Flag == 1)
+    if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(3);
     }
@@ -67,7 +68,7 @@ void Send_Diag_TEMP_Command(void)
 
 void Send_Diag_SOFTWARE_VERSION_Command(void)
 {
-    if (Open_Diag_Flag == 1)
+    if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(4);
     }
@@ -75,8 +76,16 @@ void Send_Diag_SOFTWARE_VERSION_Command(void)
 
 void Send_Diag_VIN_Command(void)
 {
-    if (Open_Diag_Flag == 1)
+    if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(5);
+    }
+}
+
+void Clear_Diag_Buffer(void)
+{
+    for (int i = 0; i < 30; i++)
+    {
+        Diag_Data[i] = 0;
     }
 }

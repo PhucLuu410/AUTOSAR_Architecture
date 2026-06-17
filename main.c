@@ -45,7 +45,6 @@ void SysTick_Init_8MHz(void)
 
 int main(void)
 {
-
     Mcu_Init(&Mcu_Configuration[0]);
     Mcu_InitClock(Mcu_Configuration[0].ClockConfig->ClockSrc);
 
