@@ -100,6 +100,7 @@ TASK(Task_1)
 
 TASK(Task_2)
 {
+    ReadVehicleCommandData(Vehicle_Command);
     TerminateTask();
 }
 
