@@ -31,58 +31,28 @@ void delay(volatile uint32_t t)
         ;
 }
 
-uint8 tx_buffer[8] = {0x03, 0x22, 0xF1, 0x90, 0x00, 0x00, 0x00, 0x00};
-
-Can_PduType PduInfo1 = {
-    .swPduHandle = 0,
-    .length = 8,
+uint8 Data1[8] = {0x02, 0x10, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00};
+Can_PduType Pdu1 = {
     .id = 0x7E0,
-    .sdu = tx_buffer,
+    .length = 8,
+    .sdu = Data1,
+    .swPduHandle = 0,
 };
 
-uint8 Data2[8] = {0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-Can_PduType PduInfo2 = {
-    .swPduHandle = 0,
-    .length = 8,
+uint8 Data2[8] = {0x03, 0x22, 0xF1, 0x90, 0x00, 0x00, 0x00, 0x00};
+Can_PduType Pdu2 = {
     .id = 0x7E0,
+    .length = 8,
     .sdu = Data2,
+    .swPduHandle = 0,
 };
 
-uint8 Data3[8] = {0x03, 0x22, 0xF1, 0x90, 0x00, 0x00, 0x00, 0x00};
-
-Can_PduType PduInfo3 = {
-    .swPduHandle = 0,
-    .length = 8,
+uint8 Data3[8] = {0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+Can_PduType Pdu3 = {
     .id = 0x7E0,
+    .length = 8,
     .sdu = Data3,
-};
-
-uint8 Data4[8] = {0x10, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-Can_PduType PduInfo4 = {
     .swPduHandle = 0,
-    .length = 8,
-    .id = 0x7E0,
-    .sdu = Data4,
-};
-
-uint8 Data5[8] = {0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-Can_PduType PduInfo5 = {
-    .swPduHandle = 0,
-    .length = 8,
-    .id = 0x7E0,
-    .sdu = Data5,
-};
-
-uint8 Data6[8] = {0x22, 0xF1, 0x90, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-Can_PduType PduInfo6 = {
-    .swPduHandle = 0,
-    .length = 8,
-    .id = 0x7DF,
-    .sdu = Data6,
 };
 
 void SysTick_Init_8MHz(void)
@@ -122,12 +92,19 @@ int main(void)
     LinTp_Init(&LinTp_Config);
 
     // PduR_Init(&PduR_PBConfig);
+<<<<<<< HEAD
     // SysTick_Init_8MHz();
     // Os_Init();
     // Os_Start();
     Can_Write(CAN_1_CONTROLLER, &PduInfo1);
     delay(1000);
     Can_Write(CAN_1_CONTROLLER, &PduInfo2);
+    == == == =
+                 SysTick_Init_8MHz();
+    Os_Init();
+    Os_Start();
+
+>>>>>>> develop
     while (1)
     {
     }

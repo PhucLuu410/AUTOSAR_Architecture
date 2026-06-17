@@ -4,7 +4,7 @@
 #include "Lin.h"
 #include "LinIf.h"
 #include "Swc_GasControl.h"
-#include "Swc_ReadRpmAndTemp.h"
+#include "Swc_Diag.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];
@@ -87,19 +87,19 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-
+    Send_Open_Diag_Command();
+    Parse_Diag_Data(Diag_Data);
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-
+    Send_Diag_VIN_Command();
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-
     TerminateTask();
 }
 
@@ -126,7 +126,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 
                               [2] = {.OsStackPointer = &Os_Task_2[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_2,
-                                     .interval = 30,
+                                     .interval = 25,
                                      .timer = &Os_System_Tick,
                                      .Priority = 2,
                                      .State = TASK_SUSPENDED},

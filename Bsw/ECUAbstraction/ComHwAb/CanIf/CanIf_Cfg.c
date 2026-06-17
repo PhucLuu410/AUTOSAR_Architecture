@@ -33,8 +33,7 @@ CanIfTxPduCfg CanIfTxPduCfgs[NUMBER_OF_CAN_IF_TX_PDU] = {
         .CanIfTxPduTruncation = FALSE,
         .CanIfTxPduTypeCfg = CAN_ID_STATIC,
         .CanIfTxCanId = 0x181,
-        .CanIfTxPduBufferRef = CAN_1_CONTROLLER,
-        .CanIfTxPduRef = 0,
+        .CanIfCanHoh = 0,
     },
     {
         .CanIfTxPduId = 0,
@@ -42,29 +41,22 @@ CanIfTxPduCfg CanIfTxPduCfgs[NUMBER_OF_CAN_IF_TX_PDU] = {
         .CanIfTxPduTruncation = FALSE,
         .CanIfTxPduTypeCfg = CAN_ID_STATIC,
         .CanIfTxCanId = 0x7E0,
-        .CanIfTxPduBufferRef = CAN_1_CONTROLLER,
-        .CanIfTxPduRef = 1,
-    },
-    {
-        .CanIfTxPduId = 2,
-        .CanIfTxPduReadNotifyStatus = TRUE,
-        .CanIfTxPduTruncation = FALSE,
-        .CanIfTxPduTypeCfg = CAN_ID_STATIC,
-        .CanIfTxCanId = 0x7E0,
-        .CanIfTxPduBufferRef = CAN_1_CONTROLLER,
-        .CanIfTxPduRef = 2,
-    },
-};
+        .CanIfCanHoh = 0,
+    }};
 
-const CanIfInitCfg CanIfInitConfig = {
-    .CanIfInitCfgSet = 0,
-    .CanIfMaxBufferSize = 8,
-    .CanIfMaxRxPduCfg = NUMBER_OF_CAN_IF_RX_PDU,
-    .CanIfMaxTxPduCfg = NUMBER_OF_CAN_IF_TX_PDU,
-    .CanIfRxPduCfgRef = CanIfRxPduCfgs,
-    .CanIfTxPduCfgRef = CanIfTxPduCfgs,
-};
+CanIfRxPduCfg CanIfRxPduTable[] = {
+    [0] = {
+        .CanIfRxPduId = 0,
+        .CanIfRxCanId = 0x180,
+        .DestinationFuncPtr = PduR_CanIfRxIndication,
+    },
+    [1] = {
+        .CanIfRxPduId = 0,
+        .CanIfRxCanId = 0x7E8,
+        .DestinationFuncPtr = CanTp_RxIndication,
+    }};
 
 const CanIf_ConfigType CanIf_Config = {
-    .CanIfInitConfig = CanIfInitConfig,
+    .CanIfRxPduCfgRef = CanIfRxPduTable,
+    .CanIfTxPduCfgRef = CanIfTxPduTable,
 };

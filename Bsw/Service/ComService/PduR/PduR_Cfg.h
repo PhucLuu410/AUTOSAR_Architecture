@@ -5,21 +5,21 @@
 #include "ComStack_Types.h"
 #include "Std_Types.h"
 
-#define SIZE_OF_TX_PDUR_TABLE 4
+#define SIZE_OF_TX_PDUR_TABLE 6
 #define SIZE_OF_RX_PDUR_TABLE 4
 
 typedef struct
 {
-    uint16 Id;
+    uint16 GlobalId;
     void (*TargetFuncPtr)(PduIdType RxPduId, const PduInfoType *PduInfoPtr);
-    uint16 TargetPduId;
+    uint16 LocalId;
 } PduR_RoutingTableReceive;
 
 typedef struct
 {
-    uint16 Id;
+    uint16 GlobalId;
     Std_ReturnType (*TargetFuncPtr)(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
-    uint16 TargetPduId;
+    uint16 LocalId;
 } PduR_RoutingTableTransmit;
 
 extern PduR_RoutingTableTransmit PduR_RoutingTableTransmitConfig[SIZE_OF_TX_PDUR_TABLE];

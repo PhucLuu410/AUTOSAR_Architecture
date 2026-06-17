@@ -16,7 +16,11 @@ typedef struct
 extern VehicleCommand VehicleCommandData;
 
 void ReadVehicleCommandData(uint8 *VehicleData);
-void Read_RPM_And_TEMP_Data(uint8 *RPMData);
-void Change_Diag(uint8 *DiagData, uint8 DiagH, uint8 DiagL);
+void Parse_Diag_Data(uint8 *RPMData);
+void Send_Open_Diag_Command(void);
+void Send_Diag_RPM_Command(void);
+void Send_Diag_TEMP_Command(void);
+void Send_Diag_SOFTWARE_VERSION_Command(void);
+void Send_Diag_VIN_Command(void);
 
 #endif

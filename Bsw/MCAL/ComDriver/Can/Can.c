@@ -359,34 +359,6 @@ void Can_MainFunction_BusOff(void)
     }
 }
 
-void Can_MainFunction_Write(void)
-{
-    if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 0))
-    {
-        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 1))
-        {
-            CanIf_TxConfirmation(Can_TxPduIds[0]);
-        }
-        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR |= (1 << 0);
-    }
-    if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 8))
-    {
-        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 9))
-        {
-            CanIf_TxConfirmation(Can_TxPduIds[1]);
-        }
-        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR |= (1 << 8);
-    }
-    if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 16))
-    {
-        if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 17))
-        {
-            CanIf_TxConfirmation(Can_TxPduIds[2]);
-        }
-        Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR |= (1 << 16);
-    }
-}
-
 void Can_MainFunction_Read(void)
 {
     uint8 RxBuffer[8];
@@ -516,7 +488,6 @@ void USB_HP_CAN1_TX_IRQHandler(void)
     {
         if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 1))
         {
-            CanIf_TxConfirmation(Can_TxPduIds[0]);
         }
         Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR |= (1 << 0);
     }
@@ -524,7 +495,6 @@ void USB_HP_CAN1_TX_IRQHandler(void)
     {
         if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 9))
         {
-            CanIf_TxConfirmation(Can_TxPduIds[1]);
         }
         Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR |= (1 << 8);
     }
@@ -532,7 +502,6 @@ void USB_HP_CAN1_TX_IRQHandler(void)
     {
         if (Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR & (1 << 17))
         {
-            CanIf_TxConfirmation(Can_TxPduIds[2]);
         }
         Can_Hardware[LocalConfig->CanController->CanControllerNumber]->TSR |= (1 << 16);
     }
