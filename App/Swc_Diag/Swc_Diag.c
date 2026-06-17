@@ -82,6 +82,22 @@ void Send_Diag_VIN_Command(void)
     }
 }
 
+void Send_Diag_eVCUSnapShot_Command(void)
+{
+    if (Open_Diag_Flag == 2)
+    {
+        Com_SendSignal(6);
+    }
+}
+
+void Send_Diag_ReadDTCInformation_Command(void)
+{
+    if (Open_Diag_Flag == 2)
+    {
+        Com_SendSignal(7);
+    }
+}
+
 void Clear_Diag_Buffer(void)
 {
     for (int i = 0; i < 30; i++)
