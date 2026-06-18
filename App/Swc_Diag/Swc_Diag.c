@@ -4,6 +4,8 @@ uint8 Open_Diag_Flag = 0;
 uint16 RPM = 0;
 uint8 TEMP = 0;
 uint32 SW_VERSION = 0;
+uint8 NOT_SUPPORT_DIAG = 0;
+
 VehicleCommand VehicleCommandData = {
     .ThrottleReg = 0,
     .EngineStartReg = 0,
@@ -19,6 +21,14 @@ void ReadVehicleCommandData(uint8 *VehicleData)
     VehicleCommandData.TorqueLimit = VehicleData[2];
     VehicleCommandData.Alive = VehicleData[3] & 0xF0;
     VehicleCommandData.Crc = VehicleData[3] & 0x0F;
+}
+
+void Clear_Diag_Buffer(void)
+{
+    for (int i = 0; i < 30; i++)
+    {
+        Diag_Data[i] = 0;
+    }
 }
 
 void Parse_Diag_Data(uint8 *DiagData)
@@ -38,6 +48,10 @@ void Parse_Diag_Data(uint8 *DiagData)
     if (DiagData[0] == 0x62 && DiagData[1] == 0xF1 && DiagData[2] == 0x89)
     {
         SW_VERSION = (uint32)DiagData[10];
+    }
+    if (DiagData[0] == 0x7F && DiagData[1] == 0x27 && DiagData[2] == 0x11)
+    {
+        NOT_SUPPORT_DIAG = 1;
     }
 }
 
@@ -98,10 +112,10 @@ void Send_Diag_ReadDTCInformation_Command(void)
     }
 }
 
-void Clear_Diag_Buffer(void)
+void Send_Diag_ClearDiagInformation_Command(void)
 {
-    for (int i = 0; i < 30; i++)
+    if (Open_Diag_Flag == 2)
     {
-        Diag_Data[i] = 0;
+        Com_SendSignal(8);
     }
 }

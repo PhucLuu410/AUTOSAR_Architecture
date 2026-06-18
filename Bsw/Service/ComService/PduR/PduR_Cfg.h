@@ -5,7 +5,7 @@
 #include "ComStack_Types.h"
 #include "Std_Types.h"
 
-#define SIZE_OF_TX_PDUR_TABLE 8
+#define SIZE_OF_TX_PDUR_TABLE 9
 #define SIZE_OF_RX_PDUR_TABLE 4
 
 typedef struct

@@ -94,7 +94,7 @@ TASK(Task_0)
 
 TASK(Task_1)
 {
-    Send_Diag_ReadDTCInformation_Command();
+    Send_Diag_VIN_Command();
     TerminateTask();
 }
 
@@ -127,7 +127,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 
                               [2] = {.OsStackPointer = &Os_Task_2[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_2,
-                                     .interval = 25,
+                                     .interval = 50,
                                      .timer = &Os_System_Tick,
                                      .Priority = 2,
                                      .State = TASK_SUSPENDED},
