@@ -87,6 +87,7 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
+    // Com_SendSignal(0);
     Send_Open_Diag_Command();
     Parse_Diag_Data(Diag_Data);
     TerminateTask();
