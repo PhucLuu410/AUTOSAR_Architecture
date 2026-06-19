@@ -13,14 +13,7 @@ CanIfTxPduCfg CanIfTxPduTable[] = {
         .CanIfTxPduId = 1,
         .CanIfTxCanId = 0x7E0,
         .CanIfCanHoh = 0,
-    },
-    [2] = {
-        .CanIfTxPduId = 2,
-        .CanIfTxCanId = 0x7E0,
-        .CanIfCanHoh = 0,
-    },
-
-};
+    }};
 
 CanIfRxPduCfg CanIfRxPduTable[] = {
     [0] = {

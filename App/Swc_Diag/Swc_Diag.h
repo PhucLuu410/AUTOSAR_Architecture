@@ -17,5 +17,15 @@ extern VehicleCommand VehicleCommandData;
 
 void ReadVehicleCommandData(uint8 *VehicleData);
 void Parse_Diag_Data(uint8 *RPMData);
+void Send_Open_Diag_Command(void);
+void Send_Diag_RPM_Command(void);
+void Send_Diag_TEMP_Command(void);
+void Send_Diag_SOFTWARE_VERSION_Command(void);
+void Send_Diag_VIN_Command(void);
+void Send_Diag_eVCUSnapShot_Command(void);
+void Send_Diag_ReadDTCInformation_Command(void);
+void Send_Diag_ClearDiagInformation_Command(void);
+
+void Clear_Diag_Buffer(void);
 
 #endif

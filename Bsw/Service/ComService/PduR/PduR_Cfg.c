@@ -30,7 +30,7 @@ PduR_RoutingTableTransmit PduR_RoutingTableTransmitConfig[SIZE_OF_TX_PDUR_TABLE]
     {
         .GlobalId = 1,
         .TargetFuncPtr = CanTp_Transmit,
-        .LocalId = 1,
+        .LocalId = 0,
     },
     {
         .GlobalId = 2,
@@ -42,7 +42,31 @@ PduR_RoutingTableTransmit PduR_RoutingTableTransmitConfig[SIZE_OF_TX_PDUR_TABLE]
         .TargetFuncPtr = CanTp_Transmit,
         .LocalId = 0,
     },
-};
+    {
+        .GlobalId = 4,
+        .TargetFuncPtr = CanTp_Transmit,
+        .LocalId = 0,
+    },
+    {
+        .GlobalId = 5,
+        .TargetFuncPtr = CanTp_Transmit,
+        .LocalId = 0,
+    },
+    {
+        .GlobalId = 6,
+        .TargetFuncPtr = CanTp_Transmit,
+        .LocalId = 0,
+    },
+    {
+        .GlobalId = 7,
+        .TargetFuncPtr = CanTp_Transmit,
+        .LocalId = 0,
+    },
+    {
+        .GlobalId = 8,
+        .TargetFuncPtr = CanTp_Transmit,
+        .LocalId = 0,
+    }};
 
 PduR_RoutingTableReceive PduR_RoutingTableReceiveConfig[SIZE_OF_RX_PDUR_TABLE] = {
     {

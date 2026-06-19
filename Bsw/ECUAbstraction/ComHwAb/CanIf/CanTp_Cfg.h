@@ -3,9 +3,27 @@
 
 #include "CanTp.h"
 
-#define NUMBER_OF_CANTP_TX 2
-#define NUMBER_OF_CANTP_RX 2
+#define NUMBER_OF_CANTP 1
+
+typedef enum
+{
+    TX_IDLE,
+    SEND_SF,
+    SEND_FF,
+    SEND_CF,
+    WAIT_FC,
+} CanTp_TxStateType;
+
+typedef enum
+{
+    RX_IDLE,
+    RECEIVE_SF,
+    RECEIVE_FF,
+    RECEIVE_CF,
+    SEND_FC,
+} CanTp_RxStateType;
 
 extern const CanTp_ConfigType CanTp_Config;
-extern CanTp_StateType CanTp_State;
+extern CanTp_TxStateType CanTp_TxState[NUMBER_OF_CANTP];
+extern CanTp_RxStateType CanTp_RxState[NUMBER_OF_CANTP];
 #endif

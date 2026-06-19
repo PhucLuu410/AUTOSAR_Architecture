@@ -2,20 +2,17 @@
 #include "CanTp.h"
 #include "Std_Types.h"
 
-CanTpTxPduCfg CanTpTx_DiagCfg[NUMBER_OF_CANTP_TX] = {
+CanTpTxPduCfg CanTpTx_DiagCfg[NUMBER_OF_CANTP] = {
     [0] = {
-        .CanTpTxPduId = 0,
-        .CanIfTxPduId = 1,
-    },
-    [1] = {
         .CanTpTxPduId = 0,
         .CanIfTxPduId = 1,
     },
 };
 
-CanTpRxPduCfg CanTpRx_DiagCfg[NUMBER_OF_CANTP_RX] = {
+CanTpRxPduCfg CanTpRx_DiagCfg[NUMBER_OF_CANTP] = {
     [0] = {
         .CanTpRxPduId = 0,
+        .CanIfTxRespondPduId = 1,
         .PduRRxPduId = 3,
     },
 };
@@ -25,10 +22,5 @@ const CanTp_ConfigType CanTp_Config = {
     .CanTpTxPduCfg = CanTpTx_DiagCfg,
 };
 
-TxStateType CanTpTxState_Diag[NUMBER_OF_CANTP_TX];
-RxStateType CanTpRxState_Diag[NUMBER_OF_CANTP_RX];
-
-CanTp_StateType CanTp_State = {
-    .TxState = CanTpTxState_Diag,
-    .RxState = CanTpRxState_Diag,
-};
+CanTp_TxStateType CanTp_TxState[NUMBER_OF_CANTP];
+CanTp_RxStateType CanTp_RxState[NUMBER_OF_CANTP];
