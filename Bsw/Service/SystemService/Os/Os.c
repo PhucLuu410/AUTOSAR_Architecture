@@ -95,7 +95,7 @@ TASK(Task_0)
 
 TASK(Task_1)
 {
-    Send_Diag_VIN_Command();
+    Send_Diag_eVCUSnapShot_Command();
     TerminateTask();
 }
 
