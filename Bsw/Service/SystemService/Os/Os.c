@@ -95,13 +95,13 @@ TASK(Task_0)
 
 TASK(Task_1)
 {
-    Send_Diag_VIN_Command();
+    Send_Diag_eVCUSnapShot_Command();
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    ReadVehicleCommandData(Vehicle_Command);
+    // ReadVehicleCommandData(Vehicle_Command);
     TerminateTask();
 }
 

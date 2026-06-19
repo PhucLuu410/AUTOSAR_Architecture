@@ -69,6 +69,7 @@ void Send_Diag_RPM_Command(void)
     if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(2);
+        Open_Diag_Flag = 3;
     }
 }
 
@@ -77,6 +78,7 @@ void Send_Diag_TEMP_Command(void)
     if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(3);
+        Open_Diag_Flag = 3;
     }
 }
 
@@ -85,6 +87,7 @@ void Send_Diag_SOFTWARE_VERSION_Command(void)
     if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(4);
+        Open_Diag_Flag = 3;
     }
 }
 
@@ -93,6 +96,7 @@ void Send_Diag_VIN_Command(void)
     if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(5);
+        Open_Diag_Flag = 3;
     }
 }
 
@@ -101,6 +105,7 @@ void Send_Diag_eVCUSnapShot_Command(void)
     if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(6);
+        Open_Diag_Flag = 3;
     }
 }
 
@@ -109,6 +114,7 @@ void Send_Diag_ReadDTCInformation_Command(void)
     if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(7);
+        Open_Diag_Flag = 3;
     }
 }
 
@@ -117,5 +123,6 @@ void Send_Diag_ClearDiagInformation_Command(void)
     if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(8);
+        Open_Diag_Flag = 3;
     }
 }

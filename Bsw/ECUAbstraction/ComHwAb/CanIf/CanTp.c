@@ -82,6 +82,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
                 PduR_CanTpRxIndication(CanTpLocalConfig->CanTpRxPduCfg[i].PduRRxPduId, &CanTpPduInfo);
                 CanTp_RxState[i] = RX_IDLE;
                 CanTp_TxState[i] = TX_IDLE;
+                return;
             }
 
             if ((PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x10 && CanTp_RxState[i] == RX_IDLE)

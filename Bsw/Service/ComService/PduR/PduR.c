@@ -29,12 +29,22 @@ Std_ReturnType PduR_ComTransmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr
 
 void PduR_CanIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 {
-    for (int i = 0; i < SIZE_OF_RX_PDUR_TABLE; i++)
+    switch (RxPduId)
     {
-        if (RxPduId == PduR_RoutingTableReceiveConfig[i].GlobalId)
-        {
-            return PduR_RoutingTableReceiveConfig[i].TargetFuncPtr(PduR_RoutingTableReceiveConfig[i].LocalId, PduInfoPtr);
-        }
+    case 1:
+        Com_RxIndication(RxPduId, PduInfoPtr);
+        break;
+    case 2:
+        Com_RxIndication(RxPduId, PduInfoPtr);
+        break;
+    case 3:
+        Com_RxIndication(RxPduId, PduInfoPtr);
+        break;
+    case 4:
+        Com_RxIndication(RxPduId, PduInfoPtr);
+        break;
+    default:
+        break;
     }
 }
 
@@ -51,11 +61,11 @@ void PduR_LinIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 
 void PduR_CanTpRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 {
-    for (int i = 0; i < SIZE_OF_RX_PDUR_TABLE; i++)
+    switch (RxPduId)
     {
-        if (RxPduId == PduR_RoutingTableReceiveConfig[i].GlobalId)
-        {
-            PduR_RoutingTableReceiveConfig[i].TargetFuncPtr(PduR_RoutingTableReceiveConfig[i].LocalId, PduInfoPtr);
-        }
+    case 3:
+        Com_RxIndication(RxPduId, PduInfoPtr);
+        Dcm_CopyRxData(RxPduId, PduInfoPtr, NULL_PTR);
+        break;
     }
 }
