@@ -4,6 +4,8 @@ uint8 Open_Diag_Flag = 0;
 uint16 RPM = 0;
 uint8 TEMP = 0;
 uint32 SW_VERSION = 0;
+uint8 NOT_SUPPORT_DIAG = 0;
+
 VehicleCommand VehicleCommandData = {
     .ThrottleReg = 0,
     .EngineStartReg = 0,
@@ -21,11 +23,19 @@ void ReadVehicleCommandData(uint8 *VehicleData)
     VehicleCommandData.Crc = VehicleData[3] & 0x0F;
 }
 
+void Clear_Diag_Buffer(void)
+{
+    for (int i = 0; i < 30; i++)
+    {
+        Diag_Data[i] = 0;
+    }
+}
+
 void Parse_Diag_Data(uint8 *DiagData)
 {
-    if (DiagData[0] == 0x50 && DiagData[1] == 0x03 && DiagData[2] == 0x00 && Open_Diag_Flag == 0)
+    if (DiagData[0] == 0x50 && DiagData[1] == 0x03 && DiagData[2] == 0x00 && Open_Diag_Flag == 1)
     {
-        Open_Diag_Flag = 1;
+        Open_Diag_Flag = 2;
     }
     if (((uint16)DiagData[1] << 8 | DiagData[2]) == 0x010C)
     {
@@ -39,6 +49,10 @@ void Parse_Diag_Data(uint8 *DiagData)
     {
         SW_VERSION = (uint32)DiagData[10];
     }
+    if (DiagData[0] == 0x7F && DiagData[1] == 0x27 && DiagData[2] == 0x11)
+    {
+        NOT_SUPPORT_DIAG = 1;
+    }
 }
 
 void Send_Open_Diag_Command(void)
@@ -46,12 +60,13 @@ void Send_Open_Diag_Command(void)
     if (Open_Diag_Flag == 0)
     {
         Com_SendSignal(1);
+        Open_Diag_Flag = 1;
     }
 }
 
 void Send_Diag_RPM_Command(void)
 {
-    if (Open_Diag_Flag == 1)
+    if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(2);
     }
@@ -59,7 +74,7 @@ void Send_Diag_RPM_Command(void)
 
 void Send_Diag_TEMP_Command(void)
 {
-    if (Open_Diag_Flag == 1)
+    if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(3);
     }
@@ -67,7 +82,7 @@ void Send_Diag_TEMP_Command(void)
 
 void Send_Diag_SOFTWARE_VERSION_Command(void)
 {
-    if (Open_Diag_Flag == 1)
+    if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(4);
     }
@@ -75,8 +90,32 @@ void Send_Diag_SOFTWARE_VERSION_Command(void)
 
 void Send_Diag_VIN_Command(void)
 {
-    if (Open_Diag_Flag == 1)
+    if (Open_Diag_Flag == 2)
     {
         Com_SendSignal(5);
+    }
+}
+
+void Send_Diag_eVCUSnapShot_Command(void)
+{
+    if (Open_Diag_Flag == 2)
+    {
+        Com_SendSignal(6);
+    }
+}
+
+void Send_Diag_ReadDTCInformation_Command(void)
+{
+    if (Open_Diag_Flag == 2)
+    {
+        Com_SendSignal(7);
+    }
+}
+
+void Send_Diag_ClearDiagInformation_Command(void)
+{
+    if (Open_Diag_Flag == 2)
+    {
+        Com_SendSignal(8);
     }
 }

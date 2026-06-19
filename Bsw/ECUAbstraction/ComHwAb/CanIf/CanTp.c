@@ -118,10 +118,13 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 
             if (CanTp_RxState[i] == SEND_FC)
             {
+                for (int delay = 0; delay < 5000; delay++)
+                    ;
                 uint8 CanTpData[8] = {0};
                 PduInfoType CanTpPduInfo;
                 CanTpData[0] = 0x30;
-                CanTpData[1] = 0x01;
+                CanTpData[1] = 0x00;
+                CanTpData[2] = 0x00;
                 CanTpPduInfo.SduDataPtr = CanTpData;
                 CanTpPduInfo.SduLength = 8;
                 CanIf_Transmit(CanTpLocalConfig->CanTpRxPduCfg[i].CanIfTxRespondPduId, &CanTpPduInfo);
