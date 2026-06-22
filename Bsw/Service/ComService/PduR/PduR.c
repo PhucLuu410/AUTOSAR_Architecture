@@ -1,6 +1,7 @@
 #include "PduR.h"
 #include "PduR_Cfg.h"
 #include "CanIf.h"
+#include "CanTp.h"
 #include "LinIf.h"
 #include "Dcm.h"
 #include "EcuM.h"
@@ -25,6 +26,11 @@ Std_ReturnType PduR_ComTransmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr
         }
     }
     return 0;
+}
+
+Std_ReturnType PduR_DcmTransmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
+{
+    return CanTp_Transmit(0, PduInfoPtr);
 }
 
 void PduR_CanIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
@@ -64,8 +70,30 @@ void PduR_CanTpRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
     switch (RxPduId)
     {
     case 3:
-        Com_RxIndication(RxPduId, PduInfoPtr);
-        Dcm_CopyRxData(RxPduId, PduInfoPtr, NULL_PTR);
+        // Com_RxIndication(RxPduId, PduInfoPtr);
+        Dcm_TpRxIndication(RxPduId, E_OK);
         break;
+    }
+}
+
+BufReq_ReturnType PduR_CanTpCopyRxData(PduIdType id, const PduInfoType *info, PduLengthType *bufferSizePtr)
+{
+    switch (id)
+    {
+    case 3:
+        return Dcm_CopyRxData(id, info, bufferSizePtr);
+    default:
+        return BUFREQ_NOT_OK;
+    }
+}
+
+BufReq_ReturnType PduR_CanTpStartOfReception(PduIdType id, const PduInfoType *info, PduLengthType TpSduLength, PduLengthType *bufferSizePtr)
+{
+    switch (id)
+    {
+    case 3:
+        return Dcm_StartOfReception(id, info, TpSduLength, bufferSizePtr);
+    default:
+        return BUFREQ_NOT_OK;
     }
 }

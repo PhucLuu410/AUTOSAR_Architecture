@@ -71,6 +71,12 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
             if ((PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x00 && CanTp_RxState[i] == RX_IDLE)
             {
                 CanTp_RxState[i] = RECEIVE_SF;
+                if (PduR_CanTpStartOfReception(CanTpLocalConfig->CanTpRxPduCfg[i].PduRRxPduId, PduInfoPtr, PduInfoPtr->SduDataPtr[0] & 0x0F, NULL_PTR) != BUFREQ_OK)
+                {
+                    CanTp_RxState[i] = RX_IDLE;
+                    CanTp_TxState[i] = TX_IDLE;
+                    return;
+                }
                 PduInfoType CanTpPduInfo;
                 uint8 CanTpData[8] = {0};
                 for (int DataIndex = 0; DataIndex < (PduInfoPtr->SduDataPtr[0] & 0x0F); DataIndex++)
@@ -79,7 +85,12 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
                 }
                 CanTpPduInfo.SduDataPtr = CanTpData;
                 CanTpPduInfo.SduLength = PduInfoPtr->SduDataPtr[0] & 0x0F;
-                PduR_CanTpRxIndication(CanTpLocalConfig->CanTpRxPduCfg[i].PduRRxPduId, &CanTpPduInfo);
+                if (PduR_CanTpCopyRxData(CanTpLocalConfig->CanTpRxPduCfg[i].PduRRxPduId, &CanTpPduInfo, NULL_PTR) != BUFREQ_OK)
+                {
+                    CanTp_RxState[i] = RX_IDLE;
+                    CanTp_TxState[i] = TX_IDLE;
+                }
+                PduR_CanTpRxIndication(CanTpLocalConfig->CanTpRxPduCfg[i].PduRRxPduId, E_OK);
                 CanTp_RxState[i] = RX_IDLE;
                 CanTp_TxState[i] = TX_IDLE;
                 return;
@@ -88,6 +99,12 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
             if ((PduInfoPtr->SduDataPtr[0] & 0xF0) == 0x10 && CanTp_RxState[i] == RX_IDLE)
             {
                 CanTp_RxState[i] = RECEIVE_FF;
+                if (PduR_CanTpStartOfReception(CanTpLocalConfig->CanTpRxPduCfg[i].PduRRxPduId, PduInfoPtr, ((PduInfoPtr->SduDataPtr[0] & 0x0F) << 8 | PduInfoPtr->SduDataPtr[1]), NULL_PTR) != BUFREQ_OK)
+                {
+                    CanTp_RxState[i] = RX_IDLE;
+                    CanTp_TxState[i] = TX_IDLE;
+                    return;
+                }
                 CanTpRxDataLength = ((PduInfoPtr->SduDataPtr[0] & 0x0F) << 8 | PduInfoPtr->SduDataPtr[1]);
                 for (int DataIndex = 0; DataIndex < 6; DataIndex++)
                 {
@@ -106,7 +123,13 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
                         PduInfoType CanTpPduInfo;
                         CanTpPduInfo.SduDataPtr = CanTpBuffer;
                         CanTpPduInfo.SduLength = CanTpRxDataLength;
-                        PduR_CanTpRxIndication(CanTpLocalConfig->CanTpRxPduCfg[i].PduRRxPduId, &CanTpPduInfo);
+                        if (PduR_CanTpCopyRxData(CanTpLocalConfig->CanTpRxPduCfg[i].PduRRxPduId, &CanTpPduInfo, NULL_PTR) != BUFREQ_OK)
+                        {
+                            CanTp_RxState[i] = RX_IDLE;
+                            CanTp_TxState[i] = TX_IDLE;
+                            return;
+                        }
+                        PduR_CanTpRxIndication(CanTpLocalConfig->CanTpRxPduCfg[i].PduRRxPduId, E_OK);
                         CanTpIndex = 0;
                         CanTpRxDataLength = 0;
                         CanTp_RxState[i] = RX_IDLE;

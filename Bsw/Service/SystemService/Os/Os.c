@@ -5,6 +5,7 @@
 #include "LinIf.h"
 #include "Swc_GasControl.h"
 #include "Swc_Diag.h"
+#include "Swc_DiagError.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];
@@ -87,21 +88,19 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    // Com_SendSignal(0);
-    Send_Open_Diag_Command();
-    Parse_Diag_Data(Diag_Data);
+    Swc_Request_Open_Diag();
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-    Send_Diag_eVCUSnapShot_Command();
+    Swc_Request_RPM_Diag();
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    // ReadVehicleCommandData(Vehicle_Command);
+    Swc_Diag_MainFunction();
     TerminateTask();
 }
 
