@@ -6,7 +6,10 @@ Std_ReturnType Dcm_ReadData(uint8 *Data)
 {
     if (Data != NULL_PTR)
     {
-        Data = Dcm_Rx_Buffer;
+        for (int i = 0; i < 30; i++)
+        {
+            Data[i] = Dcm_Rx_Buffer[i];
+        }
         return E_OK;
     }
     return E_NOT_OK;
@@ -54,34 +57,6 @@ void Dcm_TpRxIndication(PduIdType id, Std_ReturnType result)
         for (int i = 0; i < 30; i++)
         {
             Dcm_Rx_Buffer[i] = 0;
-        }
-    }
-
-    uint8_t sid = Dcm_Rx_Buffer[0];
-    uint16 ResponseSID = (Dcm_Rx_Buffer[1] << 8 | Dcm_Rx_Buffer[2]);
-
-    if (sid == 0x62 && Diag_Flag == Diag_Open)
-    {
-        switch (ResponseSID)
-        {
-        case 0x010C:
-            break;
-        case 0x0105:
-            break;
-        case 0xF189:
-            // SW_VERSION
-            break;
-        case 0xF190:
-            // VIN
-            break;
-        case 0xF001:
-            // eVCU_Snapshot
-            break;
-        case 0x2711:
-            // NOT_SUPPORT_DIAG
-            break;
-        default:
-            break;
         }
     }
 }

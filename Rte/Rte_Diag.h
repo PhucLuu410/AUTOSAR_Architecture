@@ -10,5 +10,6 @@ void Rte_Diag_Vin(void);
 void Rte_Diag_SwVersion(void);
 void Rte_Diag_Evcu_Snapshot(void);
 void Rte_Diag_DTC(void);
+void Rte_Parse_Diag_Response(void);
 
 #endif

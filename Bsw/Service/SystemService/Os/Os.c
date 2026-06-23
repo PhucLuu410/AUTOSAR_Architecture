@@ -90,19 +90,18 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-
+    Swc_Diag_Init();
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-    Swc_Diag_Init();
+    Swc_Request_Diag_Vin();
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    Swc_Request_Diag_DTC();
     TerminateTask();
 }
 

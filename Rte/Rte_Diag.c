@@ -12,6 +12,8 @@ uint8 NegativeResponseCode;
 
 boolean Diag_Request_Flag = 0;
 
+uint8 Rte_Diag_Response[30] = {0};
+
 void Rte_Open_Diag_Request(void)
 {
     if (Diag_Request_Flag == 0)
@@ -67,4 +69,9 @@ void Rte_Diag_DTC(void)
     {
         Dcm_WriteData(DTC_Diag, sizeof(DTC_Diag), &NegativeResponseCode);
     }
+}
+
+void Rte_Parse_Diag_Response(void)
+{
+    Dcm_ReadData(Rte_Diag_Response);
 }
