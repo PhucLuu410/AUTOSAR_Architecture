@@ -6,7 +6,6 @@
 #include "Swc_VehicleCommand.h"
 #include "Swc_EngineStatus.h"
 #include "Swc_Diag.h"
-#include "Swc_DiagError.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];
@@ -103,7 +102,7 @@ TASK(Task_1)
 
 TASK(Task_2)
 {
-    Swc_Diag_RPM();
+    Swc_Request_Diag_DTC();
     TerminateTask();
 }
 

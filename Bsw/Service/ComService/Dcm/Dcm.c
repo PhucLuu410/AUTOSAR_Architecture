@@ -4,6 +4,12 @@
 
 Std_ReturnType Dcm_ReadData(uint8 *Data)
 {
+    if (Data != NULL_PTR)
+    {
+        Data = Dcm_Rx_Buffer;
+        return E_OK;
+    }
+    return E_NOT_OK;
 }
 
 Std_ReturnType Dcm_WriteData(const uint8 *Data, uint16 DataLength, Dcm_NegativeResponseCodeType *ErrorCode)
@@ -11,7 +17,7 @@ Std_ReturnType Dcm_WriteData(const uint8 *Data, uint16 DataLength, Dcm_NegativeR
     PduInfoType PduInfo;
     PduInfo.SduDataPtr = (uint8 *)Data;
     PduInfo.SduLength = DataLength;
-    PduR_DcmTransmit(DCM_ID, &PduInfo);
+    return PduR_DcmTransmit(DCM_ID, &PduInfo);
 }
 
 BufReq_ReturnType Dcm_CopyRxData(PduIdType id, const PduInfoType *info, PduLengthType *bufferSizePtr)

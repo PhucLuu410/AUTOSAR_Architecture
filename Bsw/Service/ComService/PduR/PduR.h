@@ -3,7 +3,6 @@
 
 #include "ComStack_Types.h"
 #include "Std_Types.h"
-#include "Rte_Dem_Types.h"
 
 typedef uint16 PduR_PBConfigIdType;
 typedef uint16 PduR_RoutingPathGroupIdType;

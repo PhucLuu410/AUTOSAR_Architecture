@@ -68,7 +68,6 @@ SRC = 	./System/Startup/startup.c \
 		Rte/Rte_EngineStatus.c \
 		Rte/Rte_VehicleCommand.c \
 		App/Swc_EngineStatus/Swc_EngineStatus.c \
-		App/Swc_DiagError/Swc_DiagError.c \
 		App/Swc_Diag/Swc_Diag.c \
 		App/Swc_VehicleCommand/Swc_VehicleCommand.c \
 
