@@ -1,7 +1,7 @@
 #ifndef OS_H
 #define OS_H
 
-#include "Rte.h"
+#include "Rte_Diag.h"
 #include "Can_GeneralTypes.h"
 
 #define TASK(FunctionName) __attribute__((naked)) void FunctionName(void)

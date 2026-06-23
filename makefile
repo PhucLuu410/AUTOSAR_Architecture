@@ -21,10 +21,10 @@ IPATH = -I. \
 		-I./Bsw/Service/ComService/Dcm \
 		-I./Bsw/Service/SystemService/Os \
 		-I./Rte \
-		-I./App/Swc_GasControl \
+		-I./App/Swc_EngineStatus \
 		-I./App/Swc_DiagError \
 		-I./App/Swc_Diag \
-		-I./App/Swc_PedalControl \
+		-I./App/Swc_VehicleCommand \
 		-I./Bsw/Service/SystemService/Dem \
 		-I./Bsw/Service/SystemService/Det \
 
@@ -64,11 +64,13 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Service/SystemService/Dem/Dem.c \
 		Bsw/Service/SystemService/Dem/Dem_Cfg.c \
 		Bsw/Service/SystemService/Det/Det.c \
-		Rte/Rte.c \
-		App/Swc_GasControl/Swc_GasControl.c \
+		Rte/Rte_Diag.c \
+		Rte/Rte_EngineStatus.c \
+		Rte/Rte_VehicleCommand.c \
+		App/Swc_EngineStatus/Swc_EngineStatus.c \
 		App/Swc_DiagError/Swc_DiagError.c \
 		App/Swc_Diag/Swc_Diag.c \
-		App/Swc_PedalControl/Swc_PedalControl.c \
+		App/Swc_VehicleCommand/Swc_VehicleCommand.c \
 
 		
 

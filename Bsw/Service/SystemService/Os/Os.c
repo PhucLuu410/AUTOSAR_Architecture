@@ -3,7 +3,8 @@
 #include "Can.h"
 #include "Lin.h"
 #include "LinIf.h"
-#include "Swc_GasControl.h"
+#include "Swc_VehicleCommand.h"
+#include "Swc_EngineStatus.h"
 #include "Swc_Diag.h"
 #include "Swc_DiagError.h"
 
@@ -17,6 +18,8 @@ uint32 Os_Current_Task = 0;
 uint32 *Os_Current_Psp = NULL_PTR;
 uint8 MutexLock = 0;
 uint32 a = 0;
+uint16 b = 0;
+uint8 GetCommand = 0;
 
 uint8 Mutex_Lock(void)
 {
@@ -88,19 +91,19 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    Swc_Request_Open_Diag();
+
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-    Swc_Request_RPM_Diag();
+    Swc_Diag_Init();
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    Swc_Diag_MainFunction();
+    Swc_Diag_RPM();
     TerminateTask();
 }
 
@@ -127,7 +130,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 
                               [2] = {.OsStackPointer = &Os_Task_2[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_2,
-                                     .interval = 50,
+                                     .interval = 40,
                                      .timer = &Os_System_Tick,
                                      .Priority = 2,
                                      .State = TASK_SUSPENDED},

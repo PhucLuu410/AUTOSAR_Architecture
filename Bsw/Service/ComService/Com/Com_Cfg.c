@@ -17,17 +17,8 @@ uint8 Engine_TEMP_Data[8] = {0};
 
 ComTxSignalType ComTxSignalConfig[NUMBER_OF_COM_TX_SIGNAL] = {
     [0] = {.GlobalPduId = 0, .DataLength = sizeof(Engine_Status), .SduDataPtr = Engine_Status},
-    [1] = {.GlobalPduId = 1, .DataLength = sizeof(Diag_Season_Control), .SduDataPtr = Diag_Season_Control},
-    [2] = {.GlobalPduId = 2, .DataLength = sizeof(Diag_RPM_Id), .SduDataPtr = Diag_RPM_Id},
-    [3] = {.GlobalPduId = 3, .DataLength = sizeof(Diag_TEMP_Id), .SduDataPtr = Diag_TEMP_Id},
-    [4] = {.GlobalPduId = 4, .DataLength = sizeof(Diag_SoftwareVersion_Id), .SduDataPtr = Diag_SoftwareVersion_Id},
-    [5] = {.GlobalPduId = 5, .DataLength = sizeof(Diag_VIN_Id), .SduDataPtr = Diag_VIN_Id},
-    [6] = {.GlobalPduId = 6, .DataLength = sizeof(Diag_eVCUSnapShot_Id), .SduDataPtr = Diag_eVCUSnapShot_Id},
-    [7] = {.GlobalPduId = 7, .DataLength = sizeof(Diag_ReadDTCInformation_Id), .SduDataPtr = Diag_ReadDTCInformation_Id},
-    [8] = {.GlobalPduId = 8, .DataLength = sizeof(Diag_ClearDiagInformation_Id), .SduDataPtr = Diag_ClearDiagInformation_Id}};
+};
 
 ComRxSignalType ComRxSignalConfig[NUMBER_OF_COM_RX_SIGNAL] = {
     [0] = {.GlobalPduId = 0, .DataLength = sizeof(Vehicle_Command), .SduDataPtr = Vehicle_Command},
-    [1] = {.GlobalPduId = 1, .DataLength = sizeof(Diag_Season_Control_Accept), .SduDataPtr = Diag_Season_Control_Accept},
-    [2] = {.GlobalPduId = 2, .DataLength = sizeof(Engine_TEMP_Data), .SduDataPtr = Engine_TEMP_Data},
-    [3] = {.GlobalPduId = 3, .DataLength = sizeof(Diag_Data), .SduDataPtr = Diag_Data}};
+};
