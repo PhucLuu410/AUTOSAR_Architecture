@@ -22,7 +22,6 @@ typedef struct
 } PduR_RoutingTableTransmit;
 
 extern PduR_RoutingTableTransmit PduR_RoutingTableTransmitConfig[SIZE_OF_TX_PDUR_TABLE];
-extern PduR_RoutingTableReceive PduR_RoutingTableReceiveConfig[SIZE_OF_RX_PDUR_TABLE];
 extern PduR_PBConfigType PduR_Cfg;
 
 #endif

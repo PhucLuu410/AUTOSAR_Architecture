@@ -31,26 +31,3 @@ PduR_RoutingTableTransmit PduR_RoutingTableTransmitConfig[SIZE_OF_TX_PDUR_TABLE]
         .LocalId = 0,
     },
 };
-
-PduR_RoutingTableReceive PduR_RoutingTableReceiveConfig[SIZE_OF_RX_PDUR_TABLE] = {
-    [0] = {
-        .GlobalId = 0,
-        .TargetFuncPtr = Com_RxIndication,
-        .LocalId = 0,
-    },
-    [1] = {
-        .GlobalId = 1,
-        .TargetFuncPtr = Com_RxIndication,
-        .LocalId = 1,
-    },
-    [2] = {
-        .GlobalId = 2,
-        .TargetFuncPtr = Com_RxIndication,
-        .LocalId = 2,
-    },
-    [3] = {
-        .GlobalId = 3,
-        .TargetFuncPtr = Com_RxIndication,
-        .LocalId = 3,
-    },
-};

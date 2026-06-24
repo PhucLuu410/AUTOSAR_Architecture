@@ -41,13 +41,7 @@ void PduR_CanIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 
 void PduR_LinIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 {
-    for (int i = 0; i < SIZE_OF_RX_PDUR_TABLE; i++)
-    {
-        if (RxPduId == PduR_RoutingTableReceiveConfig[i].GlobalId)
-        {
-            PduR_RoutingTableReceiveConfig[i].TargetFuncPtr(PduR_RoutingTableReceiveConfig[i].LocalId, PduInfoPtr);
-        }
-    }
+    Com_RxIndication(RxPduId, PduInfoPtr);
 }
 
 void PduR_CanTpRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
