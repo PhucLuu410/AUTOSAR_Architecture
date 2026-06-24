@@ -3,7 +3,6 @@
 
 #include "ComStack_Types.h"
 #include "Std_Types.h"
-#include "Rte_Dem_Types.h"
 
 typedef uint16 PduR_PBConfigIdType;
 typedef uint16 PduR_RoutingPathGroupIdType;
@@ -38,6 +37,8 @@ void PduR_DisableRouting(PduR_RoutingPathGroupIdType id, boolean initialize);
 void PduR_CanIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr);
 void PduR_LinIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr);
 void PduR_CanTpRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr);
+BufReq_ReturnType PduR_CanTpCopyRxData(PduIdType id, const PduInfoType *info, PduLengthType *bufferSizePtr);
+BufReq_ReturnType PduR_CanTpStartOfReception(PduIdType id, const PduInfoType *info, PduLengthType TpSduLength, PduLengthType *bufferSizePtr);
 Std_ReturnType PduR_ComTransmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
-
+Std_ReturnType PduR_DcmTransmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
 #endif

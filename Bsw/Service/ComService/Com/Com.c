@@ -3,19 +3,38 @@
 #include "PduR.h"
 
 uint32 count = 0;
-Std_ReturnType Com_SendSignal(PduIdType PduId)
+
+uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void *SignalDataPtr)
 {
-    for (int i = 0; i < NUMBER_OF_COM_TX_SIGNAL; i++)
+    for (int i = 0; i < NUMBER_OF_COM_RX_SIGNAL; i++)
     {
-        if (PduId == ComTxSignalConfig[i].GlobalPduId)
+        if (SignalId == ComRxSignalConfig[i].GlobalPduId)
         {
-            PduInfoType PduInfo;
-            PduInfo.SduLength = ComTxSignalConfig[i].DataLength;
-            PduInfo.SduDataPtr = ComTxSignalConfig[i].SduDataPtr;
-            return PduR_ComTransmit(ComTxSignalConfig[i].GlobalPduId, &PduInfo);
+            for (int j = 0; j < ComRxSignalConfig[i].DataLength; j++)
+            {
+                ((uint8 *)SignalDataPtr)[j] = ComRxSignalConfig[i].SduDataPtr[j];
+            }
+            return SignalId;
         }
     }
-    return E_NOT_OK;
+    return SignalId;
+}
+
+uint8 Com_SendSignal(Com_SignalIdType SignalId, const void *SignalDataPtr)
+{
+    PduInfoType PduInfo;
+    PduInfo.SduLength = 8;
+    for (int i = 0; i < 8; i++)
+    {
+        if (SignalDataPtr == NULL_PTR)
+        {
+            break;
+        }
+        ComTxSignalConfig[SignalId].SduDataPtr[i] = ((uint8 *)SignalDataPtr)[i];
+    }
+    PduInfo.SduDataPtr = ComTxSignalConfig[SignalId].SduDataPtr;
+    PduR_ComTransmit(SignalId, &PduInfo);
+    return SignalId;
 }
 
 void Com_RxIndication(PduIdType PduId, const PduInfoType *PduInfoPtr)

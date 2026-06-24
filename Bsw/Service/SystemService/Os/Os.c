@@ -3,19 +3,31 @@
 #include "Can.h"
 #include "Lin.h"
 #include "LinIf.h"
-#include "Swc_GasControl.h"
+#include "Swc_VehicleCommand.h"
+#include "Swc_EngineStatus.h"
 #include "Swc_Diag.h"
+#include "ComStack_Types.h"
+#include "PduR.h"
 
 uint32 Os_Task_0[SIZE_OF_TASK_STACK];
 uint32 Os_Task_1[SIZE_OF_TASK_STACK];
 uint32 Os_Task_2[SIZE_OF_TASK_STACK];
 uint32 Os_Task_3[SIZE_OF_TASK_STACK];
-
 uint32 Os_System_Tick = 0;
 uint32 Os_Current_Task = 0;
 uint32 *Os_Current_Psp = NULL_PTR;
+
 uint8 MutexLock = 0;
+
+uint8 Data[8] = {0};
 uint32 a = 0;
+uint16 b = 0;
+uint8 GetCommand = 0;
+
+static PduInfoType PduInfo = {
+    .SduDataPtr = Data,
+    .SduLength = 8,
+};
 
 uint8 Mutex_Lock(void)
 {
@@ -87,21 +99,23 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    // Com_SendSignal(0);
-    Send_Open_Diag_Command();
-    Parse_Diag_Data(Diag_Data);
+    Swc_Diag_Init();
     TerminateTask();
 }
 
 TASK(Task_1)
 {
+<<<<<<< HEAD
     Send_Diag_eVCUSnapShot_Command();
+=======
+    Swc_Request_Diag_SwVersion();
+    Rte_Parse_Diag_Response();
+>>>>>>> develop
     TerminateTask();
 }
 
 TASK(Task_2)
 {
-    ReadVehicleCommandData(Vehicle_Command);
     TerminateTask();
 }
 
@@ -128,7 +142,7 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
 
                               [2] = {.OsStackPointer = &Os_Task_2[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_2,
-                                     .interval = 50,
+                                     .interval = 40,
                                      .timer = &Os_System_Tick,
                                      .Priority = 2,
                                      .State = TASK_SUSPENDED},

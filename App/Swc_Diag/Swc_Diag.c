@@ -1,121 +1,42 @@
 #include "Swc_Diag.h"
 
-uint8 Open_Diag_Flag = 0;
-uint16 RPM = 0;
-uint8 TEMP = 0;
-uint32 SW_VERSION = 0;
-uint8 NOT_SUPPORT_DIAG = 0;
-
-VehicleCommand VehicleCommandData = {
-    .ThrottleReg = 0,
-    .EngineStartReg = 0,
-    .TorqueLimit = 0,
-    .Alive = 0,
-    .Crc = 0,
-};
-
-void ReadVehicleCommandData(uint8 *VehicleData)
+void Swc_Diag_Init(void)
 {
-    VehicleCommandData.ThrottleReg = VehicleData[0];
-    VehicleCommandData.EngineStartReg = VehicleData[1] & 0x80;
-    VehicleCommandData.TorqueLimit = VehicleData[2];
-    VehicleCommandData.Alive = VehicleData[3] & 0xF0;
-    VehicleCommandData.Crc = VehicleData[3] & 0x0F;
+    Rte_Open_Diag_Request();
 }
 
-void Clear_Diag_Buffer(void)
+void Swc_Request_Diag_RPM(void)
 {
-    for (int i = 0; i < 30; i++)
-    {
-        Diag_Data[i] = 0;
-    }
+    Rte_Diag_RPM();
+    Rte_Parse_Diag_Response();
 }
 
-void Parse_Diag_Data(uint8 *DiagData)
+void Swc_Request_Diag_Temp(void)
 {
-    if (DiagData[0] == 0x50 && DiagData[1] == 0x03 && DiagData[2] == 0x00 && Open_Diag_Flag == 1)
-    {
-        Open_Diag_Flag = 2;
-    }
-    if (((uint16)DiagData[1] << 8 | DiagData[2]) == 0x010C)
-    {
-        RPM = ((uint16)DiagData[3] << 8) | DiagData[4];
-    }
-    if (((uint16)DiagData[1] << 8 | DiagData[2]) == 0x0105)
-    {
-        TEMP = DiagData[3];
-    }
-    if (DiagData[0] == 0x62 && DiagData[1] == 0xF1 && DiagData[2] == 0x89)
-    {
-        SW_VERSION = (uint32)DiagData[10];
-    }
-    if (DiagData[0] == 0x7F && DiagData[1] == 0x27 && DiagData[2] == 0x11)
-    {
-        NOT_SUPPORT_DIAG = 1;
-    }
+    Rte_Diag_Temp();
+    Rte_Parse_Diag_Response();
 }
 
-void Send_Open_Diag_Command(void)
+void Swc_Request_Diag_Vin(void)
 {
-    if (Open_Diag_Flag == 0)
-    {
-        Com_SendSignal(1);
-        Open_Diag_Flag = 1;
-    }
+    Rte_Diag_Vin();
+    Rte_Parse_Diag_Response();
 }
 
-void Send_Diag_RPM_Command(void)
+void Swc_Request_Diag_SwVersion(void)
 {
-    if (Open_Diag_Flag == 2)
-    {
-        Com_SendSignal(2);
-    }
+    Rte_Diag_SwVersion();
+    Rte_Parse_Diag_Response();
 }
 
-void Send_Diag_TEMP_Command(void)
+void Swc_Request_Diag_Evcu_Snapshot(void)
 {
-    if (Open_Diag_Flag == 2)
-    {
-        Com_SendSignal(3);
-    }
+    Rte_Diag_Evcu_Snapshot();
+    Rte_Parse_Diag_Response();
 }
 
-void Send_Diag_SOFTWARE_VERSION_Command(void)
+void Swc_Request_Diag_DTC(void)
 {
-    if (Open_Diag_Flag == 2)
-    {
-        Com_SendSignal(4);
-    }
-}
-
-void Send_Diag_VIN_Command(void)
-{
-    if (Open_Diag_Flag == 2)
-    {
-        Com_SendSignal(5);
-    }
-}
-
-void Send_Diag_eVCUSnapShot_Command(void)
-{
-    if (Open_Diag_Flag == 2)
-    {
-        Com_SendSignal(6);
-    }
-}
-
-void Send_Diag_ReadDTCInformation_Command(void)
-{
-    if (Open_Diag_Flag == 2)
-    {
-        Com_SendSignal(7);
-    }
-}
-
-void Send_Diag_ClearDiagInformation_Command(void)
-{
-    if (Open_Diag_Flag == 2)
-    {
-        Com_SendSignal(8);
-    }
+    Rte_Diag_DTC();
+    Rte_Parse_Diag_Response();
 }

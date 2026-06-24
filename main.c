@@ -70,9 +70,13 @@ int main(void)
     SysTick_Init_8MHz();
     Os_Init();
     Os_Start();
+    // Com_SendSignal(1);
 
     while (1)
     {
+        // Com_SendSignal(2);
+        // Com_SendSignal(3);
+        // delay(10000);
     }
 }
 
