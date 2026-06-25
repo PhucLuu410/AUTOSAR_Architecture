@@ -1,67 +1,130 @@
-/******************************************************************************
+/*******************************************************************************
+ * @file    Std_Types.h
+ * @brief   AUTOSAR Standard Types Definition
+ * @details Định nghĩa các kiểu dữ liệu cơ bản theo chuẩn AUTOSAR
  *
- * Module: Common - Platform
+ * @author  HALA Academy
+ * @version 1.0.0
+ * @date    2026-01-02
  *
- * File Name: Std_Types.h
- *
- * Description: General type definitions
- *
- * Author: Mohamed Ehab
- *
- *******************************************************************************/
+ * @note    Tuân thủ AUTOSAR Classic Platform R22-11
+ ******************************************************************************/
 
 #ifndef STD_TYPES_H
 #define STD_TYPES_H
 
-#include "Platform_Types.h"
-#include "Compiler.h"
+/*===========================================================================*/
+/*                              INCLUDES                                      */
+/*===========================================================================*/
+#include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
 
-/* Id for the company in the AUTOSAR
- * for example Mohamed Ehab's ID = 1000 :) */
-#define STD_TYPES_VENDOR_ID (1000U)
-
-/*
- * Module Version 1.0.0
+/*===========================================================================*/
+/*                      KIỂU SỐ NGUYÊN KHÔNG DẤU                              */
+/*===========================================================================*/
+/**
+ * @brief Số nguyên không dấu 8-bit (0 đến 255)
  */
-#define STD_TYPES_SW_MAJOR_VERSION (1U)
-#define STD_TYPES_SW_MINOR_VERSION (0U)
-#define STD_TYPES_SW_PATCH_VERSION (0U)
+typedef uint8_t uint8;
 
-/*
- * AUTOSAR Version 4.0.3
+/**
+ * @brief Số nguyên không dấu 16-bit (0 đến 65535)
  */
-#define STD_TYPES_AR_RELEASE_MAJOR_VERSION (4U)
-#define STD_TYPES_AR_RELEASE_MINOR_VERSION (0U)
-#define STD_TYPES_AR_RELEASE_PATCH_VERSION (3U)
+typedef uint16_t uint16;
 
-/*
- *  Describes the standard Return Type Definitions used in the project
+/**
+ * @brief Số nguyên không dấu 32-bit (0 đến 4294967295)
+ */
+typedef uint32_t uint32;
+
+/**
+ * @brief Số nguyên không dấu 64-bit
+ */
+typedef uint64_t uint64;
+
+/*===========================================================================*/
+/*                      KIỂU SỐ NGUYÊN CÓ DẤU                                 */
+/*===========================================================================*/
+/**
+ * @brief Số nguyên có dấu 8-bit (-128 đến 127)
+ */
+typedef int8_t sint8;
+
+/**
+ * @brief Số nguyên có dấu 16-bit (-32768 đến 32767)
+ */
+typedef int16_t sint16;
+
+/**
+ * @brief Số nguyên có dấu 32-bit
+ */
+typedef int32_t sint32;
+
+/*===========================================================================*/
+/*                      KIỂU TRẢ VỀ CHUẨN                                     */
+/*===========================================================================*/
+/**
+ * @brief Kiểu trả về chuẩn AUTOSAR
+ * @details Dùng để báo kết quả thành công/thất bại của các hàm
  */
 typedef uint8 Std_ReturnType;
 
-/*
- * Structure for the Version of the module.
- * This is requested by calling <Module name>_GetVersionInfo()
+/**
+ * @brief Hàm thực hiện thành công
+ */
+#define E_OK ((Std_ReturnType)0x00u)
+
+/**
+ * @brief Hàm thực hiện thất bại
+ */
+#define E_NOT_OK ((Std_ReturnType)0x01u)
+
+/*===========================================================================*/
+/*                      MACRO BẬT/TẮT                                         */
+/*===========================================================================*/
+/**
+ * @brief Macro cho trạng thái BẬT
+ */
+#define STD_ON (1u)
+
+/**
+ * @brief Macro cho trạng thái TẮT
+ */
+#define STD_OFF (0u)
+
+/**
+ * @brief Con trỏ NULL
+ */
+#define NULL_PTR ((void *)0)
+
+/**
+ * @brief Macro TRUE cho bool
+ */
+#ifndef TRUE
+#define TRUE (1u)
+#endif
+
+/**
+ * @brief Macro FALSE cho bool
+ */
+#ifndef FALSE
+#define FALSE (0u)
+#endif
+
+/*===========================================================================*/
+/*                      VERSION STRUCTURE                                     */
+/*===========================================================================*/
+/**
+ * @brief Structure chứa thông tin version
  */
 typedef struct
 {
-    uint16 vendorID;
-    uint16 moduleID;
-    uint8 sw_major_version;
-    uint8 sw_minor_version;
-    uint8 sw_patch_version;
+    uint16 vendorID;        /**< ID của vendor */
+    uint16 moduleID;        /**< ID của module */
+    uint8 sw_major_version; /**< Major version */
+    uint8 sw_minor_version; /**< Minor version */
+    uint8 sw_patch_version; /**< Patch version */
 } Std_VersionInfoType;
-
-#define STD_HIGH 0x01U /* Standard HIGH */
-#define STD_LOW 0x00U  /* Standard LOW */
-
-#define STD_ACTIVE 0x01U /* Logical state active */
-#define STD_IDLE 0x00U   /* Logical state idle */
-
-#define STD_ON 0x01U  /* Standard ON */
-#define STD_OFF 0x00U /* Standard OFF */
-
-#define E_OK ((Std_ReturnType)0x00U)     /* Function Return OK */
-#define E_NOT_OK ((Std_ReturnType)0x01U) /* Function Return NOT OK */
 
 #endif /* STD_TYPES_H */

@@ -9,10 +9,10 @@
 
 typedef struct
 {
-    boolean FilterStatus;
-    boolean FilterIdType;
-    boolean FilterMode;
-    boolean FilterScale;
+    bool FilterStatus;
+    bool FilterIdType;
+    bool FilterMode;
+    bool FilterScale;
     uint32 FilterId1;
     uint32 FilterId2;
     uint32 FilterId3;
@@ -35,32 +35,32 @@ typedef struct
 
 typedef struct
 {
-    boolean CanSleepIsr;
-    boolean CanWakeupIsr;
-    boolean ErrorIsr;
-    boolean LastErrorCodeIsr;
-    boolean BusOffIsr;
-    boolean ErrorPassiveIsr;
-    boolean ErrorWarningIsr;
-    boolean Fifo1OverrunIsr;
-    boolean Fifo1OFullIsr;
-    boolean Fifo1MessagePendingIsr;
-    boolean Fifo0OverrunIsr;
-    boolean Fifo0OFullIsr;
-    boolean Fifo0MessagePendingIsr;
-    boolean TransmitMailboxEmptyIsr;
+    bool CanSleepIsr;
+    bool CanWakeupIsr;
+    bool ErrorIsr;
+    bool LastErrorCodeIsr;
+    bool BusOffIsr;
+    bool ErrorPassiveIsr;
+    bool ErrorWarningIsr;
+    bool Fifo1OverrunIsr;
+    bool Fifo1OFullIsr;
+    bool Fifo1MessagePendingIsr;
+    bool Fifo0OverrunIsr;
+    bool Fifo0OFullIsr;
+    bool Fifo0MessagePendingIsr;
+    bool TransmitMailboxEmptyIsr;
 } Can_Isr;
 
 typedef struct
 {
     uint8 CanControllerNumber;
-    boolean CanDebugMode;
-    boolean CanTimerTriggerCommunicationMode;
-    boolean CanAutoBusOffMode;
-    boolean CanAutoWakeupMode;
-    boolean CanAutoRetransmission;
-    boolean CanReceiveFifoLockedMode;
-    boolean CanTransmitFifoPriority;
+    bool CanDebugMode;
+    bool CanTimerTriggerCommunicationMode;
+    bool CanAutoBusOffMode;
+    bool CanAutoWakeupMode;
+    bool CanAutoRetransmission;
+    bool CanReceiveFifoLockedMode;
+    bool CanTransmitFifoPriority;
 } Can_Controller;
 
 typedef struct

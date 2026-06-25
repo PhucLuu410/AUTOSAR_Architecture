@@ -15,7 +15,7 @@ void Rte_Read_ThrottleReq(uint8 *ThrottleReq)
     }
 }
 
-void Rte_Read_EngineStartReq(boolean *EngineStartReq)
+void Rte_Read_EngineStartReq(bool *EngineStartReq)
 {
     if (EngineStartReq != NULL_PTR)
     {

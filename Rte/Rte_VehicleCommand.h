@@ -15,7 +15,7 @@ typedef struct
 
 void Rte_Parse_Vehicle_Command(void);
 void Rte_Read_ThrottleReq(uint8 *ThrottleReq);
-void Rte_Read_EngineStartReq(boolean *EngineStartReq);
+void Rte_Read_EngineStartReq(bool *EngineStartReq);
 void Rte_Read_TorqueLimit(uint8 *TorqueLimit);
 void Rte_Read_AliveAndCrc(uint8 *AliveAndCrc);
 

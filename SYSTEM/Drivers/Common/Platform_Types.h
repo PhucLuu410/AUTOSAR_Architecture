@@ -35,20 +35,20 @@
 #define CPU_BYTE_ORDER HIGH_BYTE_FIRST
 
 #ifndef FALSE
-#define FALSE (boolean) false
+#define FALSE (bool)false
 #endif
 #ifndef TRUE
-#define TRUE (boolean) true
+#define TRUE (bool)true
 #endif
 
 #ifndef False
-#define False (boolean) false
+#define False (bool)false
 #endif
 #ifndef True
-#define True (boolean) true
+#define True (bool)true
 #endif
 
-typedef _Bool boolean;
+typedef _Bool bool;
 typedef int8_t sint8;
 typedef uint8_t uint8;
 typedef char char_t;

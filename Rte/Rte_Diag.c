@@ -10,7 +10,7 @@ uint8 DTC_Diag[3] = {0x19, 0x02, 0xFF};
 
 uint8 NegativeResponseCode;
 
-boolean Diag_Request_Flag = 0;
+bool Diag_Request_Flag = 0;
 
 uint8 Rte_Diag_Response[30] = {0};
 

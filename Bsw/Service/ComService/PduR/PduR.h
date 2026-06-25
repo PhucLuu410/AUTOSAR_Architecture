@@ -15,9 +15,9 @@ typedef enum
 
 typedef struct
 {
-    boolean PduRDevErrorDetect;
-    boolean PduRMetaDataSupport;
-    boolean PduRZeroCostOperation;
+    bool PduRDevErrorDetect;
+    bool PduRMetaDataSupport;
+    bool PduRZeroCostOperation;
 } PduRGeneral;
 
 typedef struct
@@ -33,7 +33,7 @@ typedef struct
 void PduR_Init(const PduR_PBConfigType *ConfigPtr);
 PduR_PBConfigIdType PduR_GetConfigurationId(void);
 void PduR_EnableRouting(PduR_RoutingPathGroupIdType id);
-void PduR_DisableRouting(PduR_RoutingPathGroupIdType id, boolean initialize);
+void PduR_DisableRouting(PduR_RoutingPathGroupIdType id, bool initialize);
 void PduR_CanIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr);
 void PduR_LinIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr);
 void PduR_CanTpRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr);

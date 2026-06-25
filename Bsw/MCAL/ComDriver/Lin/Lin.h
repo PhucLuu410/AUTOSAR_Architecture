@@ -9,8 +9,8 @@ typedef struct
 {
     uint32 LinChannelBaudRate;
     uint32 LinChannelId;
-    boolean LinChannelWakeupSupport;
-    boolean LinNodeType;
+    bool LinChannelWakeupSupport;
+    bool LinNodeType;
     uint32 LinClockRef;
 } LinChannel;
 
@@ -21,10 +21,10 @@ typedef struct
 
 typedef struct
 {
-    boolean LinDevErrorDetect;
+    bool LinDevErrorDetect;
     uint8 LinIndex;
     uint32 LinTimeoutDuration;
-    boolean LinVersionInfoApi;
+    bool LinVersionInfoApi;
 } LinGeneral;
 
 typedef struct

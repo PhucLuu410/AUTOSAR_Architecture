@@ -10,11 +10,11 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 {
     if ((Dio_LevelType)(Dio_Port[TypeConfig[ChannelId].Port]->IDR & TypeConfig[ChannelId].Pin))
     {
-        return STD_HIGH;
+        return STD_ON;
     }
     else
     {
-        return STD_LOW;
+        return STD_OFF;
     }
 }
 
@@ -73,11 +73,11 @@ Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId)
     if (Dio_Port[TypeConfig[ChannelId].Port]->ODR &
         TypeConfig[ChannelId].Pin)
     {
-        return STD_HIGH;
+        return STD_ON;
     }
     else
     {
-        return STD_LOW;
+        return STD_OFF;
     }
 }
 

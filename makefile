@@ -10,6 +10,8 @@ IPATH = -I. \
 		-I./Bsw/Mcal/IoDriver/Pwm \
 		-I./Bsw/Mcal/IoDriver/Icu \
 		-I./Bsw/Mcal/IoDriver \
+		-I./Bsw/Mcal/Crypto/Crypto \
+		-I./Bsw/Mcal/Crypto/Key \
 		-I./Bsw/Mcal/McuDriver/Mcu \
 		-I./Bsw/Mcal/ComDriver/Can \
 		-I./Bsw/Mcal/ComDriver/Lin \
@@ -20,13 +22,13 @@ IPATH = -I. \
 		-I./Bsw/Service/ComService/Com \
 		-I./Bsw/Service/ComService/Dcm \
 		-I./Bsw/Service/SystemService/Os \
+		-I./Bsw/Service/SystemService/Dem \
+		-I./Bsw/Service/SystemService/Det \
 		-I./Rte \
 		-I./App/Swc_EngineStatus \
 		-I./App/Swc_DiagError \
 		-I./App/Swc_Diag \
 		-I./App/Swc_VehicleCommand \
-		-I./Bsw/Service/SystemService/Dem \
-		-I./Bsw/Service/SystemService/Det \
 
 SRC = 	./System/Startup/startup.c \
 		main.c \
@@ -46,6 +48,8 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Mcal/ComDriver/Can/Can_Cfg.c \
 		Bsw/Mcal/ComDriver/Lin/Lin.c \
 		Bsw/Mcal/ComDriver/Lin/Lin_Cfg.c \
+		Bsw/Mcal/Crypto/Crypto/Crypto.c \
+		Bsw/Mcal/Crypto/Crypto/Crypto_Cfg.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb_Cfg.c \
 		Bsw/EcuAbstraction/ComHwAb/CanIf/CanIf.c \

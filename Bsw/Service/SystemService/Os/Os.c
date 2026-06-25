@@ -24,11 +24,6 @@ uint32 a = 0;
 uint16 b = 0;
 uint8 GetCommand = 0;
 
-static PduInfoType PduInfo = {
-    .SduDataPtr = Data,
-    .SduLength = 8,
-};
-
 uint8 Mutex_Lock(void)
 {
     __disable_irq();

@@ -11,13 +11,13 @@ typedef uint8 LinIf_SchHandleType;
 
 typedef struct
 {
-    boolean LinIfBusMirroringSupported;
-    boolean LinIfDevErrorDetect;
-    boolean LinIfMultipleDriversSupported;
-    boolean LinIfMultipleTrcvDriverSupported;
-    boolean LinIfNcOptionalRequestSupported;
-    boolean LinIfTpSupported;
-    boolean LinIfTrcvDriverSupported;
+    bool LinIfBusMirroringSupported;
+    bool LinIfDevErrorDetect;
+    bool LinIfMultipleDriversSupported;
+    bool LinIfMultipleTrcvDriverSupported;
+    bool LinIfNcOptionalRequestSupported;
+    bool LinIfTpSupported;
+    bool LinIfTrcvDriverSupported;
 } LinIfGeneral;
 
 typedef enum
@@ -89,13 +89,13 @@ Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr);
 Std_ReturnType LinIf_GotoSleep(NetworkHandleType Channel);
 Std_ReturnType LinIf_Wakeup(NetworkHandleType Channel);
 void LinIf_RxIndication(NetworkHandleType Channel, uint8 *Lin_SduPtr);
-Std_ReturnType LinIf_EnableBusMirroring(NetworkHandleType Channel, boolean MirroringActive);
+Std_ReturnType LinIf_EnableBusMirroring(NetworkHandleType Channel, bool MirroringActive);
 
 //-------------------------------------------------------------------------------------------------
 
 typedef struct
 {
-    boolean LinTpChangeParameterApi;
+    bool LinTpChangeParameterApi;
 } LinTpGeneral;
 
 typedef struct
@@ -118,11 +118,11 @@ typedef struct
 
 typedef struct
 {
-    boolean LinTpDropNotRequestedNad;
+    bool LinTpDropNotRequestedNad;
     uint32 LinTpMaxNumberOfRespPendingFrames;
     uint8 LinTpP2Max;
     uint8 LinTpP2Timing;
-    boolean LinTpScheduleChangeDiag;
+    bool LinTpScheduleChangeDiag;
     uint8 LinTpChannelRef;
 } LinTpChannelConfig;
 

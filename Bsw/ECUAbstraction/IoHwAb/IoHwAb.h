@@ -15,7 +15,7 @@
 typedef uint8 SensorType;
 typedef uint16 ActuatorType16;
 typedef uint8 ActuatorType;
-typedef boolean ButtonType;
+typedef bool ButtonType;
 
 typedef struct
 {
