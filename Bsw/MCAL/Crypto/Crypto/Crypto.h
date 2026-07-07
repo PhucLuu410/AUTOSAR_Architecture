@@ -6,7 +6,7 @@
 // #include "Rte_Csm_Types.h"
 // #include "Rte_NvM_Type.h"
 
-#define CRYPTO_MAX_KEY_ELEMENTS 2 
+#define CRYPTO_MAX_KEY_ELEMENTS 2
 #define CRYPTO_MAX_KEY_SIZE 16
 
 typedef struct
