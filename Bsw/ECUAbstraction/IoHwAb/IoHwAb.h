@@ -1,7 +1,7 @@
 #ifndef __IoHwAb_H
 #define __IoHwAb_H
 
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 #include "ADC/Adc.h"
 #include "ADC/Adc_Cfg.h"
 #include "Dio.h"

@@ -1,7 +1,7 @@
 #ifndef __LIN_H
 #define __LIN_H
 
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 #include "ComStack_Types.h"
 #include "Lin_GeneralTypes.h"
 

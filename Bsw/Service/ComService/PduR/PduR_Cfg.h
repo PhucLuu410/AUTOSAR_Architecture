@@ -3,7 +3,7 @@
 
 #include "PduR.h"
 #include "ComStack_Types.h"
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 #define SIZE_OF_TX_PDUR_TABLE 3
 #define SIZE_OF_RX_PDUR_TABLE 4

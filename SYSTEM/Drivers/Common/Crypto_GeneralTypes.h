@@ -17,7 +17,7 @@
 /*===========================================================================*/
 /*                              INCLUDES                                      */
 /*===========================================================================*/
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 /*===========================================================================*/
 /*                    HẰNG SỐ KÍCH THƯỚC SHA-256                              */
@@ -68,35 +68,11 @@
  */
 typedef enum
 {
-    /**
-     * @brief Khởi tạo context mới cho phiên xử lý crypto
-     * @note  Phải gọi trước UPDATE
-     */
     CRYPTO_OPERATIONMODE_START = 0x01u,
-
-    /**
-     * @brief Thêm data chunk vào quá trình xử lý
-     * @note  Có thể gọi nhiều lần với các chunks khác nhau
-     */
     CRYPTO_OPERATIONMODE_UPDATE = 0x02u,
-
-    /**
-     * @brief Kết thúc xử lý và xuất kết quả
-     * @note  Sau khi FINISH, cần START lại nếu muốn xử lý tiếp
-     */
     CRYPTO_OPERATIONMODE_FINISH = 0x04u,
-
-    /**
-     * @brief Kết hợp START + UPDATE (bắt đầu và thêm dữ liệu)
-     */
     CRYPTO_OPERATIONMODE_STREAMSTART = 0x03u,
-
-    /**
-     * @brief Xử lý toàn bộ trong một lần gọi (START + UPDATE + FINISH)
-     * @note  Dùng khi dữ liệu nhỏ, có sẵn toàn bộ trong RAM
-     */
     CRYPTO_OPERATIONMODE_SINGLECALL = 0x07u
-
 } Crypto_OperationModeType;
 
 /*===========================================================================*/
@@ -107,34 +83,11 @@ typedef enum
  */
 typedef enum
 {
-    /**
-     * @brief Thao tác thành công
-     */
     CRYPTO_E_OK = 0x00u,
-
-    /**
-     * @brief Driver đang bận xử lý job khác
-     */
     CRYPTO_E_BUSY = 0x01u,
-
-    /**
-     * @brief Buffer output không đủ lớn
-     */
     CRYPTO_E_SMALL_BUFFER = 0x02u,
-
-    /**
-     * @brief Key chưa được set hoặc không hợp lệ
-     */
     CRYPTO_E_KEY_NOT_VALID = 0x03u,
-
-    /**
-     * @brief Kích thước key không đúng yêu cầu
-     */
     CRYPTO_E_KEY_SIZE_MISMATCH = 0x04u,
-
-    /**
-     * @brief Lỗi chung, thao tác thất bại
-     */
     CRYPTO_E_NOT_OK = 0x05u
 
 } Crypto_ResultType;
@@ -147,17 +100,8 @@ typedef enum
  */
 typedef enum
 {
-    /**
-     * @brief Xác thực thành công - signature/MAC hợp lệ
-     */
     CRYPTO_E_VER_OK = 0x00u,
-
-    /**
-     * @brief Xác thực thất bại - signature/MAC không hợp lệ
-     * @warning Có thể dữ liệu đã bị sửa đổi hoặc giả mạo!
-     */
     CRYPTO_E_VER_NOT_OK = 0x01u
-
 } Crypto_VerifyResultType;
 
 /*===========================================================================*/
@@ -169,16 +113,8 @@ typedef enum
  */
 typedef enum
 {
-    /**
-     * @brief Thuật toán hash SHA-256 (FIPS 180-4)
-     */
     CRYPTO_ALGOFAM_SHA2_256 = 0x01u,
-
-    /**
-     * @brief Thuật toán ECDSA với curve NIST P-256 (secp256r1)
-     */
     CRYPTO_ALGOFAM_ECCNIST_P256 = 0x02u
-
 } Crypto_AlgorithmFamilyType;
 
 /*===========================================================================*/
@@ -189,21 +125,9 @@ typedef enum
  */
 typedef enum
 {
-    /**
-     * @brief Dịch vụ Hash (SHA-256)
-     */
     CRYPTO_SERVICE_HASH = 0x01u,
-
-    /**
-     * @brief Dịch vụ tạo chữ ký số (Signature Generate)
-     */
     CRYPTO_SERVICE_SIGNATURE_GEN = 0x02u,
-
-    /**
-     * @brief Dịch vụ xác thực chữ ký số (Signature Verify)
-     */
     CRYPTO_SERVICE_SIGNATURE_VER = 0x03u
-
 } Crypto_ServiceType;
 
 /*===========================================================================*/
@@ -307,27 +231,10 @@ typedef struct
  */
 typedef struct
 {
-    /**
-     * @brief ID duy nhất của job
-     */
     uint32 jobId;
-
-    /**
-     * @brief Loại dịch vụ (hash, sign, verify)
-     */
     Crypto_ServiceType service;
-
-    /**
-     * @brief Thuật toán sử dụng
-     */
     Crypto_AlgorithmFamilyType algorithm;
-
-    /**
-     * @brief ID của key slot (nếu cần key)
-     * @note  Chỉ dùng cho sign/verify, hash không cần key
-     */
     uint32 keyId;
-
 } Crypto_JobConfigType;
 
 /*===========================================================================*/
@@ -344,48 +251,14 @@ typedef struct
  */
 typedef struct
 {
-    /**
-     * @brief Chế độ hoạt động (START/UPDATE/FINISH/SINGLECALL)
-     */
     Crypto_OperationModeType mode;
-
-    /**
-     * @brief Con trỏ đến dữ liệu input
-     */
     const uint8 *inputPtr;
-
-    /**
-     * @brief Độ dài dữ liệu input (bytes)
-     */
     uint32 inputLength;
-
-    /**
-     * @brief Con trỏ đến buffer output (digest/signature)
-     */
     uint8 *outputPtr;
-
-    /**
-     * @brief Con trỏ đến biến chứa độ dài output
-     * @note  [in] Kích thước buffer, [out] Số bytes thực tế
-     */
     uint32 *outputLengthPtr;
-
-    /**
-     * @brief Con trỏ đến biến nhận kết quả verify
-     * @note  Chỉ dùng cho SignatureVerify và MacVerify
-     */
     Crypto_VerifyResultType *verifyPtr;
-
-    /**
-     * @brief Con trỏ đến dữ liệu thứ cấp (signature để verify)
-     */
     const uint8 *secondaryInputPtr;
-
-    /**
-     * @brief Độ dài dữ liệu thứ cấp
-     */
     uint32 secondaryInputLength;
-
 } Crypto_JobDataType;
 
 /*===========================================================================*/
@@ -400,16 +273,8 @@ typedef struct
  */
 typedef struct
 {
-    /**
-     * @brief Con trỏ đến cấu hình job
-     */
     const Crypto_JobConfigType *jobConfig;
-
-    /**
-     * @brief Dữ liệu runtime của job
-     */
     Crypto_JobDataType jobData;
-
 } Crypto_JobType;
 
 #endif /* CRYPTO_TYPES_H */

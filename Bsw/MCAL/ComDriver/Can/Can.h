@@ -3,7 +3,7 @@
 
 #include "ComStack_Types.h"
 #include "Icu.h"
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 #include "EcuM.h"
 #include "Os.h"
 

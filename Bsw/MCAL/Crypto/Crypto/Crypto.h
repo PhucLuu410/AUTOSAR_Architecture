@@ -2,31 +2,19 @@
 #define CRYPTO_H
 
 #include "Crypto_GeneralTypes.h"
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 // #include "Rte_Csm_Types.h"
 // #include "Rte_NvM_Type.h"
 
-#define CRYPTO_MAX_KEY_ELEMENTS 2 
-#define CRYPTO_MAX_KEY_SIZE 16
+typedef struct
+{
+    uint8 Crypto_DriverObjectId;
+} Crypto_DriverObjectType;
 
 typedef struct
 {
-    uint32 elementId;
-    uint8 data[CRYPTO_MAX_KEY_SIZE];
-    uint32 length;
-} Crypto_KeyElementType;
-
-typedef struct
-{
-    uint32 keyId;
-    boolean isValid;
-    Crypto_KeyElementType elements[CRYPTO_MAX_KEY_ELEMENTS];
-} Crypto_KeyType;
-
-typedef struct
-{
-    Crypto_KeyType *keyStorage;
-    uint32 numberOfKeys;
+    uint8 Crypto_DriverObjectCount;
+    Crypto_DriverObjectType *Crypto_DriverObject;
 } Crypto_ConfigType;
 
 void Crypto_Init(const Crypto_ConfigType *configPtr);

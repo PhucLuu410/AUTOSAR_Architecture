@@ -2,7 +2,7 @@
 #ifndef DEM_TYPES_H
 #define DEM_TYPES_H
 
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 typedef uint8 Dem_EventStatusType;
 #define DEM_EVENT_STATUS_PASSED 0x00U

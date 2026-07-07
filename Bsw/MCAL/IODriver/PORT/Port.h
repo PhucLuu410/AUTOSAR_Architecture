@@ -1,8 +1,7 @@
-#ifndef __PORT_H    
+#ifndef __PORT_H
 #define __PORT_H
 
-#include "Std_Types.h"
-
+#include "Std_GeneralTypes.h"
 
 typedef uint8_t Port_PortType;
 typedef uint8_t Port_PinModeType;
@@ -17,17 +16,17 @@ typedef struct
     Port_PinCfgType cfg;
 } Port_ConfigType;
 
-
-typedef enum{
+typedef enum
+{
     PORT_PIN_IN,
     PORT_PIN_OUT
 } Port_PinDirectionType;
 
-void Port_Init(const Port_ConfigType* ConfigPtr);
+void Port_Init(const Port_ConfigType *ConfigPtr);
 void Port_SetPinDirection(Port_PinType Pin, Port_PinDirectionType Direction);
 void Port_RefreshPortDirection(void);
-void Port_GetVersionInfo (Std_VersionInfoType* versioninfo);
-void Port_SetPinMode (Port_PinType Pin, Port_PinModeType Mode);
+void Port_GetVersionInfo(Std_VersionInfoType *versioninfo);
+void Port_SetPinMode(Port_PinType Pin, Port_PinModeType Mode);
 
 extern const Port_ConfigType Port_Configuration[];
 

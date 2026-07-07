@@ -50,6 +50,7 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Mcal/ComDriver/Lin/Lin_Cfg.c \
 		Bsw/Mcal/Crypto/Crypto/Crypto.c \
 		Bsw/Mcal/Crypto/Crypto/Crypto_Cfg.c \
+		Bsw/Mcal/Crypto/Crypto/Crypto_Logic.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb_Cfg.c \
 		Bsw/EcuAbstraction/ComHwAb/CanIf/CanIf.c \

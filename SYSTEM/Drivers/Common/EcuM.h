@@ -2,7 +2,7 @@
 #define ECUM_H
 
 /* Chèn các thư viện tiêu chuẩn của AUTOSAR */
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 #include "Can.h"
 /* -------------------------------------------------------------------------- */
 /*                                  Macros                                    */

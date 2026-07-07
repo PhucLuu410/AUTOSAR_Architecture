@@ -2,7 +2,7 @@
 #ifndef DEM_CFG_H
 #define DEM_CFG_H
 
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 typedef uint16 Dem_EventIdType;
 

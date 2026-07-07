@@ -23,6 +23,8 @@
 #include "Lin_Cfg.h"
 #include "LinIf.h"
 #include "LinIf_Cfg.h"
+#include "Crypto.h"
+#include "Crypto_Cfg.h"
 #include "stm32f103xb.h"
 
 void delay(volatile uint32_t t)
@@ -30,6 +32,31 @@ void delay(volatile uint32_t t)
     while (t--)
         ;
 }
+
+uint8 myInputData[] = "Hello AUTOSAR";
+uint8 myOutputBuffer[32];
+uint32 outputLen = 32;
+Crypto_VerifyResultType verifyResult;
+
+Crypto_JobConfigType myJobConfig = {
+    .jobId = 1,
+    .service = CRYPTO_SERVICE_HASH,
+    .algorithm = CRYPTO_ALGOFAM_SHA2_256,
+    .keyId = 0};
+
+const Crypto_JobDataType myJobData = {
+    .mode = CRYPTO_OPERATIONMODE_SINGLECALL,
+    .inputPtr = myInputData,
+    .inputLength = sizeof(myInputData) - 1,
+    .outputPtr = myOutputBuffer,
+    .outputLengthPtr = &outputLen,
+    .verifyPtr = &verifyResult,
+    .secondaryInputPtr = NULL,
+    .secondaryInputLength = 0};
+
+Crypto_JobType Job = {
+    .jobConfig = &myJobConfig,
+    .jobData = myJobData};
 
 void SysTick_Init_8MHz(void)
 {
@@ -65,18 +92,16 @@ int main(void)
 
     LinIf_Init(&LinIf_Config);
     LinTp_Init(&LinTp_Config);
+    Crypto_Init(&Crypto_Config);
 
     // PduR_Init(&PduR_PBConfig);
-    SysTick_Init_8MHz();
-    Os_Init();
-    Os_Start();
+    // SysTick_Init_8MHz();
+    // Os_Init();
+    // Os_Start();
     // Com_SendSignal(1);
-
+    Crypto_ProcessJob(0, &Job);
     while (1)
     {
-        // Com_SendSignal(2);
-        // Com_SendSignal(3);
-        // delay(10000);
     }
 }
 

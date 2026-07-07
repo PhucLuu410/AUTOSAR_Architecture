@@ -2,7 +2,7 @@
 #define __PDUR_H
 
 #include "ComStack_Types.h"
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 typedef uint16 PduR_PBConfigIdType;
 typedef uint16 PduR_RoutingPathGroupIdType;

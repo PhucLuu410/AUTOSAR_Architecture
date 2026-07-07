@@ -1,6 +1,6 @@
 #include "CanTp_Cfg.h"
 #include "CanTp.h"
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 CanTpTxPduCfg CanTpTx_DiagCfg[NUMBER_OF_CANTP] = {
     [0] = {

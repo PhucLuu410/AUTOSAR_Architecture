@@ -1,7 +1,7 @@
 #ifndef __COMHWAB_H
 #define __COMHWAB_H
 
-#include "Std_Types.h "
+#include "Std_GeneralTypes.h "
 #include "Can_GeneralTypes.h"
 #include "ComStack_Types.h "
 #include "EcuM.h"
