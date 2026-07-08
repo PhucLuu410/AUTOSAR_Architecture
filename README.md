@@ -8,38 +8,63 @@ Hệ thống được thiết kế theo mô hình 4 tầng tiêu chuẩn:
 
 * **Application Layer (SWC):** Chứa các Software Components (Diagnostic, Vehicle Command, Engine Status).
 * **RTE (Run-Time Environment):** Lớp trừu tượng hóa giao tiếp, kết nối các SWCs với các dịch vụ bên dưới.
-* **Service/Middleware Layer:** * **DCM:** Xử lý chẩn đoán (UDS/OBD).
-    * **Crypto Stack:** Cung cấp dịch vụ mã hóa/băm (AES, SHA) với cơ chế Job Management.
-    * **NvM:** Quản lý lưu trữ dữ liệu không mất đi (đang phát triển).
-* **ECU Abstraction & MCAL:** Các Driver điều khiển phần cứng (CAN, LIN, IO) và **Custom OS Kernel**.
+* **Service/Middleware Layer:** * 
+    * **COM:** Cung cấp dịch vụ chẩn đoán lỗi (UDS).
+    * **CSM:** Cung cấp dịch vụ mã hóa/băm (AES, SHA) với cơ chế Job Management.
+    * **System:** Quản lí lỗi Det, Dem.
+* **ECU Abstraction & MCAL:** Các Driver điều khiển phần cứng (CAN, LIN, IO) 
+* **Custom OS Kernel** Đã hoàn thành phần nhân và hoạt động thử. Đang phát triển hướng OSEK VDX
 
 ## ⚙️ Các thành phần cốt lõi
 1.  **Custom RTOS Kernel (OSEK-like):**
     * Lập lịch ưu tiên (Preemptive Scheduler).
     * Cơ chế Context Switching (PendSV/SVC) trên Cortex-M3.
-    * Quản lý Task State, Stack Management và Mutex.
 2.  **Crypto Driver:**
     * Cấu trúc Job-based (ProcessJob) chuẩn AUTOSAR.
     * Cơ chế Dispatcher sử dụng Service Mapping (Lookup Table).
     * Tích hợp DET (Development Error Tracer) để đảm bảo tính an toàn.
 3.  **Communication Stack:**
-    * Mô phỏng PduR (PDU Router) cho giao tiếp CAN và LIN.
+    * Mô phỏng PduR (PDU Router) cho giao tiếp CAN và LIN và DCM.
+4.  **Io Stack:**
+    * Phát triển Io, Adc.
+5.  **Swc:**
+    * Hiện cung cấp dịch vụ cho 3 SWC mô phỏng theo 1 dự án nhỏ (có thể checkout các branch ECU_COM và ECU_DIAG để thêm thông tin chi tiết dự án) là Diag(UDS), Gửi dữ liệu định kì cập nhập Ecu và Parse gói tin từ các EVCU truyền về.
 
 ## 📁 Cấu trúc thư mục
 ```text
 /
-├── docs/           # Sơ đồ kiến trúc & Tài liệu thiết kế
-├── src/
-│   ├── Os/         # Kernel, Scheduler, Assembly context switch
-│   ├── Crypto/     # Crypto Driver & Service Mapping
-│   ├── Com/        # PduR, CanIf, LinIf
-│   ├── Dcm/        # Diagnostic Services
-│   └── Swc/        # Application Layer
-├── include/        # Header files, GeneralTypes, Cfg
-└── main.c          # Điểm khởi tạo hệ thống
+├── README.md/                  # Sơ đồ kiến trúc & Tài liệu thiết kế
+├── App/                    
+│   ├── Swc_Diag/               # 
+│   ├── Swc_EngineStatus/       # 
+│   ├── Swc_VehicleCommand/     # 
+├── Rte/                        # 
+├── Bsw/                            
+│   ├── Mcal/                   
+│       ├── ComDriver/          # 
+│       ├── CryptoDriver/       # 
+│       ├── IoDriver/           # 
+│       ├── McuDriver/          # 
+│   ├── EcuAbstraction/     
+│       ├── ComHwAb/            # 
+│       ├── IoHwAb/             # 
+│   ├── Service/
+│       ├── ComService/         # 
+│       ├── SystemService/      # 
+├── System/ 
+│   ├── Debug/                  # 
+│   ├── Driver/
+│       ├── CMSIS/              # 
+│       ├── Common/             # 
+│   ├── Startup/                # 
+│   ├── Linker/                 # 
+├──
+├── Makefile/                   # 
+└── main.c/                     # 
+/
+```text
 
-
-🛠 Công cụ & Môi trường
+## 🛠 Công cụ & Môi trường
 
 Hardware: STM32F103 (Cortex-M3)
 
