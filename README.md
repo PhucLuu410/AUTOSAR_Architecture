@@ -61,8 +61,8 @@ Hệ thống được thiết kế theo mô hình 4 tầng tiêu chuẩn:
 ├──
 ├── Makefile/                   # 
 └── main.c/                     # 
-/
-```text
+
+```
 
 ## 🛠 Công cụ & Môi trường
 
@@ -74,7 +74,7 @@ Development Philosophy: AUTOSAR Architecture & OSEK VDX
 
 Communication: CAN, LIN Protocols
 
-💡 Điểm nổi bật
+## 💡 Điểm nổi bật
 
 Zero-dependency: Tự xây dựng Kernel từ mức Assembly/C, không phụ thuộc vào thư viện RTOS bên ngoài.
 
@@ -82,7 +82,7 @@ Modular Design: Kiến trúc có tính mở rộng cao, dễ dàng thay thế ho
 
 Defensive Programming: Tuân thủ chặt chẽ việc kiểm soát con trỏ, lỗi hệ thống thông qua Det_ReportError.
 
-🚀 Hướng phát triển
+## 🚀 Hướng phát triển
 
 [ ] Hoàn thiện NvM (Non-volatile Memory Manager).
 
@@ -90,6 +90,9 @@ Defensive Programming: Tuân thủ chặt chẽ việc kiểm soát con trỏ, l
 
 [ ] Tối ưu hóa hiệu năng theo chuẩn ISO 26262.
 
-Author: Luu Hoang Phuc
 
-Email: luuphuc20012001@gmail.com
+
+## 👤 Author
+
+> **Luu Hoang Phuc**
+> 📧 **Email:** `luuphuc20012001@gmail.com`
