@@ -2,7 +2,7 @@
 #define RTE_VEHICLECOMMAND_H
 
 #include "Com.h"
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 typedef struct
 {

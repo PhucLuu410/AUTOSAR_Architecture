@@ -2,7 +2,7 @@
 #define CANTP_H
 
 #include "ComStack_Types.h"
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 typedef enum
 {

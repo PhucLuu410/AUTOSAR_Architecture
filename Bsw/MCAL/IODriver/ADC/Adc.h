@@ -1,7 +1,7 @@
 #ifndef __ADC_H
 #define __ADC_H
 
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 // #include "Adc_Cfg.h"
 
 typedef uint8_t Adc_AdcNumberType;

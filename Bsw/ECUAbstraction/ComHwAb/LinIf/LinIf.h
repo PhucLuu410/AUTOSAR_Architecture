@@ -5,7 +5,7 @@
 #include "ComStack_Types.h"
 #include "EcuM.h"
 #include "Lin_GeneralTypes.h"
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 typedef uint8 LinIf_SchHandleType;
 

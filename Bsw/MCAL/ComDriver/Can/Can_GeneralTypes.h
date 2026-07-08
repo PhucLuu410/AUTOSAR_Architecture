@@ -2,7 +2,7 @@
 #define CAN_GENERALTYPES_H
 
 #include "ComStack_Types.h"
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 #define CAN_BUSY 0x02
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * @file    Std_Types.h
+ * @file    Std_GeneralTypes.h
  * @brief   AUTOSAR Standard Types Definition
  * @details Định nghĩa các kiểu dữ liệu cơ bản theo chuẩn AUTOSAR
  *
@@ -10,8 +10,8 @@
  * @note    Tuân thủ AUTOSAR Classic Platform R22-11
  ******************************************************************************/
 
-#ifndef STD_TYPES_H
-#define STD_TYPES_H
+#ifndef Std_GeneralTypes_H
+#define Std_GeneralTypes_H
 
 /*===========================================================================*/
 /*                              INCLUDES                                      */
@@ -128,4 +128,4 @@ typedef struct
     uint8 sw_patch_version; /**< Patch version */
 } Std_VersionInfoType;
 
-#endif /* STD_TYPES_H */
+#endif /* Std_GeneralTypes_H */

@@ -2,7 +2,7 @@
 #ifndef PWM_H
 #define PWM_H
 
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 typedef uint16_t Pwm_ChannelType;
 typedef uint16_t Pwm_PeriodType;

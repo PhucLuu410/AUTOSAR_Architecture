@@ -1,7 +1,7 @@
 #ifndef SWC_ENGINESTATUS_H
 #define SWC_ENGINESTATUS_H
 
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 #include "Rte_EngineStatus.h"
 
 void Swc_EngineStatus_MainFunction(void);

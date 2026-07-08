@@ -1,6 +1,6 @@
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
-CFLAGS = -mcpu=cortex-m3 -mthumb -O0 -g -Wall
+CFLAGS = -mcpu=cortex-m3 -mthumb -O0 -g -Wall -lc
 
 IPATH = -I. \
 		-I./System/Drivers/CMSIS \
@@ -50,6 +50,7 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Mcal/ComDriver/Lin/Lin_Cfg.c \
 		Bsw/Mcal/Crypto/Crypto/Crypto.c \
 		Bsw/Mcal/Crypto/Crypto/Crypto_Cfg.c \
+		Bsw/Mcal/Crypto/Crypto/Crypto_Logic.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb_Cfg.c \
 		Bsw/EcuAbstraction/ComHwAb/CanIf/CanIf.c \

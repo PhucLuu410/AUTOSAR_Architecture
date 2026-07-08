@@ -1,7 +1,7 @@
 #ifndef __MCU_H__
 #define __MCU_H__
 
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 typedef uint32_t Mcu_ClockPrehiralType;
 typedef uint8_t Mcu_ClockType;

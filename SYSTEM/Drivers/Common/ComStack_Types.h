@@ -20,7 +20,7 @@
 #define ECUC_SW_MINOR_VERSION 0
 #define ECUC_SW_PATCH_VERSION 0
 
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 typedef uint16 PduIdType;
 typedef uint16 PduLengthType;

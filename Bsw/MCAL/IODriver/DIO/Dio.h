@@ -1,7 +1,7 @@
 #ifndef __DIO_H
 #define __DIO_H
 
-#include "Std_Types.h"
+#include "Std_GeneralTypes.h"
 
 #define DIO_VENDOR_ID 123
 #define DIO_MODULE_ID 120
