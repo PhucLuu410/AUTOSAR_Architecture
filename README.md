@@ -127,30 +127,28 @@ Module C
 
 ### Kết quả Analyzer / Debugger
 
-# Gửi định kì gói tin vào eVCU liên tục qua Os_Task_10ms
+# Gửi định kì gói tin vào eVCU
 
 
-# Gửi Request Diag dựa theo Iso-Tp
-1. Gửi gói Diag xem tốc độ động cơ hiện tại header SF
-![alt text](Picture_Debug/image.png)
-2. Nhận Respond header SF
-![alt text](Picture_Debug/image-1.png)
-
-1. Gửi gói Diag xem nhiệt độ động cơ hiện tại header SF
-![alt text](Picture_Debug/image-2.png)
-2. Nhận Respond dưới dạng SF header SF
-![alt text](Picture_Debug/image-3.png)
+# Parse định kì gói tin từ eVCU vào Com-Ecu
 
 
-### Phân tích
-
-Giải thích:
+# Gửi Request Diag dựa theo Iso-Tp từ Diag-Ecu vào eVCU
+1. Gửi yêu cầu chẩn đoán RPM
+<video controls src="VideoDebug/bandicam 2026-07-09 11-16-39-106.mp4" title="Title"></video>
 
 Dữ liệu đi vào hệ thống từ đâu.
 Module nào tiếp nhận dữ liệu.
 State Transition nào xảy ra.
 Callback nào được gọi.
 Kết quả thực tế có phù hợp với thiết kế hay không.
+
+2. Gửi yêu cầu chẩn đoán Nhiệt độ động cơ
+
+3. Gửi yêu cầu chẩn đoán Vin
+
+4. Gửi yêu cầu chẩn đoán DTC
+
 
 ## 👤 Author
 

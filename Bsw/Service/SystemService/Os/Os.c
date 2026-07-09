@@ -100,7 +100,7 @@ TASK(Task_0)
 
 TASK(Task_1)
 {
-    Swc_Request_Diag_Temp();
+    Rte_Diag_RPM();
     Rte_Parse_Diag_Response();
     TerminateTask();
 }
@@ -119,14 +119,14 @@ TASK(Task_Idle)
 
 Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_0,
-                                     .interval = 10,
+                                     .interval = 5,
                                      .timer = &Os_System_Tick,
                                      .Priority = 0,
                                      .State = TASK_SUSPENDED},
 
                               [1] = {.OsStackPointer = &Os_Task_1[SIZE_OF_TASK_STACK - 1],
                                      .pTask = Task_1,
-                                     .interval = 20,
+                                     .interval = 10,
                                      .timer = &Os_System_Tick,
                                      .Priority = 1,
                                      .State = TASK_SUSPENDED},
