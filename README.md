@@ -129,25 +129,128 @@ Module C
 
 1. **Gửi định kì gói tin vào eVCU**
 
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+Gửi dữ liệu liên tục từ Os_Task_10ms.
+Luồng đi Swc->Rte->Com->PduR->CanIf->Can->Hardware.
+TxConfirmation Được gọi để check luồng Tx.
 
 2. **Parse định kì gói tin từ eVCU vào Com-Ecu**
 
+![alt text](image-2.png)
+
+Nhận dữ liệu từ Can qua Filter 0x180 chu kì 10ms.
+Parse gói tin đẩy lên các Swc để lấy dữ liệu.
+Luồng nhận Can->CanIf->PduR->Com->Rte->Swc.
 
 3. **Gửi Request Diag dựa theo Iso-Tp từ Diag-Ecu vào eVCU**
 
-1. Gửi yêu cầu chẩn đoán RPM
-Dữ liệu đi vào hệ thống từ đâu.
-Module nào tiếp nhận dữ liệu.
-State Transition nào xảy ra.
-Callback nào được gọi.
-Kết quả thực tế có phù hợp với thiết kế hay không.
+3.1. Gửi yêu cầu mở phiên
 
-2. Gửi yêu cầu chẩn đoán Nhiệt độ động cơ
+Request:
 
-3. Gửi yêu cầu chẩn đoán Vin
+![alt text](Media/image-24.png)
 
-4. Gửi yêu cầu chẩn đoán DTC
+Respond:
 
+![alt text](Media/image-25.png)
+
+3.2. Gửi yêu cầu chẩn đoạn tốc độ động cơ
+
+Data:
+
+![alt text](Media/image-4.png)
+
+Analyzer:
+
+Request:
+
+![alt text](Media/image-6.png)
+
+Respond:
+
+![alt text](Media/image-7.png)
+
+
+3.3. Gửi yêu cầu chẩn đoán Nhiệt độ động cơ
+
+Data:
+
+![alt text](Media/image-8.png)
+
+Analyzer:
+
+Request:
+
+![alt text](Media/image-9.png)
+
+Respond:
+
+![alt text](Media/image-10.png)
+
+
+3.4. Gửi yêu cầu chẩn đoán Vin
+
+Data:
+
+![alt text](Media/image-11.png)
+
+
+Analyzer:
+
+Request:
+
+![alt text](Media/image-12.png)
+
+Respond:
+
+![alt text](Media/image-13.png)
+
+Gửi Cf và chờ bơm frame còn lại:
+
+![alt text](Media/image-14.png)
+
+Frame còn lại được bơm liên tục sau khi CanTp check xong buffer Uds và báo về eVCU:
+
+![alt text](Media/image-15.png)
+
+![alt text](Media/image-16.png)
+
+3.5. Gửi yêu cầu chẩn đoán DTC
+
+Data:
+
+![alt text](Media/image-17.png)
+
+Analyzer:
+
+Request:
+
+![alt text](Media/image-18.png)
+
+Respond:
+
+![alt text](Media/image-19.png)
+
+Gửi Cf và chờ bơm frame còn lại:
+
+![alt text](Media/image-20.png)
+
+Frame còn lại được bơm liên tục sau khi CanTp check xong buffer Uds và báo về eVCU:
+
+![alt text](Media/image-21.png)
+
+![alt text](Media/image-22.png)
+
+![alt text](Media/image-23.png)
+
+Gửi Request yêu cầu mở phiên 0x10 0x03.
+Nhận Respond phiên đã mở 0x50 0x03 0x00 0x32 0x01 0xf4.
+Gửi Request dịch vụ cần chẩn đoán.
+Nhận Respond và check buffer từ Dcm nếu đủ để nhận thì gửi FC để duy trì luồng nhận.
+Luồng đi Ecu_Diag: Swc->Rte->Dcm->PduR->CanTp->CanIf->Can->Hardware.
 
 ## 👤 Author
 

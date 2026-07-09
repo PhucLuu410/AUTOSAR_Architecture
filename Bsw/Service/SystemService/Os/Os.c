@@ -100,8 +100,7 @@ TASK(Task_0)
 
 TASK(Task_1)
 {
-    Rte_Diag_RPM();
-    Rte_Parse_Diag_Response();
+    Swc_Request_Diag_DTC();
     TerminateTask();
 }
 
