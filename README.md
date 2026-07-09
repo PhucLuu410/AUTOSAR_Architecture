@@ -127,16 +127,15 @@ Module C
 
 ### Kết quả Analyzer / Debugger
 
-# Gửi định kì gói tin vào eVCU
+1. **Gửi định kì gói tin vào eVCU**
 
 
-# Parse định kì gói tin từ eVCU vào Com-Ecu
+2. **Parse định kì gói tin từ eVCU vào Com-Ecu**
 
 
-# Gửi Request Diag dựa theo Iso-Tp từ Diag-Ecu vào eVCU
+3. **Gửi Request Diag dựa theo Iso-Tp từ Diag-Ecu vào eVCU**
+
 1. Gửi yêu cầu chẩn đoán RPM
-<video controls src="VideoDebug/bandicam 2026-07-09 11-16-39-106.mp4" title="Title"></video>
-
 Dữ liệu đi vào hệ thống từ đâu.
 Module nào tiếp nhận dữ liệu.
 State Transition nào xảy ra.
