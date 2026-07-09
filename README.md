@@ -127,7 +127,20 @@ Module C
 
 ### Kết quả Analyzer / Debugger
 
-> Thêm ảnh tại đây.
+# Gửi định kì gói tin vào eVCU liên tục qua Os_Task_10ms
+
+
+# Gửi Request Diag dựa theo Iso-Tp
+1. Gửi gói Diag xem tốc độ động cơ hiện tại header SF
+![alt text](Picture_Debug/image.png)
+2. Nhận Respond header SF
+![alt text](Picture_Debug/image-1.png)
+
+1. Gửi gói Diag xem nhiệt độ động cơ hiện tại header SF
+![alt text](Picture_Debug/image-2.png)
+2. Nhận Respond dưới dạng SF header SF
+![alt text](Picture_Debug/image-3.png)
+
 
 ### Phân tích
 

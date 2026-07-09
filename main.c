@@ -95,11 +95,11 @@ int main(void)
     Crypto_Init(&Crypto_Config);
 
     // PduR_Init(&PduR_PBConfig);
-    // SysTick_Init_8MHz();
-    // Os_Init();
-    // Os_Start();
+    SysTick_Init_8MHz();
+    Os_Init();
+    Os_Start();
     // Com_SendSignal(1);
-    Crypto_ProcessJob(CRYPTO_OBJ_ID_HASH, &Job);
+    // Crypto_ProcessJob(CRYPTO_OBJ_ID_HASH, &Job);
     while (1)
     {
     }

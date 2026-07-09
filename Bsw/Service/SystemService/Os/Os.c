@@ -100,7 +100,7 @@ TASK(Task_0)
 
 TASK(Task_1)
 {
-    Swc_Request_Diag_SwVersion();
+    Swc_Request_Diag_Temp();
     Rte_Parse_Diag_Response();
     TerminateTask();
 }
