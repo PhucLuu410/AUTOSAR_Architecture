@@ -55,34 +55,34 @@ Các mục tiêu chính:
 
 ```text
 /
-├── README.md/                  # Sơ đồ kiến trúc & Tài liệu thiết kế
+├── README.md/                  # Sơ đồ kiến trúc & Tài liệu thiết kế.
 ├── App/                    
-│   ├── Swc_Diag/               # 
-│   ├── Swc_EngineStatus/       # 
-│   ├── Swc_VehicleCommand/     # 
-├── Rte/                        # 
+│   ├── Swc_Diag/               # Gửi request Diag, Nhận respond dựa theo chuẩn ISO-TP.
+│   ├── Swc_EngineStatus/       # cập nhập định kì RPM, TEMP, Alive Counter cho eVCU.
+│   ├── Swc_VehicleCommand/     # Parse gói tin định kì từ eVCU gửi trên mạng Can.
+├── Rte/                        # Lớp trừu tượng Bsw cho các Swc.
 ├── Bsw/                            
 │   ├── Mcal/                   
-│       ├── ComDriver/          # 
-│       ├── CryptoDriver/       # 
-│       ├── IoDriver/           # 
-│       ├── McuDriver/          # 
+│       ├── ComDriver/          # Chứa cấu trúc Can Driver của Stm32f103.
+│       ├── CryptoDriver/       # Chứa cấu trúc Crypto Software Driver của Stm32f103.
+│       ├── IoDriver/           # Chứa cấu trúc Io Driver của Stm32f103 hỗ trợ Io, Adc.
+│       ├── McuDriver/          # Chứa cấu trúc Mcu Driver của Stm32f103 cấu hình Clock.
 │   ├── EcuAbstraction/     
-│       ├── ComHwAb/            # 
-│       ├── IoHwAb/             # 
+│       ├── ComHwAb/            # Tầng trừu tượng hóa giao tiếp của Can Driver.
+│       ├── IoHwAb/             # Tầng trừu tượng hóa giao tiếp của Can Driver.
 │   ├── Service/
-│       ├── ComService/         # 
-│       ├── SystemService/      # 
+│       ├── ComService/         # Cung cấp dịch vụ Com, Uds, Iso-Tp, PduR.
+│       ├── SystemService/      # Cung cấp mini Os OSEK-Like, và các service như Det, Dem.
 ├── System/ 
-│   ├── Debug/                  # 
-│   ├── Driver/
-│       ├── CMSIS/              # 
-│       ├── Common/             # 
-│   ├── Startup/                # 
-│   ├── Linker/                 # 
+│   ├── Debug/                  # Trình debug stm32 file .svd.
+│   ├── Driver/ 
+│       ├── CMSIS/              # SDK CMSIS của hãng cung cấp.
+│       ├── Common/             # Thư viện chung của Autosar.
+│   ├── Startup/                # Startup Code
+│   ├── Linker/                 # Linker Script
 ├──
-├── Makefile/                   # 
-└── main.c/                     # 
+├── Makefile/                   # Chương trình makefile theo trình GCC.
+└── main.c/                     # Chương trình chính.
 
 ```
 
