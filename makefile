@@ -23,7 +23,7 @@ IPATH = -I. \
 		-I./Bsw/Mcal/IoDriver/Icu \
 		-I./Bsw/Mcal/IoDriver \
 		-I./Bsw/Mcal/CryptoDriver/Crypto \
-		-I./Bsw/Mcal/CryptoDriver/Key \
+		-I./Bsw/Mcal/CryptoDriver/KeyM \
 		-I./Bsw/Mcal/McuDriver/Mcu \
 		-I./Bsw/Mcal/ComDriver/Can \
 		-I./Bsw/Mcal/ComDriver/Lin \
@@ -63,6 +63,7 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Mcal/CryptoDriver/Crypto/Crypto.c \
 		Bsw/Mcal/CryptoDriver/Crypto/Crypto_Cfg.c \
 		Bsw/Mcal/CryptoDriver/Crypto/Crypto_Logic.c \
+		Bsw/Mcal/CryptoDriver/KeyM/KeyM.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb_Cfg.c \
 		Bsw/EcuAbstraction/ComHwAb/CanIf/CanIf.c \
