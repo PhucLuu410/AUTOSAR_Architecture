@@ -34,8 +34,8 @@ void delay(volatile uint32_t t)
 }
 
 uint8 myInputData[] = "Hello AUTOSAR";
-uint8 myOutputBuffer[32];
-uint32 outputLen = 32;
+uint8 myOutputBuffer[16];
+uint32 outputLen = 16;
 Crypto_VerifyResultType verifyResult;
 
 Crypto_JobConfigType myJobConfig = {
@@ -99,7 +99,7 @@ int main(void)
     // Os_Init();
     // Os_Start();
     // Com_SendSignal(1);
-    Crypto_ProcessJob(CRYPTO_OBJ_ID_SW_HASH, &Job);
+    Crypto_ProcessJob(CRYPTO_OBJ_ID_SW, &Job);
     while (1)
     {
     }

@@ -17,9 +17,8 @@
 #define SHA256 0
 #define SHA512 1
 
-#define CRYPTO_OBJ_ID_SW_HASH 0
-#define CRYPTO_OBJ_ID_SW_SIGNATURE 1
-#define CRYPTO_OBJ_ID_SW_AES 2
+#define CRYPTO_OBJ_ID_SW 0
+#define CRYPTO_OBJ_ID_HW 1
 
 extern Crypto_ConfigType Crypto_Config;
 

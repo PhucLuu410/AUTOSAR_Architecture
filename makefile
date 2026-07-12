@@ -1,6 +1,18 @@
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
-CFLAGS = -mcpu=cortex-m3 -mthumb -O0 -g -Wall -lc
+CFLAGS = -mcpu=cortex-m3 -mthumb -O0 -g -Wall
+
+MBEDTLS_DIR = ./Bsw/Mcal/Crypto/MbedTLS
+
+MBEDTLS_INCLUDES = \
+    -I$(MBEDTLS_DIR)/include \
+    -I$(MBEDTLS_DIR)/tf-psa-crypto/include \
+    -I$(MBEDTLS_DIR)/tf-psa-crypto/core
+
+MBEDTLS_SRC_FILES = \
+    $(wildcard $(MBEDTLS_DIR)/library/*.c) \
+    $(wildcard $(MBEDTLS_DIR)/tf-psa-crypto/core/*.c) \
+    $(wildcard $(MBEDTLS_DIR)/tf-psa-crypto/drivers/builtin/src/*.c)
 
 IPATH = -I. \
 		-I./System/Drivers/CMSIS \
@@ -76,14 +88,12 @@ SRC = 	./System/Startup/startup.c \
 		App/Swc_Diag/Swc_Diag.c \
 		App/Swc_VehicleCommand/Swc_VehicleCommand.c \
 
-		
-
 LDFLAGS = -T ./System/Linker/linker.ld -nostdlib -Wl,-Map=output.map
 TARGET = firmware
 BIN = $(TARGET).bin
 
 all:
-	$(CC) $(CFLAGS) $(IPATH) $(SRC) $(LDFLAGS) -o $(TARGET).elf
+	$(CC) $(CFLAGS) $(IPATH) $(SRC) $(LDFLAGS) -o $(TARGET).elf -lc -lgcc
 
 flash:
 	$(OBJCOPY) -O binary $(TARGET).elf $(BIN)
