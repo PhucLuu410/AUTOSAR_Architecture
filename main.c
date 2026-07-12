@@ -40,8 +40,8 @@ Crypto_VerifyResultType verifyResult;
 
 Crypto_JobConfigType myJobConfig = {
     .jobId = 1,
-    .service = CRYPTO_SERVICE_HASH,
-    .algorithm = CRYPTO_ALGOFAM_SHA2_256,
+    .service = CRYPTO_SERVICE_MAC_GEN,
+    .algorithm = CRYPTO_ALGOFAM_AES_128,
     .keyId = 0};
 
 const Crypto_JobDataType myJobData = {
@@ -99,7 +99,7 @@ int main(void)
     // Os_Init();
     // Os_Start();
     // Com_SendSignal(1);
-    Crypto_ProcessJob(CRYPTO_OBJ_ID_HASH, &Job);
+    Crypto_ProcessJob(CRYPTO_OBJ_ID_SW_HASH, &Job);
     while (1)
     {
     }
