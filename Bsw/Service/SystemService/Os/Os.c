@@ -94,14 +94,15 @@ void TerminateTask(void)
 
 TASK(Task_0)
 {
-    Swc_Diag_Init();
+    // Swc_EngineStatus_MainFunction();
+    for (int i = 0; i < 10000000; i++)
+        ;
     TerminateTask();
 }
 
 TASK(Task_1)
 {
-    Swc_Request_Diag_SwVersion();
-    Rte_Parse_Diag_Response();
+    // Swc_EngineStatus_MainFunction();
     TerminateTask();
 }
 

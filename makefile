@@ -30,9 +30,11 @@ IPATH = -I. \
 		-I./Bsw/EcuAbstraction/IoHwAb \
 		-I./Bsw/EcuAbstraction/ComHwAb/CanIf \
 		-I./Bsw/EcuAbstraction/ComHwAb/LinIf \
+		-I./Bsw/EcuAbstraction/CryptoHwAb \
 		-I./Bsw/Service/ComService/PduR \
 		-I./Bsw/Service/ComService/Com \
 		-I./Bsw/Service/ComService/Dcm \
+		-I./Bsw/Service/CryptoService/Csm \
 		-I./Bsw/Service/SystemService/Os \
 		-I./Bsw/Service/SystemService/Dem \
 		-I./Bsw/Service/SystemService/Det \
@@ -72,12 +74,15 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/EcuAbstraction/ComHwAb/CanIf/CanTp_Cfg.c \
 		Bsw/EcuAbstraction/ComHwAb/LinIf/LinIf.c \
 		Bsw/EcuAbstraction/ComHwAb/LinIf/LinIf_Cfg.c \
+		Bsw/EcuAbstraction/CryptoHwAb/CryIf.c \
+		Bsw/EcuAbstraction/CryptoHwAb/CryIf_Cfg.c \
 		Bsw/Service/ComService/PduR/PduR.c \
 		Bsw/Service/ComService/PduR/PduR_Cfg.c \
 		Bsw/Service/ComService/Com/Com.c \
 		Bsw/Service/ComService/Com/Com_Cfg.c \
 		Bsw/Service/ComService/Dcm/Dcm.c \
 		Bsw/Service/ComService/Dcm/Dcm_Cfg.c \
+		Bsw/Service/CryptoService/Csm/Csm.c \
 		Bsw/Service/SystemService/Os/Os.c \
 		Bsw/Service/SystemService/Dem/Dem.c \
 		Bsw/Service/SystemService/Dem/Dem_Cfg.c \

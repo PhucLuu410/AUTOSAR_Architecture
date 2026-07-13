@@ -18,7 +18,7 @@ CanIfTxPduCfg CanIfTxPduTable[] = {
 CanIfRxPduCfg CanIfRxPduTable[] = {
     [0] = {
         .CanIfRxPduId = 0,
-        .CanIfRxCanId = 0x180,
+        .CanIfRxCanId = 0x181,
         .DestinationFuncPtr = PduR_CanIfRxIndication,
     },
     [1] = {
