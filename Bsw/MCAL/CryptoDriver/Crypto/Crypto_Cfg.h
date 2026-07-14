@@ -20,7 +20,7 @@
 #define CRYPTO_OBJ_ID_SW 0
 #define CRYPTO_OBJ_ID_HW 1
 
-#define NUMBER_OF_KEY 3
+#define NUMBER_OF_KEY 1
 
 typedef struct
 {

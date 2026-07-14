@@ -39,10 +39,10 @@ Std_ReturnType Crypto_ProcessJob(uint32 objectId, Crypto_JobType *job)
                     {
                         if (KeyId[i].KeyId == job->jobConfig->keyId)
                         {
-                            AES128_CBC_MAC_Generate(job->jobData.inputPtr,
-                                                    job->jobData.inputLength,
-                                                    (uint8 *)&job->jobConfig->keyId,
-                                                    job->jobData.outputPtr);
+                            AES128_MAC_Generate(job->jobData.inputPtr,
+                                                job->jobData.inputLength,
+                                                KeyId[j].KeyData,
+                                                job->jobData.outputPtr);
                         }
                     }
                     break;
@@ -55,6 +55,23 @@ Std_ReturnType Crypto_ProcessJob(uint32 objectId, Crypto_JobType *job)
                 switch (job->jobConfig->algorithm)
                 {
                 case CRYPTO_ALGOFAM_AES_128:
+                    for (int j = 0; j < NUMBER_OF_KEY; j++)
+                    {
+                        if (KeyId[i].KeyId == job->jobConfig->keyId)
+                        {
+                            if (AES128_MAC_Verify(job->jobData.inputPtr,
+                                                  job->jobData.inputLength,
+                                                  KeyId[j].KeyData,
+                                                  job->jobData.outputPtr))
+                            {
+                                *job->jobData.verifyPtr = CRYPTO_E_VER_OK;
+                            }
+                            else
+                            {
+                                *job->jobData.verifyPtr = CRYPTO_E_VER_NOT_OK;
+                            }
+                        }
+                    }
                     break;
                 default:
                     break;

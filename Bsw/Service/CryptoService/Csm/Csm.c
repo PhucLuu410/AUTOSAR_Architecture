@@ -42,15 +42,35 @@ Std_ReturnType Csm_MacVerify(uint32 jobId,
                              uint32 macLength,
                              Crypto_VerifyResultType *verifyPtr)
 {
-    volatile uint8 Mac[macLength];
-    volatile uint8 Data[dataLength];
-    for (int i = 0; i < dataLength; i++)
+
+    uint8 MacData[macLength];
+    for (uint8 i = 0; i < macLength; i++)
     {
-        Data[i] = dataPtr[i];
+        MacData[i] = macPtr[i];
     }
-    for (int i = 0; i < macLength; i++)
-    {
-        Mac[i] = macPtr[i];
-    }
+
+    Crypto_JobConfigType JobConfigType = {
+        .algorithm = CRYPTO_ALGOFAM_AES_128,
+        .service = CRYPTO_SERVICE_MAC_VER,
+        .keyId = 0,
+        .jobId = jobId,
+    };
+
+    Crypto_JobDataType JobDataType = {
+        .inputPtr = dataPtr,
+        .inputLength = dataLength,
+        .outputPtr = MacData,
+        .outputLengthPtr = &macLength,
+        .verifyPtr = verifyPtr,
+        .secondaryInputPtr = NULL_PTR,
+        .secondaryInputLength = 0,
+    };
+
+    Crypto_JobType JobType = {
+        .jobConfig = &JobConfigType,
+        .jobData = JobDataType,
+    };
+
+    CryIf_ProcessJob(0, &JobType);
     return E_OK;
 }

@@ -24,7 +24,6 @@ Std_ReturnType PduR_ComTransmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr
 {
     if (PduInfoPtr != NULL_PTR)
     {
-        uint8 TransmitData[8] = {0};
         uint8 Mac[16] = {0};
         uint32 MacLength = sizeof(Mac);
         Csm_MacGenerate(0,
@@ -33,9 +32,15 @@ Std_ReturnType PduR_ComTransmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr
                         PduInfoPtr->SduLength,
                         Mac,
                         &MacLength);
-        memcpy(TransmitData, PduInfoPtr->SduDataPtr, PduInfoPtr->SduLength);
+
+        uint8 TransmitData[8] = {0};
+        for (uint8 i = 0; i < PduInfoPtr->SduLength; i++)
+        {
+            TransmitData[i] = PduInfoPtr->SduDataPtr[i];
+        }
         TransmitData[6] = Mac[0];
         TransmitData[7] = Mac[1];
+
         PduInfoType IPdu;
         IPdu.SduLength = 8;
         IPdu.SduDataPtr = TransmitData;
@@ -59,9 +64,20 @@ void PduR_CanIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
     uint32 MacLength = sizeof(MacData);
     MacData[0] = PduInfoPtr->SduDataPtr[6];
     MacData[1] = PduInfoPtr->SduDataPtr[7];
-    Csm_MacVerify(0, CRYPTO_OPERATIONMODE_UPDATE, PduInfoPtr->SduDataPtr, PduInfoPtr->SduLength, MacData, MacLength, CRYPTO_E_VER_OK);
-
-    Com_RxIndication(RxPduId, PduInfoPtr);
+    uint8 DataInputToVerify[8] = {0};
+    for (int i = 0; i < PduInfoPtr->SduLength - 2; i++)
+    {
+        DataInputToVerify[i] = PduInfoPtr->SduDataPtr[i];
+    }
+    Crypto_VerifyResultType MacVerifyResult;
+    Csm_MacVerify(0, CRYPTO_OPERATIONMODE_UPDATE, DataInputToVerify, PduInfoPtr->SduLength, MacData, MacLength, &MacVerifyResult);
+    if (MacVerifyResult == CRYPTO_E_VER_OK)
+    {
+        PduInfoType PduInfo;
+        PduInfo.SduLength = PduInfoPtr->SduLength;
+        PduInfo.SduDataPtr = DataInputToVerify;
+        Com_RxIndication(RxPduId, &PduInfo);
+    }
 }
 
 void PduR_LinIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
