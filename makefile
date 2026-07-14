@@ -100,6 +100,7 @@ BIN = $(TARGET).bin
 
 all:
 	$(CC) $(CFLAGS) $(IPATH) $(SRC) $(LDFLAGS) -o $(TARGET).elf -lc -lgcc
+	arm-none-eabi-size $(TARGET).elf
 
 flash:
 	$(OBJCOPY) -O binary $(TARGET).elf $(BIN)
