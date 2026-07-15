@@ -6,7 +6,7 @@ EngineStatusType EngineStatus = {
     .Engine_TorqueActual = 0x64,
     .Engine_State = 0x02,
     .Engine_AliveAndCrc = 0x1A,
-    .Reserved = 0,
+    .Mac = 0,
 };
 
 void Rte_Send_Engine_Status(void)
@@ -37,4 +37,9 @@ void Rte_Write_Engine_State(uint8 state)
 void Rte_Write_Engine_AliveAndCrc(uint8 aliveAndCrc)
 {
     EngineStatus.Engine_AliveAndCrc = aliveAndCrc;
+}
+
+void Rte_Write_Engine_Mac(uint16 Mac)
+{
+    EngineStatus.Mac = Mac;
 }

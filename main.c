@@ -25,38 +25,20 @@
 #include "LinIf_Cfg.h"
 #include "Crypto.h"
 #include "Crypto_Cfg.h"
+#include "CryIf.h"
+#include "CryIf_Cfg.h"
+#include "Csm.h"
+#include "Csm_Cfg.h"
+#include "KeyM.h"
+#include "NvM.h"
 #include "stm32f103xb.h"
+#include "Swc_EngineStatus.h"
 
 void delay(volatile uint32_t t)
 {
     while (t--)
         ;
 }
-
-uint8 myInputData[] = "Hello AUTOSAR";
-uint8 myOutputBuffer[32];
-uint32 outputLen = 32;
-Crypto_VerifyResultType verifyResult;
-
-Crypto_JobConfigType myJobConfig = {
-    .jobId = 1,
-    .service = CRYPTO_SERVICE_HASH,
-    .algorithm = CRYPTO_ALGOFAM_SHA2_256,
-    .keyId = 0};
-
-const Crypto_JobDataType myJobData = {
-    .mode = CRYPTO_OPERATIONMODE_SINGLECALL,
-    .inputPtr = myInputData,
-    .inputLength = sizeof(myInputData) - 1,
-    .outputPtr = myOutputBuffer,
-    .outputLengthPtr = &outputLen,
-    .verifyPtr = &verifyResult,
-    .secondaryInputPtr = NULL,
-    .secondaryInputLength = 0};
-
-Crypto_JobType Job = {
-    .jobConfig = &myJobConfig,
-    .jobData = myJobData};
 
 void SysTick_Init_8MHz(void)
 {
@@ -92,16 +74,20 @@ int main(void)
 
     LinIf_Init(&LinIf_Config);
     LinTp_Init(&LinTp_Config);
+
     Crypto_Init(&Crypto_Config);
+    CryIf_Init(&CryIf_Config);
+    Csm_Init(&Csm_Config);
 
     // PduR_Init(&PduR_PBConfig);
-    SysTick_Init_8MHz();
-    Os_Init();
-    Os_Start();
-    // Com_SendSignal(1);
-    // Crypto_ProcessJob(CRYPTO_OBJ_ID_HASH, &Job);
+    // SysTick_Init_8MHz();
+    // Os_Init();
+    // Os_Start();
+
     while (1)
     {
+        // Swc_EngineStatus_MainFunction();
+        // delay(10000);
     }
 }
 

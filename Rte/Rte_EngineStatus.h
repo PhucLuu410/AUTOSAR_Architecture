@@ -12,7 +12,7 @@ typedef struct
     uint8 Engine_TorqueActual;
     uint8 Engine_State;
     uint8 Engine_AliveAndCrc;
-    uint16 Reserved;
+    uint16 Mac;
 } EngineStatusType;
 
 void Rte_Send_Engine_Status(void);
@@ -21,5 +21,6 @@ void Rte_Write_Engine_Temp(uint8 temp);
 void Rte_Write_Engine_TorqueActual(uint8 torque);
 void Rte_Write_Engine_State(uint8 state);
 void Rte_Write_Engine_AliveAndCrc(uint8 aliveAndCrc);
+void Rte_Write_Engine_Mac(uint16 Mac);
 
 #endif
