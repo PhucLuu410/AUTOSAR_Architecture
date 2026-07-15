@@ -26,6 +26,7 @@
 #include "Crypto.h"
 #include "Crypto_Cfg.h"
 #include "CryIf.h"
+#include "CryIf_Cfg.h"
 #include "Csm.h"
 #include "KeyM.h"
 #include "NvM.h"
@@ -74,12 +75,14 @@ int main(void)
     LinTp_Init(&LinTp_Config);
 
     Crypto_Init(&Crypto_Config);
-
+    CryIf_Init(&CryIf_Config);
     // PduR_Init(&PduR_PBConfig);
     // SysTick_Init_8MHz();
     // Os_Init();
     // Os_Start();
     // Com_SendSignal(1);
+    // uint8 NeyKey[16] = {0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00};
+    // Csm_KeyElementSet(0, 0, NeyKey, sizeof(NeyKey));
     while (1)
     {
         // Swc_EngineStatus_MainFunction();
