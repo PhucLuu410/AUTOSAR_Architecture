@@ -74,3 +74,12 @@ Std_ReturnType Csm_MacVerify(uint32 jobId,
     CryIf_ProcessJob(0, &JobType);
     return E_OK;
 }
+
+Std_ReturnType Csm_KeyElementSet(uint32 keyId,
+                                 uint32 keyElementId,
+                                 const uint8 *keyElementPtr,
+                                 uint32 keyElementLength)
+{
+    CryIf_KeyElementSet(keyId, keyElementId, keyElementPtr, keyElementLength);
+    return E_OK;
+}

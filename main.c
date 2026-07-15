@@ -27,6 +27,8 @@
 #include "Crypto_Cfg.h"
 #include "CryIf.h"
 #include "Csm.h"
+#include "KeyM.h"
+#include "NvM.h"
 #include "stm32f103xb.h"
 #include "Swc_EngineStatus.h"
 

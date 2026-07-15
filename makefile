@@ -23,18 +23,22 @@ IPATH = -I. \
 		-I./Bsw/Mcal/IoDriver/Icu \
 		-I./Bsw/Mcal/IoDriver \
 		-I./Bsw/Mcal/CryptoDriver/Crypto \
-		-I./Bsw/Mcal/CryptoDriver/KeyM \
+		-I./Bsw/Mcal/CryptoDriver/Key \
 		-I./Bsw/Mcal/McuDriver/Mcu \
 		-I./Bsw/Mcal/ComDriver/Can \
 		-I./Bsw/Mcal/ComDriver/Lin \
+		-I./Bsw/Mcal/MemDriver/Flash \
 		-I./Bsw/EcuAbstraction/IoHwAb \
 		-I./Bsw/EcuAbstraction/ComHwAb/CanIf \
 		-I./Bsw/EcuAbstraction/ComHwAb/LinIf \
 		-I./Bsw/EcuAbstraction/CryptoHwAb \
+		-I./Bsw/EcuAbstraction/MemHwAb/Fee \
 		-I./Bsw/Service/ComService/PduR \
 		-I./Bsw/Service/ComService/Com \
 		-I./Bsw/Service/ComService/Dcm \
 		-I./Bsw/Service/CryptoService/Csm \
+		-I./Bsw/Service/CryptoService/KeyM \
+		-I./Bsw/Service/MemService \
 		-I./Bsw/Service/SystemService/Os \
 		-I./Bsw/Service/SystemService/Dem \
 		-I./Bsw/Service/SystemService/Det \
@@ -65,7 +69,8 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Mcal/CryptoDriver/Crypto/Crypto.c \
 		Bsw/Mcal/CryptoDriver/Crypto/Crypto_Cfg.c \
 		Bsw/Mcal/CryptoDriver/Crypto/Crypto_Logic.c \
-		Bsw/Mcal/CryptoDriver/KeyM/KeyM.c \
+		Bsw/Mcal/CryptoDriver/KeyM/KeyManager.c \
+		Bsw/Mcal/MemDriver/Flash/Flash.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb_Cfg.c \
 		Bsw/EcuAbstraction/ComHwAb/CanIf/CanIf.c \
@@ -76,6 +81,7 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/EcuAbstraction/ComHwAb/LinIf/LinIf_Cfg.c \
 		Bsw/EcuAbstraction/CryptoHwAb/CryIf.c \
 		Bsw/EcuAbstraction/CryptoHwAb/CryIf_Cfg.c \
+		Bsw/EcuAbstraction/MemHwAb/Fee/Fee.c \
 		Bsw/Service/ComService/PduR/PduR.c \
 		Bsw/Service/ComService/PduR/PduR_Cfg.c \
 		Bsw/Service/ComService/Com/Com.c \
@@ -83,6 +89,8 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Service/ComService/Dcm/Dcm.c \
 		Bsw/Service/ComService/Dcm/Dcm_Cfg.c \
 		Bsw/Service/CryptoService/Csm/Csm.c \
+		Bsw/Service/CryptoService/KeyM/KeyM.c \
+		Bsw/Service/MemService/NvM.c \
 		Bsw/Service/SystemService/Os/Os.c \
 		Bsw/Service/SystemService/Dem/Dem.c \
 		Bsw/Service/SystemService/Dem/Dem_Cfg.c \

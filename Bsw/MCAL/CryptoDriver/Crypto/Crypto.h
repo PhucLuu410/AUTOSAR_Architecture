@@ -8,6 +8,13 @@
 
 typedef struct
 {
+    uint8 KeyId;
+    uint8 *KeyData;
+    uint8 KeyLength;
+} KeyIdConfig;
+
+typedef struct
+{
     uint8 Crypto_DriverObjectId;
 } Crypto_DriverObjectType;
 
@@ -15,6 +22,7 @@ typedef struct
 {
     uint8 Crypto_DriverObjectCount;
     Crypto_DriverObjectType *Crypto_DriverObject;
+    KeyIdConfig *KeyConfig;
 } Crypto_ConfigType;
 
 void Crypto_Init(const Crypto_ConfigType *configPtr);

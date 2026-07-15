@@ -20,15 +20,8 @@
 #define CRYPTO_OBJ_ID_SW 0
 #define CRYPTO_OBJ_ID_HW 1
 
-#define NUMBER_OF_KEY 1
-
-typedef struct
-{
-    uint8 KeyId;
-    uint8 *KeyData;
-    uint8 KeyLength;
-} KeyIdConfig;
+#define NUMBER_OF_KEY 3
 
 extern Crypto_ConfigType Crypto_Config;
-extern KeyIdConfig KeyId[];
+
 #endif
