@@ -9,6 +9,8 @@ Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, u
     Det_LastModuleId = ModuleId;
     Det_LastApiId = ApiId;
     Det_LastErrorId = ErrorId;
+    while (1)
+        ;
 
     return E_OK;
 }

@@ -89,6 +89,7 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Service/ComService/Dcm/Dcm.c \
 		Bsw/Service/ComService/Dcm/Dcm_Cfg.c \
 		Bsw/Service/CryptoService/Csm/Csm.c \
+		Bsw/Service/CryptoService/Csm/Csm_Cfg.c \
 		Bsw/Service/CryptoService/KeyM/KeyM.c \
 		Bsw/Service/MemService/NvM.c \
 		Bsw/Service/SystemService/Os/Os.c \

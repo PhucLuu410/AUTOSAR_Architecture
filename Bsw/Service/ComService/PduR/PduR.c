@@ -70,7 +70,7 @@ void PduR_CanIfRxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
         DataInputToVerify[i] = PduInfoPtr->SduDataPtr[i];
     }
     Crypto_VerifyResultType MacVerifyResult;
-    Csm_MacVerify(0, CRYPTO_OPERATIONMODE_UPDATE, DataInputToVerify, PduInfoPtr->SduLength, MacData, MacLength, &MacVerifyResult);
+    Csm_MacVerify(1, CRYPTO_OPERATIONMODE_UPDATE, DataInputToVerify, PduInfoPtr->SduLength, MacData, MacLength, &MacVerifyResult);
     if (MacVerifyResult == CRYPTO_E_VER_OK)
     {
         PduInfoType PduInfo;
