@@ -51,5 +51,4 @@ void CanIf_RxIndication(const Can_HwType *Mailbox, const PduInfoType *PduInfoPtr
             CanIfGlobalConfigPtr->CanIfRxPduCfgRef[i].DestinationFuncPtr(CanIfGlobalConfigPtr->CanIfRxPduCfgRef[i].CanIfRxPduId, PduInfoPtr);
         }
     }
-    Det_ReportError(0, 0, 0, 1);
 }

@@ -31,6 +31,8 @@
 #include "Csm_Cfg.h"
 #include "KeyM.h"
 #include "NvM.h"
+#include "Flash.h"
+#include "Flash_Cfg.h"
 #include "stm32f103xb.h"
 #include "Swc_EngineStatus.h"
 
@@ -79,7 +81,15 @@ int main(void)
     CryIf_Init(&CryIf_Config);
     Csm_Init(&Csm_Config);
 
+    Mem_Init(NULL_PTR);
+    uint8 data = 0x12;
+    uint8 dataout = 0;
+    uint8 a = 0;
+    Mem_Write(0, DYNAMIC_FLASH_ADDRESS, &data, 1);
+    Mem_Read(0, DYNAMIC_FLASH_ADDRESS, &dataout, 1);
+    a = Mem_BlankCheck(0, DYNAMIC_FLASH_ADDRESS + 2, 1);
     // PduR_Init(&PduR_PBConfig);
+
     // SysTick_Init_8MHz();
     // Os_Init();
     // Os_Start();

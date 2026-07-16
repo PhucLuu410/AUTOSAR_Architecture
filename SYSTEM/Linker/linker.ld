@@ -2,7 +2,8 @@
 
     MEMORY
     {
-        FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 64K
+        FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 60K
+        DYNAMIC_FLASH (rx)      : ORIGIN = 0x0800F000, LENGTH = 4K
         RAM (xrw)     : ORIGIN = 0x20000000, LENGTH = 20K
     }
 
@@ -52,4 +53,11 @@
 
         _sheap = .;
         _estack = ORIGIN(RAM) + LENGTH(RAM);
+
+        .Dynamic_Flash :
+        {
+            . = ALIGN(4);
+            *(.Dynamic_Flash)
+            . = ALIGN(4);
+        } > DYNAMIC_FLASH
     }

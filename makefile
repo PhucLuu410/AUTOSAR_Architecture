@@ -71,6 +71,7 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Mcal/CryptoDriver/Crypto/Crypto_Logic.c \
 		Bsw/Mcal/CryptoDriver/KeyM/KeyManager.c \
 		Bsw/Mcal/MemDriver/Flash/Flash.c \
+		Bsw/Mcal/MemDriver/Flash/Flash_Cfg.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb.c \
 		Bsw/EcuAbstraction/IoHwAb/IoHwAb_Cfg.c \
 		Bsw/EcuAbstraction/ComHwAb/CanIf/CanIf.c \
