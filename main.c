@@ -33,6 +33,7 @@
 #include "NvM.h"
 #include "Flash.h"
 #include "Flash_Cfg.h"
+#include "Fee.h"
 #include "stm32f103xb.h"
 #include "Swc_EngineStatus.h"
 
@@ -83,13 +84,16 @@ int main(void)
 
     Mem_Init(NULL_PTR);
     uint8 data = 0x12;
-    uint8 dataout = 0;
-    uint8 a = 0;
-    Mem_Write(0, DYNAMIC_FLASH_ADDRESS, &data, 1);
-    Mem_Read(0, DYNAMIC_FLASH_ADDRESS, &dataout, 1);
-    a = Mem_BlankCheck(0, DYNAMIC_FLASH_ADDRESS + 2, 1);
+    uint8 outdata = 0;
+    // uint8 dataout = 0;
+    // uint8 a = 0;
+    // Mem_Write(0, DYNAMIC_FLASH_ADDRESS, &data, 1);
+    // Mem_Read(0, DYNAMIC_FLASH_ADDRESS, &dataout, 1);
+    // a = Mem_BlankCheck(0, DYNAMIC_FLASH_ADDRESS + 2, 1);
     // PduR_Init(&PduR_PBConfig);
-
+    // Fee_Write(0, &data);
+    // Fee_Read(0, 0, &outdata, 0);
+    Fee_EraseImmediateBlock(0);
     // SysTick_Init_8MHz();
     // Os_Init();
     // Os_Start();
