@@ -21,4 +21,5 @@ Std_ReturnType Fee_Read(uint16 BlockNumber,
 Std_ReturnType Fee_EraseImmediateBlock(uint16 BlockNumber)
 {
     Mem_Erase(0, DYNAMIC_FLASH_ADDRESS + BlockNumber, 0);
+    return E_OK;
 }

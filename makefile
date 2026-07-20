@@ -94,6 +94,13 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Service/CryptoService/KeyM/KeyM.c \
 		Bsw/Service/MemService/NvM.c \
 		Bsw/Service/SystemService/Os/Os.c \
+		Bsw/Service/SystemService/Os/AutosarOs.c \
+		Bsw/Service/SystemService/Os/OsAlarm.c \
+		Bsw/Service/SystemService/Os/OsArch.c \
+		Bsw/Service/SystemService/Os/OsCounter.c \
+		Bsw/Service/SystemService/Os/OsSchedule.c \
+		Bsw/Service/SystemService/Os/OsTask.c \
+		Bsw/Service/SystemService/Os/OsResource.c \
 		Bsw/Service/SystemService/Dem/Dem.c \
 		Bsw/Service/SystemService/Dem/Dem_Cfg.c \
 		Bsw/Service/SystemService/Det/Det.c \
