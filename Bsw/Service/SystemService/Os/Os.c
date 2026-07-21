@@ -146,43 +146,43 @@ Task_ConfigType TaskList[] = {[0] = {.OsStackPointer = &Os_Task_0[SIZE_OF_TASK_S
                                      .Priority = 255,
                                      .State = TASK_READY}};
 
-void SysTick_Handler(void)
-{
-    Os_System_Tick++;
-    a = __get_PSP();
-    if ((Os_System_Tick % TaskList[0].interval) == 0 && TaskList[0].State == TASK_SUSPENDED)
-    {
-        TaskList[0].OsStackPointer = PrepareTaskStack(&Os_Task_0[SIZE_OF_TASK_STACK - 1], TaskList[0].pTask);
-        TaskList[0].State = TASK_READY;
-    }
-    else if (TaskList[0].State == TASK_RUNNING)
-    {
-        TaskList[0].OsStackPointer = Os_Current_Psp;
-    }
+// void SysTick_Handler(void)
+// {
+//     Os_System_Tick++;
+//     a = __get_PSP();
+//     if ((Os_System_Tick % TaskList[0].interval) == 0 && TaskList[0].State == TASK_SUSPENDED)
+//     {
+//         TaskList[0].OsStackPointer = PrepareTaskStack(&Os_Task_0[SIZE_OF_TASK_STACK - 1], TaskList[0].pTask);
+//         TaskList[0].State = TASK_READY;
+//     }
+//     else if (TaskList[0].State == TASK_RUNNING)
+//     {
+//         TaskList[0].OsStackPointer = Os_Current_Psp;
+//     }
 
-    if ((Os_System_Tick % TaskList[1].interval) == 0 && TaskList[1].State == TASK_SUSPENDED)
-    {
-        TaskList[1].OsStackPointer = PrepareTaskStack(&Os_Task_1[SIZE_OF_TASK_STACK - 1], TaskList[1].pTask);
+//     if ((Os_System_Tick % TaskList[1].interval) == 0 && TaskList[1].State == TASK_SUSPENDED)
+//     {
+//         TaskList[1].OsStackPointer = PrepareTaskStack(&Os_Task_1[SIZE_OF_TASK_STACK - 1], TaskList[1].pTask);
 
-        TaskList[1].State = TASK_READY;
-    }
-    else if (TaskList[1].State == TASK_RUNNING)
-    {
-        TaskList[1].OsStackPointer = Os_Current_Psp;
-    }
+//         TaskList[1].State = TASK_READY;
+//     }
+//     else if (TaskList[1].State == TASK_RUNNING)
+//     {
+//         TaskList[1].OsStackPointer = Os_Current_Psp;
+//     }
 
-    if ((Os_System_Tick % TaskList[2].interval) == 0 && TaskList[2].State == TASK_SUSPENDED)
-    {
-        TaskList[2].OsStackPointer = PrepareTaskStack(&Os_Task_2[SIZE_OF_TASK_STACK - 1], TaskList[2].pTask);
-        TaskList[2].State = TASK_READY;
-    }
-    else if (TaskList[2].State == TASK_RUNNING)
-    {
-        TaskList[2].OsStackPointer = Os_Current_Psp;
-    }
+//     if ((Os_System_Tick % TaskList[2].interval) == 0 && TaskList[2].State == TASK_SUSPENDED)
+//     {
+//         TaskList[2].OsStackPointer = PrepareTaskStack(&Os_Task_2[SIZE_OF_TASK_STACK - 1], TaskList[2].pTask);
+//         TaskList[2].State = TASK_READY;
+//     }
+//     else if (TaskList[2].State == TASK_RUNNING)
+//     {
+//         TaskList[2].OsStackPointer = Os_Current_Psp;
+//     }
 
-    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-}
+//     SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+// }
 
 void Os_Init(void)
 {
@@ -206,19 +206,19 @@ void Os_Start(void)
     __asm volatile("SVC #0");
 }
 
-__attribute__((naked)) void SVC_Handler(void)
-{
-    __asm__ __volatile__(
-        "LDR     R2, = Os_Current_Psp   \n"
-        "LDR     R2, [R2]               \n"
-        "LDMIA   R2!, {R4-R11}        \n"
-        "MSR     PSP, R2              \n"
-        "MOV     R0, #2               \n"
-        "MSR     CONTROL, R0          \n"
-        "ISB                          \n"
-        "LDR     LR, =0xFFFFFFFD      \n"
-        "BX      LR                   \n");
-}
+// __attribute__((naked)) void SVC_Handler(void)
+// {
+//     __asm__ __volatile__(
+//         "LDR     R2, = Os_Current_Psp   \n"
+//         "LDR     R2, [R2]               \n"
+//         "LDMIA   R2!, {R4-R11}        \n"
+//         "MSR     PSP, R2              \n"
+//         "MOV     R0, #2               \n"
+//         "MSR     CONTROL, R0          \n"
+//         "ISB                          \n"
+//         "LDR     LR, =0xFFFFFFFD      \n"
+//         "BX      LR                   \n");
+// }
 
 void Os_Scheduler(void)
 {

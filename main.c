@@ -39,6 +39,7 @@
 
 #include "AutosarOs.h"
 #include "OsTask.h"
+#include "OsCounter.h"
 
 void delay(volatile uint32_t t)
 {
@@ -58,11 +59,10 @@ void SysTick_Init_8MHz(void)
     NVIC_SetPriority(PendSV_IRQn, 0xFF);
 }
 
+uint32 CountData = 0;
+
 int main(void)
 {
-    uint32_t reset_flags = RCC->CSR;
-    RCC->CSR |= RCC_CSR_RMVF;
-
     Mcu_Init(&Mcu_Configuration[0]);
     Mcu_InitClock(Mcu_Configuration[0].ClockConfig->ClockSrc);
 
@@ -88,16 +88,15 @@ int main(void)
     CryIf_Init(&CryIf_Config);
     Csm_Init(&Csm_Config);
 
-    // SysTick_Init_8MHz();
+    SysTick_Init_8MHz();
     // Os_Init();
     // Os_Start();
+    AutosarOs_Init();
+    AutosarOs_StartScheduler();
 
-    ActivateTask(0);
-    ActivateTask(1);
-    ActivateTask(2);
     while (1)
     {
-        Os_Dispatch();
+        // Os_Dispatch();
     }
 }
 

@@ -4,6 +4,9 @@
 #include "Std_GeneralTypes.h"
 #include "Det.h"
 
+#define OS_TASK_STACK_SIZE 128
+#define OS_MAX_TASKS 3
+
 typedef uint8 TaskType;
 
 typedef enum
@@ -21,8 +24,12 @@ typedef struct
     uint8 Priority;
     uint8 Activation;
     TaskStateType State;
+    uint32 *StackPointer;
 } OsTaskType;
 
 extern OsTaskType OsTaskTable[];
+
+void AutosarOs_Init(void);
+void AutosarOs_StartScheduler(void);
 
 #endif

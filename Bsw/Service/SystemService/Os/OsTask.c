@@ -39,7 +39,7 @@ OsTaskType *Os_SelectNextTask(void)
     return CurrentTask;
 }
 
-OsTaskType Os_TerminateTask(void)
+void Os_TerminateTask(void)
 {
     if (OsCurrentTask == NULL_PTR)
     {
