@@ -1,6 +1,5 @@
 #include "OsTask.h"
-
-OsTaskType *OsCurrentTask = NULL_PTR;
+#include "stm32f103xb.h"
 
 Std_ReturnType ActivateTask(TaskType TaskID)
 {
@@ -28,7 +27,7 @@ OsTaskType *Os_SelectNextTask(void)
 {
     uint8 HighPriorityTask = 255;
     OsTaskType *CurrentTask = NULL_PTR;
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < OS_MAX_TASKS; i++)
     {
         if (OsTaskTable[i].State == READY && OsTaskTable[i].Priority < HighPriorityTask)
         {
@@ -41,31 +40,15 @@ OsTaskType *Os_SelectNextTask(void)
 
 void Os_TerminateTask(void)
 {
-    if (OsCurrentTask == NULL_PTR)
+    CurrentTask->Activation--;
+    if (CurrentTask->Activation > 0)
     {
-        Det_ReportError(0, 0, 0, 5);
-    }
-    OsCurrentTask->Activation--;
-    if (OsCurrentTask->Activation > 0)
-    {
-        OsCurrentTask->State = READY;
+        CurrentTask->State = READY;
     }
     else
     {
-        OsCurrentTask->State = SUSPENDED;
+        CurrentTask->State = SUSPENDED;
     }
-    OsCurrentTask = NULL_PTR;
-}
-
-void Os_Dispatch(void)
-{
-    OsTaskType *Task = Os_SelectNextTask();
-    if (Task == NULL_PTR)
-    {
-        return;
-    }
-    Task->State = RUNNING;
-    OsCurrentTask = Task;
-    Task->Entry();
-    Os_TerminateTask();
+    NextTask = Os_SelectNextTask();
+    SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 }

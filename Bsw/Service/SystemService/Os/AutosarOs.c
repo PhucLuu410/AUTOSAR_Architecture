@@ -5,6 +5,7 @@
 #include "OsSchedule.h"
 #include "OsTask.h"
 #include "OsResource.h"
+#include "stm32f103xb.h"
 
 static uint32 OsTaskStack[OS_MAX_TASKS][OS_TASK_STACK_SIZE];
 
@@ -14,6 +15,8 @@ OsTaskType *NextTask = NULL_PTR;
 void TestFunction1(void)
 {
     uint8 a = 0;
+    CurrentTask->State = RUNNING;
+    Os_TerminateTask();
 }
 
 void TestFunction2(void)
@@ -27,6 +30,14 @@ void TestFunction3(void)
     a++;
     for (int i = 0; i < 10000; i++)
         ;
+}
+
+void IdleFunction(void)
+{
+    while (1)
+    {
+        __WFI();
+    }
 }
 
 OsTaskType OsTaskTable[] = {
@@ -52,6 +63,14 @@ OsTaskType OsTaskTable[] = {
         .Id = 2,
         .Priority = 2,
         .State = SUSPENDED,
+        .StackPointer = NULL_PTR,
+    },
+    {
+        .Activation = 0,
+        .Entry = IdleFunction,
+        .Id = 3,
+        .Priority = 3,
+        .State = READY,
         .StackPointer = NULL_PTR,
     },
 };
@@ -100,10 +119,34 @@ void SysTick_Handler(void)
 {
     Counter_Tick();
     Alarm_Check();
+    NextTask = Os_SelectNextTask();
 }
 
 void SVC_Handler(void)
 {
     uint32 *sp = CurrentTask->StackPointer;
     SVC_RestoreContext(sp);
+}
+
+void SaveContext(void)
+{
+    while (1)
+        ;
+}
+
+void SwitchContext(void)
+{
+    while (1)
+        ;
+}
+
+uint32 *SavePsp;
+
+void PendSV_Handler(void)
+{
+    __asm volatile(
+        "mrs r0, psp \n"
+        "stmdb r0!, {r4-r11} \n"
+        "ldr r1, =SavePsp      \n"
+        "str r0, [r1]         \n");
 }

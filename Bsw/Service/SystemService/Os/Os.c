@@ -278,27 +278,27 @@ uint32 *Os_GetContext(void)
     return TaskList[Os_Current_Task].OsStackPointer;
 }
 
-__attribute__((naked)) void PendSV_Handler(void)
-{
-    __asm__ __volatile__(
-        "MRS     R0, PSP                \n"
-        "STMDB   R0!, {R4-R11}          \n"
+// __attribute__((naked)) void PendSV_Handler(void)
+// {
+//     __asm__ __volatile__(
+//         "MRS     R0, PSP                \n"
+//         "STMDB   R0!, {R4-R11}          \n"
 
-        "PUSH    {LR}                   \n"
-        "BL      Os_SaveContext         \n"
+//         "PUSH    {LR}                   \n"
+//         "BL      Os_SaveContext         \n"
 
-        "CPSID   I                      \n"
-        "BL      Os_Scheduler           \n"
-        "CPSIE   I                      \n"
+//         "CPSID   I                      \n"
+//         "BL      Os_Scheduler           \n"
+//         "CPSIE   I                      \n"
 
-        "BL      Os_GetContext          \n"
-        "POP     {LR}                   \n"
+//         "BL      Os_GetContext          \n"
+//         "POP     {LR}                   \n"
 
-        "LDMIA   R0!, {R4-R11}          \n"
-        "MSR     PSP, R0                \n"
+//         "LDMIA   R0!, {R4-R11}          \n"
+//         "MSR     PSP, R0                \n"
 
-        "BX      LR                     \n"
-        :
-        :
-        : "memory");
-}
+//         "BX      LR                     \n"
+//         :
+//         :
+//         : "memory");
+// }

@@ -7,5 +7,5 @@ void Task_Init(void);
 Std_ReturnType ActivateTask(TaskType TaskID);
 OsTaskType *Os_SelectNextTask(void);
 void Os_TerminateTask(void);
-void Os_Dispatch(void);
+
 #endif
