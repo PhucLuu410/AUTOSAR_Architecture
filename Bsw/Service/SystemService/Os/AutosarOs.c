@@ -111,7 +111,6 @@ void AutosarOs_StartScheduler(void)
 {
     ActivateTask(0);
     CurrentTask = Os_SelectNextTask();
-
     Arch_StartFirstTask();
 }
 
@@ -120,33 +119,4 @@ void SysTick_Handler(void)
     Counter_Tick();
     Alarm_Check();
     NextTask = Os_SelectNextTask();
-}
-
-// void SVC_Handler(void)
-// {
-//     uint32 *sp = CurrentTask->StackPointer;
-//     SVC_RestoreContext(sp);
-// }
-
-void SaveContext(void)
-{
-    while (1)
-        ;
-}
-
-void SwitchContext(void)
-{
-    while (1)
-        ;
-}
-
-uint32 *SavePsp;
-
-void PendSV_Handler(void)
-{
-    __asm volatile(
-        "mrs r0, psp \n"
-        "stmdb r0!, {r4-r11} \n"
-        "ldr r1, =SavePsp      \n"
-        "str r0, [r1]         \n");
 }

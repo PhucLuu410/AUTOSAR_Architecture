@@ -19,12 +19,12 @@ typedef enum
 
 typedef struct
 {
+    uint32 *StackPointer;
     TaskType Id;
     void (*Entry)(void);
     uint8 Priority;
     uint8 Activation;
     TaskStateType State;
-    uint32 *StackPointer;
 } OsTaskType;
 
 extern OsTaskType OsTaskTable[];
