@@ -112,7 +112,7 @@ void AutosarOs_StartScheduler(void)
     ActivateTask(0);
     CurrentTask = Os_SelectNextTask();
 
-    __asm volatile("svc 0");
+    Arch_StartFirstTask();
 }
 
 void SysTick_Handler(void)
@@ -122,11 +122,11 @@ void SysTick_Handler(void)
     NextTask = Os_SelectNextTask();
 }
 
-void SVC_Handler(void)
-{
-    uint32 *sp = CurrentTask->StackPointer;
-    SVC_RestoreContext(sp);
-}
+// void SVC_Handler(void)
+// {
+//     uint32 *sp = CurrentTask->StackPointer;
+//     SVC_RestoreContext(sp);
+// }
 
 void SaveContext(void)
 {

@@ -97,6 +97,7 @@ SRC = 	./System/Startup/startup.c \
 		Bsw/Service/SystemService/Os/AutosarOs.c \
 		Bsw/Service/SystemService/Os/OsAlarm.c \
 		Bsw/Service/SystemService/Os/OsArch.c \
+		Bsw/Service/SystemService/Os/OsArch.S \
 		Bsw/Service/SystemService/Os/OsCounter.c \
 		Bsw/Service/SystemService/Os/OsSchedule.c \
 		Bsw/Service/SystemService/Os/OsTask.c \

@@ -3,6 +3,7 @@
 
 #include "Std_GeneralTypes.h"
 
-__attribute__((naked)) void SVC_RestoreContext(uint32 *sp);
+void SVC_RestoreContext(uint32 *sp);
+void Arch_StartFirstTask(void);
 
 #endif
